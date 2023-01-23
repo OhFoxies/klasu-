@@ -1,0 +1,19 @@
+{
+  "ping_pong": "**Pong** \uD83C\uDFD3",
+  "ping": "**Ping: {value} ms**",
+  "klasus": "Hej, jestem **klasuś** - zautomatyzowany bot szkolny. Wysyłam wszystkie możliwe informację z dziennika Vulcan.\nAby wyświetlić liste pomocy użyj komendy **/pomoc**",
+  "response_error": "**Klasuś nie odpowiedział poprawnie.**\n**Kod błędu:** ",
+  "school_name_exists": "**W bazie danych serwera znajduję się już szkoła z nazwą {name}!**",
+  "school_created": "**Zapisano szkołę z nazwą: {name} do bazy danych!**",
+  "school_bad_name": "**Nie prawidłowa nazwa szkoły. Nazwa nie może zawierać spacji, lub znaków specjalnych. Dopuszczalne znaki: [aA-żŻ;0-9,_] i nie może mieć więcej niż 99 znaków**",
+  "schools": "**Szkoły na twoim serwerze: {schools}**",
+  "no_schools": "**Nie posiadasz żadnych szkół na serwerze. Dodaj je komendą /dodaj-szkołe**",
+  "school_not_found": "**Nie masz szkoły z nazwą {name}. Możesz utworzyć szkoły komendą /dodaj-szkołe**",
+  "your_classes": "**Lista twoich klas w szkole {school_name}: {classes_list}**",
+  "no_classes_found": "**Nie znaleziono żadnych klas w szkole: {name}. Możesz je dodac komendą /dodaj-klase**",
+  "class_bad_name": "**Nie prawidłowa nazwa klasy. Nazwa nie może zawierać spacji, lub znaków specjalnych. Dopuszczalne znaki: [aA-żŻ;0-9,_] i nie może mieć więcej niż 99 znaków**",
+  "class_name_exists": "**W szkole o nazwie {school_name} znajduję się już klasa z nazwą {name}!**",
+  "class_created": "**Utworzono klasę z nazwą {name} w szkole {school_name}**",
+  "limit_classes": "**Osiągnałeś limit klas w swojej szkole (50)**",
+  "limit_schools": "**Osiągnąłeś limit szkół na swoim serwerze (10)**"
+}
