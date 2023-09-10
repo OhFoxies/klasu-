@@ -69,7 +69,7 @@ def load_cogs(client) -> None:
             logs_.log(f"Loaded event extension {event[:-3]}")
 
     for command in listdir(f'./commands'):
-        if command.endswith('.py'):
+        if command.endswith('.py') and command.startswith('Command'):
             client.load_extension(f'commands.{command[:-3]}')
             logs_.log(f"Loaded command extension {command[:-3]}")
 

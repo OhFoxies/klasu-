@@ -1,12 +1,10 @@
-import random
-
 import nextcord as discord
-import nextcord.ext.commands
 from nextcord.ext import commands
 from database.database_requests import *
 from utils import messages
 from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from vulcanrequests.connect import create_new_connection
+from group_functions.GroupFunctions import send_message_group_channel
 
 
 class ConnectToVulcan(commands.Cog):
@@ -67,25 +65,15 @@ class ConnectToVulcan(commands.Cog):
                     if not connecting[0]:
                         await message.edit(connecting[1])
                         return
-                    try:
-                        msg = messages['channel_registered'].replace('{school}', school_name)
-                        msg = msg.replace('{class}', class_name)
-                        msg = msg.replace('{group}', group_name)
-                        msg = await channel.send(msg)
-                        await msg.pin()
-
-                    except nextcord.ext.commands.ChannelNotFound:
-                        system_channel = interaction.guild.system_channel
-                        msg = messages['channel_not_found'].replace('{school}', school_name)
-                        msg = msg.replace('{class}', class_name)
-                        msg = msg.replace('{group}', group_name)
-                        if system_channel:
-                            await system_channel.send(msg)
-                            return
-                        else:
-                            random_channel = random.choice(interaction.guild.text_channels)
-                            await random_channel.send(msg)
-                            return
+                    msg = messages['channel_registered'].replace('{school}', school_name)
+                    msg = msg.replace('{class}', class_name)
+                    msg = msg.replace('{group}', group_name)
+                    await send_message_group_channel(school_name=school_name,
+                                                     class_name=class_name,
+                                                     group_name=group_name,
+                                                     interaction=interaction,
+                                                     message=msg,
+                                                     pin=True)
 
                     await message.edit(connecting[1])
                     return

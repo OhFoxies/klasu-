@@ -1,30 +1,27 @@
 import nextcord as discord
 from nextcord.ext import commands
-from database.database_requests import (change_group_channel,
-                                        class_list,
+from database.database_requests import (class_list,
                                         group_list,
                                         is_group_registered,
                                         SchoolNotFoundError,
-                                        get_channel
                                         )
 from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from utils import messages
 from group_functions.GroupFunctions import send_message_group_channel
 
 
-class ChangeChannel(commands.Cog):
+class SendGroupInfo(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Zmienia kanał powiadomień dla danej grupy",
-                           name="grupa-kanal",
+    @discord.slash_command(description="Wysyła wiadomość na kanał grupy",
+                           name="group-info",
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def change_channel(self, interaction: discord.Interaction,
                              school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                    description="Nazwa szkoly ktora wczesniej "
-                                                                                "utworzyles",
+                                                                    description="Nazwa szkoly ktora wczesniej utworzyles",
                                                                     required=True),
                              class_name: str = discord.SlashOption(name="nazwa-klasy",
                                                                    description="Nazwa klasy ktora wczesniej utworzyles",
@@ -32,13 +29,8 @@ class ChangeChannel(commands.Cog):
                              group_name: str = discord.SlashOption(name="nazwa-grupy",
                                                                    description="Nazwa grupy ktora wczesniej utworzyles",
                                                                    required=True),
-                             channel: discord.TextChannel = discord.SlashOption(name="kanal",
-                                                                                description="Kanał powiadomień dla "
-                                                                                            "danej "
-                                                                                            "grupy zostanie ustawiony "
-                                                                                            "na "
-                                                                                            "podany",
-                                                                                required=False)):
+                             message: str = discord.SlashOption(name="wiadomość",
+                                                                required=True)):
 
         try:
             classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
@@ -50,35 +42,14 @@ class ChangeChannel(commands.Cog):
                                            school_name=school_name,
                                            class_name=class_name,
                                            group_name=group_name):
-                        if not channel:
-                            channel_id = get_channel(guild_id=interaction.guild_id,
-                                                     school_name=school_name,
-                                                     class_name=class_name,
-                                                     group_name=group_name)
-                            msg = messages['current_channel'].replace('{school}', school_name)
-                            msg = msg.replace('{class}', class_name)
-                            msg = msg.replace('{group}', group_name)
-                            current = interaction.guild.get_channel(int(channel_id)).mention
 
-                            msg = msg.replace('{channel}', current)
-                            await interaction.response.send_message(msg, ephemeral=True)
-                            return
-                        change_group_channel(guild_id=interaction.guild_id,
-                                             channel_id=channel.id,
-                                             school_name=school_name,
-                                             class_name=class_name,
-                                             group_name=group_name)
-
-                        msg = messages['channel_registered'].replace('{school}', school_name)
-                        msg = msg.replace('{class}', class_name)
-                        msg = msg.replace('{group}', group_name)
                         await send_message_group_channel(school_name=school_name,
                                                          class_name=class_name,
                                                          group_name=group_name,
                                                          interaction=interaction,
-                                                         message=msg,
-                                                         pin=True)
-                        await interaction.response.send_message(messages['channel_set'], ephemeral=True)
+                                                         message=message,
+                                                         pin=False)
+                        await interaction.response.send_message(messages['send'], ephemeral=True)
                         return
                     await interaction.response.send_message(messages['group_not_connected'], ephemeral=True)
                     return
@@ -111,4 +82,4 @@ class ChangeChannel(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(ChangeChannel(client))
+    client.add_cog(SendGroupInfo(client))

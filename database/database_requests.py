@@ -234,3 +234,20 @@ def is_group_registered(guild_id: int, school_name: str, class_name: str, group_
         if vulcan_data[0][1] == 'not_set':
             return False
         return True
+
+
+def change_group_channel(guild_id: int, channel_id: int, school_name: str, class_name: str, group_name: str):
+    with sqlite3.connect("database/database.db") as connection:
+        command = "UPDATE `group` SET channel_id=? WHERE class_name=? AND guild_id=? AND school_name=? AND group_name=?"
+        values = (str(channel_id), class_name, str(guild_id), school_name, group_name)
+        connection.execute(command, values)
+        connection.commit()
+
+
+def get_channel(guild_id: int, school_name: str, class_name: str, group_name: str) -> str:
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT channel_id FROM `group` WHERE class_name=? AND guild_id=? AND school_name=? AND group_name=?"
+        values = (class_name, str(guild_id), school_name, group_name)
+        data = connection.execute(command, values).fetchall()
+
+        return data[0][0]

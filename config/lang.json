@@ -53,5 +53,9 @@
   "need_to_register": "Aby uzyskać dostęp do tej komendy musisz zarejstrować się do odpowiedniej klasy. Komenda /rejestracja",
   "no_education": "W dniu dzisiejszym nie ma szczęśliwego numerka! Jest wolne od szkoły! Hura!",
   "lucky_number": "Dzisiejszy szczęśliwy numerek w szkole {school} to {number}",
-  "connecting_to_vulcan": "Klasuś łączy się z Vulcanem aby pobrać dane, prosze czekać"
+  "connecting_to_vulcan": "Klasuś łączy się z Vulcanem aby pobrać dane, prosze czekać",
+  "current_channel": "Aktualny kanał dla szkoły {school}, klasy {class} i grupy {group} to {channel}",
+  "channel_set": "Ustawiono nowy kanal powiadomień",
+  "group_not_connected": "Aby korzystać z tej funkcji grupa musi być połaczona z Vulcanem!",
+  "send": "Wysłano wiadomość"
 }
