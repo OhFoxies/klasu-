@@ -1,39 +1,85 @@
-import nextcord
+import nextcord as discord
 from nextcord.ext import commands
+from database.database_requests import *
+from utils import messages
+from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 
 
 class Register(commands.Cog):
     def __int__(self, client: commands.Bot):
         self.client = client
 
-    @nextcord.slash_command(description="Adds you to the database. So you can be mentioned.",
-                            description_localizations={
-                                nextcord.Locale.pl: "Dodaje cię do bazy danych dzięki czemu będziesz pingowany."},
-                            name="registration",
-                            name_localizations={nextcord.Locale.pl: "rejestracja"}, dm_permission=False,
-                            force_global=True)
-    async def registration(self, interaction: nextcord.Interaction,
-                           name: str = nextcord.SlashOption(name="name",
-                                                            name_localizations={nextcord.Locale.pl: "imie"},
-                                                            description="Your name",
-                                                            description_localizations={
-                                                                nextcord.Locale.pl: "twoje imie"},
-                                                            required=True),
-                           second_name: str = nextcord.SlashOption(name="second_name",
-                                                                   name_localizations={nextcord.Locale.pl: "nazwisko"},
-                                                                   description="Your second name",
-                                                                   description_localizations={
-                                                                       nextcord.Locale.pl: "twoje nazwisko"},
-                                                                   required=True),
-                           number: int = nextcord.SlashOption(name="egradebook_number",
-                                                              name_localizations={
-                                                                  nextcord.Locale.pl: "numer_w_dzienniku"},
-                                                              description="Your egrade book number",
-                                                              description_localizations={
-                                                                  nextcord.Locale.pl: "twoj numer w dziennku"},
-                                                              required=True)):
-        print(f"{interaction.user} used command: register")
-        await interaction.response.send_message(f"{name} {second_name}, {number}", ephemeral=True)
+    @discord.slash_command(description="Rejestracja do bazy danych klasusia",
+                           name="rejestracja",
+                           dm_permission=False,
+                           force_global=True)
+    async def registration(self, interaction: discord.Interaction,
+                           school_name: str = discord.SlashOption(name="nazwa-szkoly",
+                                                                  description="Nazwa szkoly do której chodzisz",
+                                                                  required=True),
+                           class_name: str = discord.SlashOption(name="nazwa-klasy",
+                                                                 description="Klasa do której chodzisz",
+                                                                 required=True),
+                           group_name: str = discord.SlashOption(name="nazwa-grupy",
+                                                                 description="Twoja grupa w klasie",
+                                                                 required=True),
+                           number: int = discord.SlashOption(name="numer-w-dzienniku",
+                                                             description="Twój numer z dziennika",
+                                                             required=True)):
+
+        try:
+            classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+            if class_name in classes:
+                groups_list = group_list(guild_id=interaction.guild_id, school_name=school_name,
+                                         class_name=class_name)
+                if group_name in groups_list:
+                    if not is_group_registered(guild_id=interaction.guild_id,
+                                               school_name=school_name,
+                                               class_name=class_name,
+                                               group_name=group_name):
+                        await interaction.response.send_message(messages['group_not_registered'], ephemeral=True)
+                        return
+                    user_data = get_user_data(interaction.user.id, interaction.guild_id)
+                    if get_user_data(interaction.user.id, interaction.guild_id):
+                        msg = messages['already_registered'].replace('{class}', user_data[0][0])
+                        msg = msg.replace('{school}', user_data[0][1])
+                        msg = msg.replace('{group}', user_data[0][2])
+                        await interaction.response.send_message(msg, ephemeral=True)
+                        return
+                    register_user(guild_id=interaction.guild_id,
+                                  user_id=interaction.user.id,
+                                  group_name=group_name,
+                                  school_name=school_name,
+                                  class_name=class_name,
+                                  number=number
+                                  )
+                    await interaction.response.send_message(messages['registered'], ephemeral=True)
+                    return
+                await interaction.response.send_message(messages['group_not_found'.replace('{name}', group_name)],
+                                                        ephemeral=True)
+                return
+            await interaction.response.send_message(
+                f"{messages['class_not_found']}".replace("{name}", class_name), ephemeral=True)
+            return
+        except SchoolNotFoundError:
+            await interaction.response.send_message(
+                f"{messages['school_not_found']}".replace("{name}", school_name), ephemeral=True)
+            return
+
+    @registration.on_autocomplete("school_name")
+    async def get_schools(self, interaction: discord.Interaction, school_input: str):
+        await interaction.response.send_autocomplete(schools_autocompletion(interaction=interaction,
+                                                                            school_input=school_input))
+
+    @registration.on_autocomplete("class_name")
+    async def get_classes(self, interaction: discord.Interaction, class_name: str):
+        await interaction.response.send_autocomplete(classes_autocompletion(interaction=interaction,
+                                                                            class_name=class_name))
+
+    @registration.on_autocomplete("group_name")
+    async def get_groups(self, interaction: discord.Interaction, group_name: str):
+        await interaction.response.send_autocomplete(
+            groups_autocompletion(interaction=interaction, group_name=group_name))
 
 
 def setup(client):

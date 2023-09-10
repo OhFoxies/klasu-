@@ -1,53 +1,69 @@
-from database.connect_to_database import cursor
-from typing import List
+from typing import List, Dict, Union
+import sqlite3
+
+
+class SchoolNotFoundError(Exception):
+    pass
 
 
 def is_school_limit_reached(guild_id: int) -> bool:
     """
-    Checks if guild with given ID has more than 10 schools saved in database
+    Checks if guild with given ID has more than 25 schools saved in database
     :param guild_id: ID of guild where command is used
-    :return: True if limit is reached, False if there's less than 10 schools
+    :return: True if limit is reached, False if there's less than 25 schools
     """
-    command = "SELECT guild_id FROM `schools` WHERE guild_id=?"
-    values = (str(guild_id), )
-    schools = cursor.execute(command, values).fetchall()
-    return True if len(schools) + 1 > 10 else False
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT guild_id FROM `schools` WHERE guild_id=?"
+        values = (str(guild_id),)
+        schools = connection.execute(command, values).fetchall()
+    return True if len(schools) + 1 > 25 else False
 
 
 def is_classes_limit_reached(guild_id: int, school_name: str) -> bool:
     """
-    Checks if guild with given ID has more than 50 classes saved in database
+    Checks if guild with given ID has more than 25 classes saved in database
     :param school_name: name of school to get data from
     :param guild_id: ID of guild where command is used
-    :return: True if limit is reached, False if there's less than 50 classes
+    :return: True if limit is reached, False if there's less than 25 classes
     """
-    command = "SELECT guild_id FROM `classes` WHERE guild_id=? AND school_name=?"
-    values = (str(guild_id), school_name)
-    classes = cursor.execute(command, values).fetchall()
-    return True if len(classes) + 1 > 50 else False
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT guild_id FROM `classes` WHERE guild_id=? AND school_name=?"
+        values = (str(guild_id), school_name)
+        classes = connection.execute(command, values).fetchall()
+        return True if len(classes) + 1 > 25 else False
 
 
-def is_name_correct(name: str, guild_id: int) -> bool:
+def is_group_limit_reached(guild_id: int, school_name: str, class_name: str) -> bool:
+    """
+    Checks if guild with given ID has more than 25 groups in each class
+    :param class_name: name of class to get data from
+    :param school_name: name of school to get data from
+    :param guild_id: ID of guild where command is used
+    :return: True if limit is reached, False if there's less than 25 groups
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT guild_id FROM `group` WHERE guild_id=? AND school_name=? AND class_name=?"
+        values = (str(guild_id), school_name, class_name)
+        groups = connection.execute(command, values).fetchall()
+        return True if len(groups) + 1 > 25 else False
+
+
+def is_name_correct(name: str) -> bool:
     """
     checks if given name of class, group or school is correct and doesn't contain any unsupported characters
     :param name: Name to check
-    :param guild_id: ID of guild where command is used
     :return: True if given name is correct. False if it contains unsupported characters
     """
     name = name.lower()
     chars = ['a', 'ą', 'b', 'c', 'ć', 'd', 'e', 'ę', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'ł', 'm', 'n', 'ń', 'o', 'ó',
              'p', 'q', 'r', 's', 'ś', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'ź', 'ż', '0', '1', '2', '3', '4', '5', '6',
              '7', '8', '9', '_']
-    if len(name) > 99 or name.endswith(f"_{guild_id}"):
-        return False
-    for i in name:
-        if i not in chars:
-            return False
-    return True
-
-
-class SchoolNotFoundError(Exception):
-    pass
+    if not len(name) > 99:
+        for i in name:
+            if i not in chars:
+                return False
+        return True
+    return False
 
 
 def create_guild(guild_id: int) -> bool:
@@ -57,35 +73,16 @@ def create_guild(guild_id: int) -> bool:
     :param guild_id: ID of guild where bot has joined
     :return: True if bot has joined to new guild. False if bot has joined to guild where was before
     """
-
-    command = "SELECT * FROM `guilds` WHERE guild_id=?"
-    values = (str(guild_id), )
-    guild = cursor.execute(command, values).fetchall()
-    if guild:
-        return False
-    command = "INSERT INTO `guilds` (`guild_id`) VALUES (?)"
-    cursor.execute(command, values)
-    cursor.commit()
-    return True
-
-
-def create_school(guild_id: int, school_name: str) -> bool:
-    """
-    Creates school with given name in database and assigns it to guild with given id
-    :param guild_id: ID of guild where command is used
-    :param school_name: name of school given by user
-    :return: True if school with this name already exists. False if it doesn't
-    """
-    command = "SELECT * FROM `schools` WHERE guild_id=? AND school_name=?"
-    values = (str(guild_id), school_name)
-    schools = cursor.execute(command, values).fetchall()
-    if schools:
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT * FROM `guilds` WHERE guild_id=?"
+        values = (str(guild_id),)
+        guild = connection.execute(command, values).fetchall()
+        if guild:
+            return False
+        command = "INSERT INTO `guilds` (`guild_id`) VALUES (?)"
+        connection.execute(command, values)
+        connection.commit()
         return True
-    command = "INSERT INTO `schools` (`guild_id`, `school_name`) VALUES (?, ?)"
-    values = (str(guild_id), school_name,)
-    cursor.execute(command, values)
-    cursor.commit()
-    return False
 
 
 def schools_list(guild_id: int) -> List[str]:
@@ -93,14 +90,28 @@ def schools_list(guild_id: int) -> List[str]:
     :param guild_id: ID of guild where command is used
     :return: Returns list of schools assigned to guild with given ID.
     """
-    command = "SELECT school_name FROM `schools` WHERE guild_id=?"
-    values = (str(guild_id), )
-    schools = cursor.execute(command, values).fetchall()
-    schools_new = []
-    for i in schools:
-        for j in i:
-            schools_new.append(j)
-    return schools_new
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT school_name FROM `schools` WHERE guild_id=?"
+        values = (str(guild_id),)
+        schools = connection.execute(command, values).fetchall()
+        schools_new = []
+        for i in schools:
+            for j in i:
+                schools_new.append(j)
+        return schools_new
+
+
+def create_school(guild_id: int, school_name: str) -> None:
+    """
+    Creates school with given name in database and assigns it to guild with given id
+    :param guild_id: ID of guild where command is used
+    :param school_name: name of school given by user
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command = "INSERT INTO `schools` (`guild_id`, `school_name`) VALUES (?, ?)"
+        values = (str(guild_id), school_name,)
+        connection.execute(command, values)
+        connection.commit()
 
 
 def class_list(guild_id: int, school_name: str) -> List[str]:
@@ -110,17 +121,18 @@ def class_list(guild_id: int, school_name: str) -> List[str]:
     :return: Raises an SchoolNotFoundError error if school with given name is not found.
     If found returns a list of classes in school
     """
-    schools = schools_list(guild_id=guild_id)
-    classes_new = []
-    if school_name not in schools:
-        raise SchoolNotFoundError
-    command = "SELECT class_name FROM `classes` WHERE school_name=? AND guild_id=?"
-    values = (school_name, str(guild_id))
-    classes = cursor.execute(command, values).fetchall()
-    for i in classes:
-        for j in i:
-            classes_new.append(j)
-    return classes_new
+    with sqlite3.connect("database/database.db") as connection:
+        schools = schools_list(guild_id=guild_id)
+        classes_new = []
+        if school_name not in schools:
+            raise SchoolNotFoundError
+        command = "SELECT class_name FROM `classes` WHERE school_name=? AND guild_id=?"
+        values = (school_name, str(guild_id))
+        classes = connection.execute(command, values).fetchall()
+        for i in classes:
+            for j in i:
+                classes_new.append(j)
+        return classes_new
 
 
 def create_class(guild_id: int, school_name: str, class_name: str) -> None:
@@ -131,7 +143,94 @@ def create_class(guild_id: int, school_name: str, class_name: str) -> None:
     :param class_name: Name of class given by user
     :return: None
     """
-    command = "INSERT INTO `classes` (class_name, school_name, guild_id) VALUES (?, ?, ?)"
-    values = (class_name, school_name, str(guild_id))
-    cursor.execute(command, values)
-    cursor.commit()
+    with sqlite3.connect("database/database.db") as connection:
+        command = "INSERT INTO `classes` (class_name, school_name, guild_id) VALUES (?, ?, ?)"
+        values = (class_name, school_name, str(guild_id))
+        connection.execute(command, values)
+        connection.commit()
+
+
+def group_list(guild_id: int, school_name: str, class_name: str) -> List[str]:
+    """
+
+    :param guild_id:
+    :param school_name:
+    :param class_name:
+    :return:
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT group_name FROM `group` WHERE guild_id=? AND school_name=? AND class_name=?"
+        values = (str(guild_id), school_name, class_name)
+        groups = connection.execute(command, values).fetchall()
+        groups_new = []
+        for i in groups:
+            for j in i:
+                groups_new.append(j)
+        return groups_new
+
+
+def create_group(guild_id: int, school_name: str, class_name: str, group_name: str) -> None:
+    """
+    Creates a group with given name in class in school.
+    :param group_name: Name of group given by user
+    :param guild_id: ID of guild where command is used
+    :param school_name: Name of school given by user
+    :param class_name: Name of class given by user
+    :return: None
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command = "INSERT INTO `group` (channel_id, school_name, class_name, group_name, keystore, account, " \
+                  "guild_id, user_vulcan) " \
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        values = ('not_set', school_name, class_name, group_name, 'not_set', 'not_set', str(guild_id), 'not_set')
+        connection.execute(command, values)
+        connection.commit()
+
+
+def save_vulcan_data(channel_id: int, guild_id: int, user_id: int, school_name: str, class_name: str, group_name: str,
+                     keystore: Dict[str, str], account: Dict[str, Union[int, str]]):
+    with sqlite3.connect("database/database.db") as connection:
+        command = "UPDATE `group` SET keystore=?, account=?, user_vulcan=?, channel_id=? WHERE class_name=? " \
+                  "AND guild_id=? AND school_name=? AND group_name=?"
+        values = (str(keystore), str(account), str(user_id), str(channel_id), class_name, str(guild_id),
+                  school_name, group_name)
+        connection.execute(command, values)
+        connection.commit()
+        return True
+
+
+def register_user(guild_id: int, user_id: int, school_name: str, class_name: str, group_name: str, number: int):
+    with sqlite3.connect("database/database.db") as connection:
+        command = "INSERT INTO `user` (user_id, class_name, school_name, group_name, guild_id, number) " \
+                  "VALUES (?, ?, ?, ?, ?, ?)"
+        values = (str(user_id), class_name, school_name, group_name, str(guild_id), str(number))
+        connection.execute(command, values)
+        connection.commit()
+
+
+def get_user_data(user_id: int, guild_id: int):
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT class_name, school_name, group_name, number FROM `user` WHERE user_id=? AND guild_id=?"
+        values = (str(user_id), str(guild_id))
+        data = connection.execute(command, values).fetchall()
+        return data
+
+
+def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str):
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
+                  "AND group_name=? AND guild_id=?"
+        values = (school_name, class_name, group_name, str(guild_id))
+        vulcan_data = connection.execute(command, values).fetchall()
+        return vulcan_data
+
+
+def is_group_registered(guild_id: int, school_name: str, class_name: str, group_name: str) -> bool:
+    with sqlite3.connect("database/database.db") as connection:
+        command = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
+                  "AND group_name=? AND guild_id=?"
+        values = (school_name, class_name, group_name, str(guild_id))
+        vulcan_data = connection.execute(command, values).fetchall()
+        if vulcan_data[0][1] == 'not_set':
+            return False
+        return True

@@ -9,7 +9,6 @@ class KlasusCommand(commands.Cog):
 
     @nextcord.slash_command(description="Opis klasusia", name="klasus", dm_permission=False, force_global=True)
     async def klasus_command(self, interaction: nextcord.Interaction):
-        print(f"{interaction.user} used command: klasus")
         await interaction.response.send_message(f"{messages['klasus']}", ephemeral=True)
 
 

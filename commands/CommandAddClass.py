@@ -2,6 +2,7 @@ import nextcord as discord
 from nextcord.ext import commands
 from database.database_requests import *
 from utils import messages
+from autcompletion.AutoCompletions import schools_autocompletion
 
 
 class AddClass(commands.Cog):
@@ -19,17 +20,17 @@ class AddClass(commands.Cog):
                                                                required=True),
                         class_name: str = discord.SlashOption(name="nazwa_klasy",
                                                               required=True)):
-        if not is_name_correct(name=school_name, guild_id=interaction.guild_id):
+        if not is_name_correct(name=school_name):
             await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)
             return
-        if not is_name_correct(name=class_name, guild_id=interaction.guild_id):
+        if not is_name_correct(name=class_name):
             await interaction.response.send_message(f"{messages['class_bad_name']}", ephemeral=True)
             return
         try:
             classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if class_name not in classes:
                 if is_classes_limit_reached(guild_id=interaction.guild_id, school_name=school_name):
-                    await interaction.response.send_message(f"{messages['limit_classes']}")
+                    await interaction.response.send_message(f"{messages['limit_classes']}", ephemeral=True)
                     return
                 create_class(guild_id=interaction.guild_id, class_name=class_name, school_name=school_name)
                 response_message = messages['class_created'].replace("{name}", class_name)
@@ -41,6 +42,11 @@ class AddClass(commands.Cog):
         except SchoolNotFoundError:
             await interaction.response.send_message(f"{messages['school_not_found']}".replace("{name}", school_name),
                                                     ephemeral=True)
+
+    @add_class.on_autocomplete("school_name")
+    async def get_schools(self, interaction: discord.Interaction, school_input: str):
+        await interaction.response.send_autocomplete(schools_autocompletion(interaction=interaction,
+                                                                            school_input=school_input))
 
 
 def setup(client):
