@@ -2,7 +2,7 @@ import nextcord as discord
 from nextcord.ext import commands
 from database.database_requests import *
 from utils import messages
-from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion
+from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion
 from typing import List
 
 

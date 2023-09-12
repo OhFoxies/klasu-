@@ -5,7 +5,7 @@ from database.database_requests import (class_list,
                                         is_group_registered,
                                         SchoolNotFoundError,
                                         )
-from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
+from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from utils import messages
 from group_functions.GroupFunctions import send_message_group_channel
 from typing import List
