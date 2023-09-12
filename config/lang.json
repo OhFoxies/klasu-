@@ -62,5 +62,6 @@
   "unregistered": "Wyrejstrowano z bazy danych.",
   "deleted_school": "Szkoła {school} została usunięta (Tak samo jej klasy i grupy klas i użytkownicy do niej zarejstrowani)",
   "deleted_class": "Klasa z nazwą {class} została usunięta (Tak samo wszystkie jej grupy i użytkownicy zarejstrowani do grup)",
-  "deleted_group": "Grupa z nazwą {group} została usunięta (Tak samo wszyscy użytkownicy zarejestrowani do niej)"
+  "deleted_group": "Grupa z nazwą {group} została usunięta (Tak samo wszyscy użytkownicy zarejestrowani do niej)",
+  "group_disconnected": "Grupa {group} została odłączona od Vulcana. Wszyscy użytkownicy zostali z niej wyrejstrowani"
 }

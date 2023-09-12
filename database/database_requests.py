@@ -298,3 +298,16 @@ def delete_group(school_name: str, guild_id: int, class_name: str, group_name: s
         for request in requests:
             connection.execute(request, values)
         connection.commit()
+
+
+def delete_vulcan_connection(school_name: str, guild_id: int, class_name: str, group_name: str) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        requests: List[str] = ["UPDATE `group` SET keystore='not_set', account='not_set', user_vulcan='not_set', "
+                               "channel_id='not_set' WHERE school_name=? AND guild_id=? AND class_name=? "
+                               "AND group_name=?",
+                               "DELETE FROM `user` WHERE school_name=? AND guild_id=? AND class_name=? "
+                               "AND group_name=?"]
+        values: Tuple[str, ...] = (school_name, str(guild_id), class_name, group_name)
+        for request in requests:
+            connection.execute(request, values)
+        connection.commit()
