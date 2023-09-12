@@ -59,5 +59,6 @@
   "group_not_connected": "Aby korzystać z tej funkcji grupa musi być połaczona z Vulcanem!",
   "send": "Wysłano wiadomość",
   "need_to_register_to_unregister": "Aby się wyrejestrować musisz być zarejstrowany",
-  "unregistered": "Wyrejstrowano z bazy danych."
+  "unregistered": "Wyrejstrowano z bazy danych.",
+  "deleted_school": "Szkoła {school} została usunięta"
 }

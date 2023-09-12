@@ -1,5 +1,9 @@
 import nextcord as discord
 from nextcord.ext import commands
+from database.database_requests import delete_school, schools_list, SchoolNotFoundError, is_name_correct
+from autocompletion.AutoCompletions import schools_autocompletion
+from utils import messages
+from typing import List
 
 
 class DeleteSchool(commands.Cog):
@@ -8,11 +12,29 @@ class DeleteSchool(commands.Cog):
 
     @discord.slash_command(description="Usuwa wybraną szkołę", name="usun-szkole", dm_permission=False,
                            force_global=True,
-                           default_member_permissions=discord.Permissions(permissions=8)
-                           )
-    async def delete_school(self, interaction: discord.Interaction):
-        # deletes given school, all classes, groups and users in this school with messages on group channel
-        pass
+                           default_member_permissions=discord.Permissions(permissions=8))
+    async def delete_school(self, interaction: discord.Interaction,
+                            school_name: str = discord.SlashOption(name="nazwa-szkoły",
+                                                                   required=True)):
+
+        if not is_name_correct(name=school_name):
+            await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)
+            return
+        try:
+            schools: List[str] = schools_list(guild_id=interaction.guild_id)
+            if school_name not in schools:
+                raise SchoolNotFoundError
+            delete_school(school_name=school_name, guild_id=interaction.guild_id)
+            await interaction.response.send_message(messages['deleted_school'].replace('{school}', school_name),
+                                                    ephemeral=True)
+        except SchoolNotFoundError:
+            await interaction.response.send_message(f"{messages['school_not_found']}".replace("{name}", school_name),
+                                                    ephemeral=True)
+
+    @delete_school.on_autocomplete("school_name")
+    async def get_schools(self, interaction: discord.Interaction, school_input: str):
+        await interaction.response.send_autocomplete(schools_autocompletion(interaction=interaction,
+                                                                            school_input=school_input))
 
 
 def setup(client):
