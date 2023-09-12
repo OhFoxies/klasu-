@@ -3,6 +3,7 @@ from nextcord.ext import commands
 from database.database_requests import *
 from utils import messages
 from autcompletion.AutoCompletions import schools_autocompletion
+from typing import List
 
 
 class ClassesList(commands.Cog):
@@ -11,7 +12,8 @@ class ClassesList(commands.Cog):
 
     @discord.slash_command(name="lista-klasy",
                            description="Wyswietla liste klas w podanej szkole",
-                           dm_permission=False, force_global=True)
+                           dm_permission=False,
+                           force_global=True)
     async def classes(self, interaction: discord.Interaction,
                       school_name: str = discord.SlashOption(name="nazwa-szkoły",
                                                              required=True)):
@@ -19,12 +21,11 @@ class ClassesList(commands.Cog):
             await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)
             return
         try:
-            classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+            classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if classes:
-                classes_message = messages['your_classes']
-                classes_message = classes_message.replace("{school_name}", school_name)
-                await interaction.response.send_message(classes_message.replace("{classes_list}", ', '.join(classes)),
-                                                        ephemeral=True)
+                classes_message: str = messages['your_classes'].replace("{school_name}", school_name).replace(
+                    "{classes_list}", ', '.join(classes))
+                await interaction.response.send_message(classes_message, ephemeral=True)
                 return
             await interaction.response.send_message(f"{messages['no_classes_found']}".replace("{name}", school_name),
                                                     ephemeral=True)

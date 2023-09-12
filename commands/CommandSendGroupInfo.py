@@ -8,6 +8,7 @@ from database.database_requests import (class_list,
 from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from utils import messages
 from group_functions.GroupFunctions import send_message_group_channel
+from typing import List
 
 
 class SendGroupInfo(commands.Cog):
@@ -21,7 +22,8 @@ class SendGroupInfo(commands.Cog):
                            default_member_permissions=discord.Permissions(permissions=8))
     async def change_channel(self, interaction: discord.Interaction,
                              school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                    description="Nazwa szkoly ktora wczesniej utworzyles",
+                                                                    description="Nazwa szkoly ktora wczesniej "
+                                                                                "utworzyles",
                                                                     required=True),
                              class_name: str = discord.SlashOption(name="nazwa-klasy",
                                                                    description="Nazwa klasy ktora wczesniej utworzyles",
@@ -33,22 +35,22 @@ class SendGroupInfo(commands.Cog):
                                                                 required=True)):
 
         try:
-            classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+            classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if class_name in classes:
-                groups_list = group_list(guild_id=interaction.guild_id, school_name=school_name,
-                                         class_name=class_name)
+                groups_list: List[str] = group_list(guild_id=interaction.guild_id, school_name=school_name,
+                                                    class_name=class_name)
                 if group_name in groups_list:
                     if is_group_registered(guild_id=interaction.guild_id,
                                            school_name=school_name,
                                            class_name=class_name,
                                            group_name=group_name):
-
                         await send_message_group_channel(school_name=school_name,
                                                          class_name=class_name,
                                                          group_name=group_name,
                                                          interaction=interaction,
                                                          message=message,
-                                                         pin=False)
+                                                         pin=False
+                                                         )
                         await interaction.response.send_message(messages['send'], ephemeral=True)
                         return
                     await interaction.response.send_message(messages['group_not_connected'], ephemeral=True)

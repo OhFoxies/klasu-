@@ -2,6 +2,7 @@ import nextcord as discord
 from nextcord.ext import commands
 from database.database_requests import *
 from utils import messages
+from typing import List
 
 
 class SchoolList(commands.Cog):
@@ -13,7 +14,7 @@ class SchoolList(commands.Cog):
                            dm_permission=False,
                            force_global=True)
     async def schools(self, interaction: discord.Interaction):
-        schools = schools_list(guild_id=interaction.guild_id)
+        schools: List[str] = schools_list(guild_id=interaction.guild_id)
         if schools:
             await interaction.response.send_message(f"{messages['schools']}".replace("{schools}", ", ".join(schools)),
                                                     ephemeral=True)

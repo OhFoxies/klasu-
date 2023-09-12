@@ -33,7 +33,7 @@ class AddGroup(commands.Cog):
                 await interaction.response.send_message(f"{messages['group_bad_name']}", ephemeral=True)
                 return
             try:
-                classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+                classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
                 if class_name in classes:
                     if group_name in group_list(guild_id=interaction.guild_id, class_name=class_name,
                                                 school_name=school_name):
@@ -41,10 +41,10 @@ class AddGroup(commands.Cog):
                         return
                     create_group(guild_id=interaction.guild_id, school_name=school_name, class_name=class_name,
                                  group_name=group_name)
-                    response_message = messages['group_created'].replace("{name}", group_name)
-                    response_message = response_message.replace("{school}", school_name)
-                    await interaction.response.send_message(f"{response_message}".replace("{class}", class_name)
-                                                            , ephemeral=True)
+                    response_message: str = messages['group_created'].replace("{name}", group_name).replace(
+                        "{school}", school_name).replace("{class}", class_name)
+                    await interaction.response.send_message(response_message,
+                                                            ephemeral=True)
                     return
                 await interaction.response.send_message(
                     f"{messages['class_not_found']}".replace("{name}", class_name), ephemeral=True)

@@ -5,6 +5,7 @@ from utils import messages
 from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from vulcanrequests.connect import create_new_connection
 from group_functions.GroupFunctions import send_message_group_channel
+from typing import List
 
 
 class ConnectToVulcan(commands.Cog):
@@ -18,13 +19,16 @@ class ConnectToVulcan(commands.Cog):
                            default_member_permissions=discord.Permissions(permissions=8))
     async def connect_to_vulcan(self, interaction: discord.Interaction,
                                 school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                       description="Nazwa szkoly ktora wczesniej utworzyles",
+                                                                       description="Nazwa szkoly ktora wczesniej "
+                                                                                   "utworzyles",
                                                                        required=True),
                                 class_name: str = discord.SlashOption(name="nazwa-klasy",
-                                                                      description="Nazwa klasy ktora wczesniej utworzyles",
+                                                                      description="Nazwa klasy ktora wczesniej "
+                                                                                  "utworzyles",
                                                                       required=True),
                                 group_name: str = discord.SlashOption(name="nazwa-grupy",
-                                                                      description="Nazwa grupy ktora wczesniej utworzyles",
+                                                                      description="Nazwa grupy ktora wczesniej "
+                                                                                  "utworzyles",
                                                                       required=True),
                                 token: str = discord.SlashOption(name="token",
                                                                  description="Token z Twojego dziennika Vulcan. "
@@ -36,14 +40,15 @@ class ConnectToVulcan(commands.Cog):
                                                                required=True),
                                 symbol: str = discord.SlashOption(name="symbol",
                                                                   description="Symbol z Twojego dziennika Vulcan. "
-                                                                              "Więcej info komenda vulcanrequests-pomoc",
+                                                                              "Więcej info komenda "
+                                                                              "vulcanrequests-pomoc",
                                                                   required=True),
                                 channel: discord.TextChannel = discord.SlashOption(name="kanał")):
         try:
-            classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+            classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if class_name in classes:
-                groups_list = group_list(guild_id=interaction.guild_id, school_name=school_name,
-                                         class_name=class_name)
+                groups_list: List[str] = group_list(guild_id=interaction.guild_id, school_name=school_name,
+                                                    class_name=class_name)
                 if group_name in groups_list:
                     if is_group_registered(guild_id=interaction.guild_id,
                                            school_name=school_name,
@@ -51,29 +56,30 @@ class ConnectToVulcan(commands.Cog):
                                            group_name=group_name):
                         await interaction.response.send_message(messages['group_registered'], ephemeral=True)
                         return
-                    message = await interaction.send(messages['connecting'], ephemeral=True)
-                    connecting = await create_new_connection(guild_id=interaction.guild_id,
-                                                             user_id=interaction.user.id,
-                                                             school_name=school_name,
-                                                             class_name=class_name,
-                                                             group_name=group_name,
-                                                             token=token,
-                                                             pin=pin,
-                                                             symbol=symbol,
-                                                             channel_id=channel.id
-                                                             )
+                    message: discord.PartialInteractionMessage = \
+                        await interaction.send(messages['connecting'], ephemeral=True)
+                    connecting: Tuple[bool, str] = await create_new_connection(guild_id=interaction.guild_id,
+                                                                               user_id=interaction.user.id,
+                                                                               school_name=school_name,
+                                                                               class_name=class_name,
+                                                                               group_name=group_name,
+                                                                               token=token,
+                                                                               pin=pin,
+                                                                               symbol=symbol,
+                                                                               channel_id=channel.id
+                                                                               )
                     if not connecting[0]:
                         await message.edit(connecting[1])
                         return
-                    msg = messages['channel_registered'].replace('{school}', school_name)
-                    msg = msg.replace('{class}', class_name)
-                    msg = msg.replace('{group}', group_name)
+                    msg: str = messages['channel_registered'].replace('{school}', school_name).replace(
+                        '{class}', class_name).replace('{group}', group_name)
                     await send_message_group_channel(school_name=school_name,
                                                      class_name=class_name,
                                                      group_name=group_name,
                                                      interaction=interaction,
                                                      message=msg,
-                                                     pin=True)
+                                                     pin=True
+                                                     )
 
                     await message.edit(connecting[1])
                     return

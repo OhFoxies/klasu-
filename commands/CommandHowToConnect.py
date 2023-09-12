@@ -13,17 +13,17 @@ class HowToConnect(commands.Cog):
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def connect_to_vulcan(self, interaction: discord.Interaction):
-        embed1 = discord.Embed(type="rich",
-                               colour=discord.Colour.dark_blue(),
-                               title=f"{messages['help_title']}")
+        embed1: discord.Embed = discord.Embed(type="rich",
+                                              colour=discord.Colour.dark_blue(),
+                                              title=f"{messages['help_title']}")
         embed1.add_field(name=f"{messages['why_connect_title']}",
                          value=f"{messages['why_connect']}")
         embed1.add_field(name=f"{messages['how_to_connect_title1']}",
                          value=f"{messages['how_to_connect1']}")
 
-        embed2 = discord.Embed(type="rich",
-                               colour=discord.Colour.dark_blue(),
-                               title=f"{messages['help_title']}")
+        embed2: discord.Embed = discord.Embed(type="rich",
+                                              colour=discord.Colour.dark_blue(),
+                                              title=f"{messages['help_title']}")
 
         embed2.add_field(name=f"{messages['how_to_connect_save_title']}",
                          value=f"{messages['how_to_connect_save']}")

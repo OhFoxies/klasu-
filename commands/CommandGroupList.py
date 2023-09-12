@@ -3,6 +3,7 @@ from nextcord.ext import commands
 from database.database_requests import *
 from utils import messages
 from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion
+from typing import List
 
 
 class GroupsList(commands.Cog):
@@ -22,9 +23,12 @@ class GroupsList(commands.Cog):
                 await interaction.response.send_message(f"{messages['class_bad_name']}", ephemeral=True)
                 return
             try:
-                classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+                classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
                 if class_name in classes:
-                    groups = group_list(guild_id=interaction.guild_id, school_name=school_name, class_name=class_name)
+                    groups: List[str] = group_list(guild_id=interaction.guild_id,
+                                                   school_name=school_name,
+                                                   class_name=class_name
+                                                   )
                     await interaction.response.send_message(
                         f"{messages['groups_list']}".replace("{list}", ', '.join(groups)), ephemeral=True)
                     return

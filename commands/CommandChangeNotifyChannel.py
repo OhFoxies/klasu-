@@ -10,6 +10,7 @@ from database.database_requests import (change_group_channel,
 from autcompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from utils import messages
 from group_functions.GroupFunctions import send_message_group_channel
+from typing import List
 
 
 class ChangeChannel(commands.Cog):
@@ -41,43 +42,42 @@ class ChangeChannel(commands.Cog):
                                                                                 required=False)):
 
         try:
-            classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+            classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if class_name in classes:
-                groups_list = group_list(guild_id=interaction.guild_id, school_name=school_name,
-                                         class_name=class_name)
+                groups_list: List[str] = group_list(guild_id=interaction.guild_id, school_name=school_name,
+                                                    class_name=class_name)
                 if group_name in groups_list:
                     if is_group_registered(guild_id=interaction.guild_id,
                                            school_name=school_name,
                                            class_name=class_name,
                                            group_name=group_name):
                         if not channel:
-                            channel_id = get_channel(guild_id=interaction.guild_id,
-                                                     school_name=school_name,
-                                                     class_name=class_name,
-                                                     group_name=group_name)
-                            msg = messages['current_channel'].replace('{school}', school_name)
-                            msg = msg.replace('{class}', class_name)
-                            msg = msg.replace('{group}', group_name)
-                            current = interaction.guild.get_channel(int(channel_id)).mention
+                            channel_id: str = get_channel(guild_id=interaction.guild_id,
+                                                          school_name=school_name,
+                                                          class_name=class_name,
+                                                          group_name=group_name)
+                            current: str = interaction.guild.get_channel(int(channel_id)).mention
+                            msg: str = messages['current_channel'].replace('{school}', school_name).replace(
+                                '{class}', class_name).replace('{group}', group_name).replace('{channel}', current)
 
-                            msg = msg.replace('{channel}', current)
                             await interaction.response.send_message(msg, ephemeral=True)
                             return
                         change_group_channel(guild_id=interaction.guild_id,
                                              channel_id=channel.id,
                                              school_name=school_name,
                                              class_name=class_name,
-                                             group_name=group_name)
+                                             group_name=group_name
+                                             )
 
-                        msg = messages['channel_registered'].replace('{school}', school_name)
-                        msg = msg.replace('{class}', class_name)
-                        msg = msg.replace('{group}', group_name)
+                        msg: str = messages['channel_registered'].replace('{school}', school_name).replace(
+                            '{class}', class_name).replace('{group}', group_name)
                         await send_message_group_channel(school_name=school_name,
                                                          class_name=class_name,
                                                          group_name=group_name,
                                                          interaction=interaction,
                                                          message=msg,
-                                                         pin=True)
+                                                         pin=True
+                                                         )
                         await interaction.response.send_message(messages['channel_set'], ephemeral=True)
                         return
                     await interaction.response.send_message(messages['group_not_connected'], ephemeral=True)

@@ -14,7 +14,8 @@ class AddClass(commands.Cog):
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
-    async def add_class(self, interaction: discord.Interaction,
+    async def add_class(self,
+                        interaction: discord.Interaction,
                         school_name: str = discord.SlashOption(name="nazwa_szkoly",
                                                                description="Nazwa szkoly ktora wczesniej utworzyles",
                                                                required=True),
@@ -27,18 +28,20 @@ class AddClass(commands.Cog):
             await interaction.response.send_message(f"{messages['class_bad_name']}", ephemeral=True)
             return
         try:
-            classes = class_list(guild_id=interaction.guild_id, school_name=school_name)
+            classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if class_name not in classes:
                 if is_classes_limit_reached(guild_id=interaction.guild_id, school_name=school_name):
                     await interaction.response.send_message(f"{messages['limit_classes']}", ephemeral=True)
                     return
                 create_class(guild_id=interaction.guild_id, class_name=class_name, school_name=school_name)
-                response_message = messages['class_created'].replace("{name}", class_name)
-                await interaction.response.send_message(response_message.replace("{school_name}", school_name),
+                response_message: str = messages['class_created'].replace("{name}", class_name).replace(
+                    "{school_name}", school_name)
+                await interaction.response.send_message(response_message,
                                                         ephemeral=True)
                 return
-            response_message = messages['class_name_exists'].replace("{school_name}", school_name)
-            await interaction.response.send_message(response_message.replace("{name}", class_name), ephemeral=True)
+            response_message: str = messages['class_name_exists'].replace("{school_name}", school_name).replace(
+                "{name}", class_name)
+            await interaction.response.send_message(response_message, ephemeral=True)
         except SchoolNotFoundError:
             await interaction.response.send_message(f"{messages['school_not_found']}".replace("{name}", school_name),
                                                     ephemeral=True)

@@ -17,7 +17,7 @@ class Klasus(commands.Bot):
 
 
 if __name__ == "__main__":
-    intents = discord.Intents.default()
+    intents: discord.Intents = discord.Intents.default()
     intents.all()
-    client = Klasus(intents_=intents)
+    client: Klasus = Klasus(intents_=intents)
     client.start_bot()

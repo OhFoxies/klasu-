@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 import sqlite3
 
 
@@ -13,9 +13,9 @@ def is_school_limit_reached(guild_id: int) -> bool:
     :return: True if limit is reached, False if there's less than 25 schools
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT guild_id FROM `schools` WHERE guild_id=?"
-        values = (str(guild_id),)
-        schools = connection.execute(command, values).fetchall()
+        command: str = "SELECT guild_id FROM `schools` WHERE guild_id=?"
+        values: Tuple[str, ...] = (str(guild_id),)
+        schools: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
     return True if len(schools) + 1 > 25 else False
 
 
@@ -27,9 +27,9 @@ def is_classes_limit_reached(guild_id: int, school_name: str) -> bool:
     :return: True if limit is reached, False if there's less than 25 classes
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT guild_id FROM `classes` WHERE guild_id=? AND school_name=?"
-        values = (str(guild_id), school_name)
-        classes = connection.execute(command, values).fetchall()
+        command: str = "SELECT guild_id FROM `classes` WHERE guild_id=? AND school_name=?"
+        values: Tuple[str, ...] = (str(guild_id), school_name)
+        classes: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
         return True if len(classes) + 1 > 25 else False
 
 
@@ -42,9 +42,9 @@ def is_group_limit_reached(guild_id: int, school_name: str, class_name: str) -> 
     :return: True if limit is reached, False if there's less than 25 groups
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT guild_id FROM `group` WHERE guild_id=? AND school_name=? AND class_name=?"
-        values = (str(guild_id), school_name, class_name)
-        groups = connection.execute(command, values).fetchall()
+        command: str = "SELECT guild_id FROM `group` WHERE guild_id=? AND school_name=? AND class_name=?"
+        values: Tuple[str, ...] = (str(guild_id), school_name, class_name)
+        groups: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
         return True if len(groups) + 1 > 25 else False
 
 
@@ -54,10 +54,10 @@ def is_name_correct(name: str) -> bool:
     :param name: Name to check
     :return: True if given name is correct. False if it contains unsupported characters
     """
-    name = name.lower()
-    chars = ['a', 'ą', 'b', 'c', 'ć', 'd', 'e', 'ę', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'ł', 'm', 'n', 'ń', 'o', 'ó',
-             'p', 'q', 'r', 's', 'ś', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'ź', 'ż', '0', '1', '2', '3', '4', '5', '6',
-             '7', '8', '9', '_']
+    name: str = name.lower()
+    chars: List[str] = ['a', 'ą', 'b', 'c', 'ć', 'd', 'e', 'ę', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'ł', 'm', 'n', 'ń',
+                        'o', 'ó', 'p', 'q', 'r', 's', 'ś', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'ź', 'ż', '0', '1', '2',
+                        '3', '4', '5', '6', '7', '8', '9', '_']
     if not len(name) > 99:
         for i in name:
             if i not in chars:
@@ -74,12 +74,12 @@ def create_guild(guild_id: int) -> bool:
     :return: True if bot has joined to new guild. False if bot has joined to guild where was before
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT * FROM `guilds` WHERE guild_id=?"
-        values = (str(guild_id),)
+        command: str = "SELECT * FROM `guilds` WHERE guild_id=?"
+        values: Tuple[str, ...] = (str(guild_id),)
         guild = connection.execute(command, values).fetchall()
         if guild:
             return False
-        command = "INSERT INTO `guilds` (`guild_id`) VALUES (?)"
+        command: str = "INSERT INTO `guilds` (`guild_id`) VALUES (?)"
         connection.execute(command, values)
         connection.commit()
         return True
@@ -91,10 +91,10 @@ def schools_list(guild_id: int) -> List[str]:
     :return: Returns list of schools assigned to guild with given ID.
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT school_name FROM `schools` WHERE guild_id=?"
-        values = (str(guild_id),)
-        schools = connection.execute(command, values).fetchall()
-        schools_new = []
+        command: str = "SELECT school_name FROM `schools` WHERE guild_id=?"
+        values: Tuple[str, ...] = (str(guild_id),)
+        schools: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
+        schools_new: list = []
         for i in schools:
             for j in i:
                 schools_new.append(j)
@@ -103,13 +103,13 @@ def schools_list(guild_id: int) -> List[str]:
 
 def create_school(guild_id: int, school_name: str) -> None:
     """
-    Creates school with given name in database and assigns it to guild with given id
+    Creates school with given name in database and assigns it to guild with given ID
     :param guild_id: ID of guild where command is used
     :param school_name: name of school given by user
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "INSERT INTO `schools` (`guild_id`, `school_name`) VALUES (?, ?)"
-        values = (str(guild_id), school_name,)
+        command: str = "INSERT INTO `schools` (`guild_id`, `school_name`) VALUES (?, ?)"
+        values: Tuple[str, ...] = (str(guild_id), school_name,)
         connection.execute(command, values)
         connection.commit()
 
@@ -122,13 +122,13 @@ def class_list(guild_id: int, school_name: str) -> List[str]:
     If found returns a list of classes in school
     """
     with sqlite3.connect("database/database.db") as connection:
-        schools = schools_list(guild_id=guild_id)
-        classes_new = []
+        schools: List[str] = schools_list(guild_id=guild_id)
+        classes_new: list = []
         if school_name not in schools:
             raise SchoolNotFoundError
-        command = "SELECT class_name FROM `classes` WHERE school_name=? AND guild_id=?"
-        values = (school_name, str(guild_id))
-        classes = connection.execute(command, values).fetchall()
+        command: str = "SELECT class_name FROM `classes` WHERE school_name=? AND guild_id=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id))
+        classes: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
         for i in classes:
             for j in i:
                 classes_new.append(j)
@@ -144,8 +144,8 @@ def create_class(guild_id: int, school_name: str, class_name: str) -> None:
     :return: None
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "INSERT INTO `classes` (class_name, school_name, guild_id) VALUES (?, ?, ?)"
-        values = (class_name, school_name, str(guild_id))
+        command: str = "INSERT INTO `classes` (class_name, school_name, guild_id) VALUES (?, ?, ?)"
+        values: Tuple[str, ...] = (class_name, school_name, str(guild_id))
         connection.execute(command, values)
         connection.commit()
 
@@ -159,10 +159,10 @@ def group_list(guild_id: int, school_name: str, class_name: str) -> List[str]:
     :return:
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT group_name FROM `group` WHERE guild_id=? AND school_name=? AND class_name=?"
-        values = (str(guild_id), school_name, class_name)
-        groups = connection.execute(command, values).fetchall()
-        groups_new = []
+        command: str = "SELECT group_name FROM `group` WHERE guild_id=? AND school_name=? AND class_name=?"
+        values: Tuple[str, ...] = (str(guild_id), school_name, class_name)
+        groups: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
+        groups_new: list = []
         for i in groups:
             for j in i:
                 groups_new.append(j)
@@ -179,10 +179,10 @@ def create_group(guild_id: int, school_name: str, class_name: str, group_name: s
     :return: None
     """
     with sqlite3.connect("database/database.db") as connection:
-        command = "INSERT INTO `group` (channel_id, school_name, class_name, group_name, keystore, account, " \
+        command: str = "INSERT INTO `group` (channel_id, school_name, class_name, group_name, keystore, account, " \
                   "guild_id, user_vulcan) " \
                   "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-        values = ('not_set', school_name, class_name, group_name, 'not_set', 'not_set', str(guild_id), 'not_set')
+        values: Tuple[str, ...] = ('not_set', school_name, class_name, group_name, 'not_set', 'not_set', str(guild_id), 'not_set')
         connection.execute(command, values)
         connection.commit()
 
@@ -190,64 +190,66 @@ def create_group(guild_id: int, school_name: str, class_name: str, group_name: s
 def save_vulcan_data(channel_id: int, guild_id: int, user_id: int, school_name: str, class_name: str, group_name: str,
                      keystore: Dict[str, str], account: Dict[str, Union[int, str]]):
     with sqlite3.connect("database/database.db") as connection:
-        command = "UPDATE `group` SET keystore=?, account=?, user_vulcan=?, channel_id=? WHERE class_name=? " \
+        command: str = "UPDATE `group` SET keystore=?, account=?, user_vulcan=?, channel_id=? WHERE class_name=? " \
                   "AND guild_id=? AND school_name=? AND group_name=?"
-        values = (str(keystore), str(account), str(user_id), str(channel_id), class_name, str(guild_id),
+        values: Tuple[str, ...] = (str(keystore), str(account), str(user_id), str(channel_id), class_name, str(guild_id),
                   school_name, group_name)
         connection.execute(command, values)
         connection.commit()
         return True
 
 
-def register_user(guild_id: int, user_id: int, school_name: str, class_name: str, group_name: str, number: int):
+def register_user(guild_id: int, user_id: int, school_name: str, class_name: str, group_name: str, number: int) -> None:
     with sqlite3.connect("database/database.db") as connection:
-        command = "INSERT INTO `user` (user_id, class_name, school_name, group_name, guild_id, number) " \
+        command: str = "INSERT INTO `user` (user_id, class_name, school_name, group_name, guild_id, number) " \
                   "VALUES (?, ?, ?, ?, ?, ?)"
-        values = (str(user_id), class_name, school_name, group_name, str(guild_id), str(number))
+        values: Tuple[str, ...] = (str(user_id), class_name, school_name, group_name, str(guild_id), str(number))
         connection.execute(command, values)
         connection.commit()
 
 
-def get_user_data(user_id: int, guild_id: int):
+def get_user_data(user_id: int, guild_id: int) -> List[Tuple[str]]:
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT class_name, school_name, group_name, number FROM `user` WHERE user_id=? AND guild_id=?"
-        values = (str(user_id), str(guild_id))
-        data = connection.execute(command, values).fetchall()
+        command: str = "SELECT class_name, school_name, group_name, number FROM `user` WHERE user_id=? AND guild_id=?"
+        values: Tuple[str, str] = (str(user_id), str(guild_id))
+        data: List[Tuple[str]] = connection.execute(command, values).fetchall()
         return data
 
 
-def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str):
+def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str) -> List[Tuple[str]]:
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
+        command: str = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
                   "AND group_name=? AND guild_id=?"
-        values = (school_name, class_name, group_name, str(guild_id))
-        vulcan_data = connection.execute(command, values).fetchall()
+        values: Tuple[str, ...] = (school_name, class_name, group_name, str(guild_id))
+        vulcan_data: List[Tuple[str]] = connection.execute(command, values).fetchall()
         return vulcan_data
 
 
 def is_group_registered(guild_id: int, school_name: str, class_name: str, group_name: str) -> bool:
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
+        command: str = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
                   "AND group_name=? AND guild_id=?"
-        values = (school_name, class_name, group_name, str(guild_id))
+        values: Tuple[str, ...] = (school_name, class_name, group_name, str(guild_id))
         vulcan_data = connection.execute(command, values).fetchall()
         if vulcan_data[0][1] == 'not_set':
             return False
         return True
 
 
-def change_group_channel(guild_id: int, channel_id: int, school_name: str, class_name: str, group_name: str):
+def change_group_channel(guild_id: int, channel_id: int, school_name: str, class_name: str, group_name: str) -> None:
     with sqlite3.connect("database/database.db") as connection:
-        command = "UPDATE `group` SET channel_id=? WHERE class_name=? AND guild_id=? AND school_name=? AND group_name=?"
-        values = (str(channel_id), class_name, str(guild_id), school_name, group_name)
+        command: str = "UPDATE `group` SET channel_id=? WHERE class_name=? AND guild_id=? AND school_name=? " \
+                       "AND group_name=?"
+        values: Tuple[str, ...] = (str(channel_id), class_name, str(guild_id), school_name, group_name)
         connection.execute(command, values)
         connection.commit()
 
 
 def get_channel(guild_id: int, school_name: str, class_name: str, group_name: str) -> str:
     with sqlite3.connect("database/database.db") as connection:
-        command = "SELECT channel_id FROM `group` WHERE class_name=? AND guild_id=? AND school_name=? AND group_name=?"
-        values = (class_name, str(guild_id), school_name, group_name)
+        command: str = "SELECT channel_id FROM `group` WHERE class_name=? AND guild_id=? AND school_name=? " \
+                       "AND group_name=?"
+        values: Tuple[str, ...] = (class_name, str(guild_id), school_name, group_name)
         data = connection.execute(command, values).fetchall()
 
         return data[0][0]

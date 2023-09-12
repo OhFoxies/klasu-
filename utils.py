@@ -75,5 +75,5 @@ def load_cogs(client) -> None:
 
 
 # Creating messages and config dictionaries for usage in other files.
-messages = load_messages()
-config = load_config()
+messages: Dict[str, str] = load_messages()
+config: Dict[str, str] = load_config()

@@ -13,7 +13,7 @@ class GuildJoin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
-        creation = create_guild(guild_id=guild.id)
+        creation: bool = create_guild(guild_id=guild.id)
         if creation:
             logs_.log(f"I have joined to NEW guild: {guild.name} with ID: {guild.id}")
         else:
