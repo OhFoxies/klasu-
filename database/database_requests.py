@@ -180,9 +180,10 @@ def create_group(guild_id: int, school_name: str, class_name: str, group_name: s
     """
     with sqlite3.connect("database/database.db") as connection:
         command: str = "INSERT INTO `group` (channel_id, school_name, class_name, group_name, keystore, account, " \
-                  "guild_id, user_vulcan) " \
-                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-        values: Tuple[str, ...] = ('not_set', school_name, class_name, group_name, 'not_set', 'not_set', str(guild_id), 'not_set')
+                       "guild_id, user_vulcan) " \
+                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        values: Tuple[str, ...] = ('not_set', school_name, class_name, group_name,
+                                   'not_set', 'not_set', str(guild_id), 'not_set')
         connection.execute(command, values)
         connection.commit()
 
@@ -191,9 +192,10 @@ def save_vulcan_data(channel_id: int, guild_id: int, user_id: int, school_name: 
                      keystore: Dict[str, str], account: Dict[str, Union[int, str]]):
     with sqlite3.connect("database/database.db") as connection:
         command: str = "UPDATE `group` SET keystore=?, account=?, user_vulcan=?, channel_id=? WHERE class_name=? " \
-                  "AND guild_id=? AND school_name=? AND group_name=?"
-        values: Tuple[str, ...] = (str(keystore), str(account), str(user_id), str(channel_id), class_name, str(guild_id),
-                  school_name, group_name)
+                       "AND guild_id=? AND school_name=? AND group_name=?"
+        values: Tuple[str, ...] = (str(keystore), str(account), str(user_id),
+                                   str(channel_id), class_name, str(guild_id),
+                                   school_name, group_name)
         connection.execute(command, values)
         connection.commit()
         return True
@@ -202,7 +204,7 @@ def save_vulcan_data(channel_id: int, guild_id: int, user_id: int, school_name: 
 def register_user(guild_id: int, user_id: int, school_name: str, class_name: str, group_name: str, number: int) -> None:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "INSERT INTO `user` (user_id, class_name, school_name, group_name, guild_id, number) " \
-                  "VALUES (?, ?, ?, ?, ?, ?)"
+                       "VALUES (?, ?, ?, ?, ?, ?)"
         values: Tuple[str, ...] = (str(user_id), class_name, school_name, group_name, str(guild_id), str(number))
         connection.execute(command, values)
         connection.commit()
@@ -219,7 +221,7 @@ def get_user_data(user_id: int, guild_id: int) -> List[Tuple[str]]:
 def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str) -> List[Tuple[str]]:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
-                  "AND group_name=? AND guild_id=?"
+                       "AND group_name=? AND guild_id=?"
         values: Tuple[str, ...] = (school_name, class_name, group_name, str(guild_id))
         vulcan_data: List[Tuple[str]] = connection.execute(command, values).fetchall()
         return vulcan_data
@@ -228,7 +230,7 @@ def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name
 def is_group_registered(guild_id: int, school_name: str, class_name: str, group_name: str) -> bool:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "SELECT keystore, account FROM `group` WHERE school_name=? AND class_name=? " \
-                  "AND group_name=? AND guild_id=?"
+                       "AND group_name=? AND guild_id=?"
         values: Tuple[str, ...] = (school_name, class_name, group_name, str(guild_id))
         vulcan_data = connection.execute(command, values).fetchall()
         if vulcan_data[0][1] == 'not_set':
