@@ -60,5 +60,6 @@
   "send": "Wysłano wiadomość",
   "need_to_register_to_unregister": "Aby się wyrejestrować musisz być zarejstrowany",
   "unregistered": "Wyrejstrowano z bazy danych.",
-  "deleted_school": "Szkoła {school} została usunięta"
+  "deleted_school": "Szkoła {school} została usunięta (Tak samo jej klasy i grupy klas i użytkownicy do niej zarejstrowani)",
+  "deleted_class": "Klasa z nazwą {class} została usunięta (Tak samo wszystkie jej grupy i użytkownicy zarejstrowani do grup)"
 }

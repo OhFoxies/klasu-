@@ -275,3 +275,14 @@ def delete_school(school_name: str, guild_id: int) -> None:
         for request in requests:
             connection.execute(request, values)
         connection.commit()
+
+
+def delete_class(school_name: str, guild_id: int, class_name: str) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        requests: List[str] = ["DELETE FROM `classes` WHERE school_name=? AND guild_id=? AND class_name=?",
+                               "DELETE FROM `group` WHERE school_name=? AND guild_id=? AND class_name=?",
+                               "DELETE FROM `user` WHERE school_name=? AND guild_id=? AND class_name=?"]
+        values: Tuple[str, ...] = (school_name, str(guild_id), class_name)
+        for request in requests:
+            connection.execute(request, values)
+        connection.commit()
