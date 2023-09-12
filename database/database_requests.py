@@ -250,6 +250,14 @@ def get_channel(guild_id: int, school_name: str, class_name: str, group_name: st
         command: str = "SELECT channel_id FROM `group` WHERE class_name=? AND guild_id=? AND school_name=? " \
                        "AND group_name=?"
         values: Tuple[str, ...] = (class_name, str(guild_id), school_name, group_name)
-        data = connection.execute(command, values).fetchall()
+        data: List[Tuple[str]] = connection.execute(command, values).fetchall()
 
         return data[0][0]
+
+
+def clear_user_data(user_id: int, guild_id: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "DELETE FROM user WHERE user_id=? AND guild_id=?"
+        values: Tuple[str, ...] = (str(user_id), str(guild_id))
+        connection.execute(command, values)
+        connection.commit()

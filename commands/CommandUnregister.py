@@ -1,5 +1,8 @@
+from utils import messages
 import nextcord as discord
 from nextcord.ext import commands
+from database.database_requests import get_user_data, clear_user_data
+from typing import List, Tuple
 
 
 class Unregister(commands.Cog):
@@ -9,8 +12,13 @@ class Unregister(commands.Cog):
     @discord.slash_command(description="Usuwa cię z bazy danych", name="wyrejestruj", dm_permission=False,
                            force_global=True)
     async def unregister(self, interaction: discord.Interaction):
-        # removes user from database
-        pass
+        user: discord.Member = interaction.user
+        user_data: List[Tuple[str, ...]] = get_user_data(guild_id=interaction.guild_id, user_id=user.id)
+        if not user_data:
+            await interaction.response.send_message(messages['need_to_register_to_unregister'], ephemeral=True)
+            return
+        clear_user_data(guild_id=interaction.guild_id, user_id=user.id)
+        await interaction.response.send_message(messages['unregistered'], ephemeral=True)
 
 
 def setup(client):

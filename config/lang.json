@@ -57,5 +57,7 @@
   "current_channel": "Aktualny kanał dla szkoły {school}, klasy {class} i grupy {group} to {channel}",
   "channel_set": "Ustawiono nowy kanal powiadomień",
   "group_not_connected": "Aby korzystać z tej funkcji grupa musi być połaczona z Vulcanem!",
-  "send": "Wysłano wiadomość"
+  "send": "Wysłano wiadomość",
+  "need_to_register_to_unregister": "Aby się wyrejestrować musisz być zarejstrowany",
+  "unregistered": "Wyrejstrowano z bazy danych."
 }
