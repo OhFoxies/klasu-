@@ -4,6 +4,7 @@ from database.database_requests import delete_school, schools_list, SchoolNotFou
 from autocompletion.AutoCompletions import schools_autocompletion
 from utils import messages
 from typing import List
+from other_functions.Functions import user_delete_account_info
 
 
 class DeleteSchool(commands.Cog):
@@ -26,9 +27,11 @@ class DeleteSchool(commands.Cog):
             schools: List[str] = schools_list(guild_id=interaction.guild_id)
             if school_name not in schools:
                 raise SchoolNotFoundError
-            delete_school(school_name=school_name, guild_id=interaction.guild_id)
-            await interaction.response.send_message(messages['deleted_school'].replace('{school}', school_name),
-                                                    ephemeral=True)
+            deleted_users: List[str] = delete_school(school_name=school_name, guild_id=interaction.guild_id)
+            msg: discord.PartialInteractionMessage = await interaction.send(messages['deleting'], ephemeral=True)
+
+            await user_delete_account_info(deleted_users=deleted_users, interaction=interaction)
+            await msg.edit(messages['deleted_school'].replace('{school}', school_name))
         except SchoolNotFoundError:
             await interaction.response.send_message(f"{messages['school_not_found']}".replace("{name}", school_name),
                                                     ephemeral=True)

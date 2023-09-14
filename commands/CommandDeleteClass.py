@@ -4,6 +4,7 @@ from database.database_requests import is_name_correct, class_list, delete_class
 from utils import messages
 from autocompletion.AutoCompletions import classes_autocompletion, schools_autocompletion
 from typing import List
+from other_functions.Functions import user_delete_account_info
 
 
 class DeleteClass(commands.Cog):
@@ -30,9 +31,12 @@ class DeleteClass(commands.Cog):
             try:
                 classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
                 if class_name in classes:
-                    delete_class(school_name=school_name, class_name=class_name, guild_id=interaction.guild_id)
-                    await interaction.response.send_message(messages['deleted_class'].replace('{class}', class_name),
-                                                            ephemeral=True)
+                    deleted_users: List[str] = delete_class(school_name=school_name, class_name=class_name,
+                                                            guild_id=interaction.guild_id)
+                    msg: discord.PartialInteractionMessage = await interaction.send(messages['deleting'],
+                                                                                    ephemeral=True)
+                    await user_delete_account_info(deleted_users=deleted_users, interaction=interaction)
+                    await msg.edit(messages['deleted_class'].replace('{class}', class_name),)
                     return
                 await interaction.response.send_message(
                     f"{messages['class_not_found']}".replace("{name}", class_name), ephemeral=True)

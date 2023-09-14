@@ -9,6 +9,7 @@ from database.database_requests import (SchoolNotFoundError,
                                         )
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from utils import messages
+from other_functions.Functions import user_delete_account_info
 
 
 class DeleteVulcan(commands.Cog):
@@ -47,13 +48,15 @@ class DeleteVulcan(commands.Cog):
                                                group_name=group_name):
                         await interaction.response.send_message(messages['group_not_connected'], ephemeral=True)
                         return
-                    delete_vulcan_connection(guild_id=interaction.guild_id,
-                                             school_name=school_name,
-                                             class_name=class_name,
-                                             group_name=group_name
-                                             )
-                    await interaction.response.send_message(messages['group_disconnected'].replace(
-                        '{group}', group_name), ephemeral=True)
+                    deleted_users: List[str] = delete_vulcan_connection(guild_id=interaction.guild_id,
+                                                                        school_name=school_name,
+                                                                        class_name=class_name,
+                                                                        group_name=group_name
+                                                                        )
+                    msg: discord.PartialInteractionMessage = await interaction.send(messages['deleting'],
+                                                                                    ephemeral=True)
+                    await user_delete_account_info(deleted_users=deleted_users, interaction=interaction)
+                    await msg.edit(messages['group_disconnected'].replace('{group}', group_name))
                     return
                 await interaction.response.send_message(messages['group_not_found'.replace('{name}', group_name)],
                                                         ephemeral=True)

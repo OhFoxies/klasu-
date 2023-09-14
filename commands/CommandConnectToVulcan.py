@@ -4,7 +4,7 @@ from database.database_requests import *
 from utils import messages
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from vulcanrequests.connect import create_new_connection
-from group_functions.GroupFunctions import send_message_group_channel
+from other_functions.Functions import send_message_group_channel
 from typing import List
 
 

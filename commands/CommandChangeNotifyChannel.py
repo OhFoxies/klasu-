@@ -9,7 +9,7 @@ from database.database_requests import (change_group_channel,
                                         )
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from utils import messages
-from group_functions.GroupFunctions import send_message_group_channel
+from other_functions.Functions import send_message_group_channel
 from typing import List
 
 

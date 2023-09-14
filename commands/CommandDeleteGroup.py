@@ -4,6 +4,7 @@ from utils import messages
 from typing import List
 from database.database_requests import SchoolNotFoundError, class_list, group_list, delete_group
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
+from other_functions.Functions import user_delete_account_info
 
 
 class DeleteGroup(commands.Cog):
@@ -36,13 +37,16 @@ class DeleteGroup(commands.Cog):
                                                     class_name=class_name
                                                     )
                 if group_name in groups_list:
-                    delete_group(guild_id=interaction.guild_id,
-                                 school_name=school_name,
-                                 class_name=class_name,
-                                 group_name=group_name
-                                 )
-                    await interaction.response.send_message(messages['deleted_group'].replace("{group}", group_name),
-                                                            ephemeral=True)
+                    deleted_users: List[str] = delete_group(guild_id=interaction.guild_id,
+                                                            school_name=school_name,
+                                                            class_name=class_name,
+                                                            group_name=group_name
+                                                            )
+                    msg: discord.PartialInteractionMessage = await interaction.send(messages['deleting'],
+                                                                                    ephemeral=True)
+                    await user_delete_account_info(deleted_users=deleted_users, interaction=interaction)
+
+                    await msg.edit(messages['deleted_group'].replace("{group}", group_name))
                     return
                 await interaction.response.send_message(messages['group_not_found'.replace('{name}', group_name)],
                                                         ephemeral=True)

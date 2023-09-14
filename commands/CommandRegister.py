@@ -34,12 +34,12 @@ class Register(commands.Cog):
                 groups_list: List[str] = group_list(guild_id=interaction.guild_id, school_name=school_name,
                                                     class_name=class_name)
                 if group_name in groups_list:
-                    if not is_group_registered(guild_id=interaction.guild_id,
-                                               school_name=school_name,
-                                               class_name=class_name,
-                                               group_name=group_name):
-                        await interaction.response.send_message(messages['group_not_registered'], ephemeral=True)
-                        return
+                    # if not is_group_registered(guild_id=interaction.guild_id,
+                    #                            school_name=school_name,
+                    #                            class_name=class_name,
+                    #                            group_name=group_name):
+                    #     await interaction.response.send_message(messages['group_not_registered'], ephemeral=True)
+                    #     return
                     user_data: List[Tuple[str, ...]] = get_user_data(interaction.user.id, interaction.guild_id)
                     if get_user_data(interaction.user.id, interaction.guild_id):
                         msg: str = messages['already_registered'].replace('{class}', user_data[0][0]).replace(

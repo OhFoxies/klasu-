@@ -265,49 +265,78 @@ def clear_user_data(user_id: int, guild_id: int) -> None:
         connection.commit()
 
 
-def delete_school(school_name: str, guild_id: int) -> None:
+def delete_school(school_name: str, guild_id: int) -> List[str]:
     with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT user_id FROM `user` WHERE school_name=? AND guild_id=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id))
+        _deleted_users: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
         requests: List[str] = ["DELETE FROM `schools` WHERE school_name=? AND guild_id=?",
                                "DELETE FROM `classes` WHERE school_name=? AND guild_id=?",
                                "DELETE FROM `group` WHERE school_name=? AND guild_id=?",
                                "DELETE FROM `user` WHERE school_name=? AND guild_id=?"]
-        values: Tuple[str, ...] = (school_name, str(guild_id))
         for request in requests:
             connection.execute(request, values)
         connection.commit()
+        deleted_users: List[str] = []
+        for i in _deleted_users:
+            for j in i:
+                deleted_users.append(j)
+        return deleted_users
 
 
-def delete_class(school_name: str, guild_id: int, class_name: str) -> None:
+def delete_class(school_name: str, guild_id: int, class_name: str) -> List[str]:
     with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT user_id FROM `user` WHERE school_name=? AND guild_id=? AND class_name=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id), class_name)
+        _deleted_users: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
         requests: List[str] = ["DELETE FROM `classes` WHERE school_name=? AND guild_id=? AND class_name=?",
                                "DELETE FROM `group` WHERE school_name=? AND guild_id=? AND class_name=?",
                                "DELETE FROM `user` WHERE school_name=? AND guild_id=? AND class_name=?"]
-        values: Tuple[str, ...] = (school_name, str(guild_id), class_name)
         for request in requests:
             connection.execute(request, values)
         connection.commit()
+        deleted_users: List[str] = []
+        for i in _deleted_users:
+            for j in i:
+                deleted_users.append(j)
+        return deleted_users
 
 
-def delete_group(school_name: str, guild_id: int, class_name: str, group_name: str) -> None:
+def delete_group(school_name: str, guild_id: int, class_name: str, group_name: str) -> List[str]:
     with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT user_id FROM `user` WHERE school_name=? AND guild_id=? AND class_name=? AND group_name=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id), class_name, group_name)
+        _deleted_users: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
         requests: List[str] = ["DELETE FROM `group` WHERE school_name=? AND guild_id=? AND class_name=? "
                                "AND group_name=?",
                                "DELETE FROM `user` WHERE school_name=? AND guild_id=? AND class_name=? "
                                "AND group_name=?"]
-        values: Tuple[str, ...] = (school_name, str(guild_id), class_name, group_name)
         for request in requests:
             connection.execute(request, values)
         connection.commit()
+        deleted_users: List[str] = []
+        for i in _deleted_users:
+            for j in i:
+                deleted_users.append(j)
+        return deleted_users
 
 
-def delete_vulcan_connection(school_name: str, guild_id: int, class_name: str, group_name: str) -> None:
+def delete_vulcan_connection(school_name: str, guild_id: int, class_name: str, group_name: str) -> List[str]:
     with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT user_id FROM `user` WHERE school_name=? AND guild_id=? AND class_name=? AND group_name=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id), class_name, group_name)
+        _deleted_users: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
+        values: Tuple[str, ...] = (school_name, str(guild_id), class_name, group_name)
         requests: List[str] = ["UPDATE `group` SET keystore='not_set', account='not_set', user_vulcan='not_set', "
                                "channel_id='not_set' WHERE school_name=? AND guild_id=? AND class_name=? "
                                "AND group_name=?",
                                "DELETE FROM `user` WHERE school_name=? AND guild_id=? AND class_name=? "
                                "AND group_name=?"]
-        values: Tuple[str, ...] = (school_name, str(guild_id), class_name, group_name)
         for request in requests:
             connection.execute(request, values)
         connection.commit()
+        deleted_users: List[str] = []
+        for i in _deleted_users:
+            for j in i:
+                deleted_users.append(j)
+        return deleted_users
