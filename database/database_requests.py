@@ -340,3 +340,36 @@ def delete_vulcan_connection(school_name: str, guild_id: int, class_name: str, g
             for j in i:
                 deleted_users.append(j)
         return deleted_users
+
+
+def get_lucky_numbers(school_name: str, guild_id: int, number: int, group_name: str, class_name: str) -> List[str]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT user_id FROM `user` WHERE school_name=? AND guild_id=? " \
+                       "AND number=? AND group_name=? AND class_name=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id), str(number), group_name, class_name)
+        _lucky_users: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
+        lucky_users: List[str] = []
+        for i in _lucky_users:
+            for j in i:
+                lucky_users.append(j)
+        return lucky_users
+
+
+def get_groups_in_guild(school_name: str, guild_id: int) -> List[Tuple[str]]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT group_name, class_name FROM `group` WHERE school_name=? AND guild_id=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id))
+        classes: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
+        return classes
+
+
+def get_group_channels(school_name: str, guild_id: int) -> List[str]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT channel_id FROM `group` WHERE school_name=? AND guild_id=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id))
+        _channels: List[Tuple[str, ...]] = connection.execute(command, values).fetchall()
+        channels: List[str] = []
+        for i in _channels:
+            for j in i:
+                channels.append(j)
+        return channels

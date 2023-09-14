@@ -16,15 +16,20 @@ wyswietlanie danych uzytkownika GOTOWE
 
 obłsuga 0 na szczęśliwym numerku GOTOWE
 
+komunikat dla użytkownika kiedy jego konto jest usuwane z bazy danych. Np przy usunięcie grupy GOTOWE
 
-takie ze ujdzie:
-komunikat dla użytkownika kiedy jego konto 
-jest usuwane z bazy danych. Np przy usunięcie grupy
+codziennie o 7:00 szczęśliwy numerek + ping musi sprawdzić czy kanał istnieje bvo sie wywali GOTOWE
 
-Pierdolenie:
+
+
+Vulcan:
+co x czasu sprawdza czy są zmiany w planie jak tak to wysyla + tak samo sprawdziany
+
+
+
+Inne:
 dużyrni dodatkowy plik z danymi
-codziennie o 7:45 szczęśliwy numerek + ping musi sprawdzić czy kanał istnieje bvo sie wywali
 w poniedziałek dużyrni
-co x czasu sprawdza czy są zmiany w planie jak tak to wysyla
-tak samo sprawdziany
+
+
 

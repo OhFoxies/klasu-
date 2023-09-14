@@ -52,7 +52,7 @@
   "already_registered": "Jesteś już połączony z grupą {group} w klasie {class} w szkole {school}",
   "need_to_register": "Aby uzyskać dostęp do tej komendy musisz zarejstrować się do odpowiedniej klasy. Komenda /rejestracja",
   "no_education": "W dniu dzisiejszym nie ma szczęśliwego numerka! Jest wolne od szkoły! Hura!",
-  "lucky_number": "Dzisiejszy szczęśliwy numerek w szkole {school} to {number}",
+  "lucky_number": "Dzisiejszy szczęśliwy numerek w szkole {school} to {number}. Użytkownik: {user}",
   "connecting_to_vulcan": "Klasuś łączy się z Vulcanem aby pobrać dane, prosze czekać",
   "current_channel": "Aktualny kanał dla szkoły {school}, klasy {class} i grupy {group} to {channel}",
   "channel_set": "Ustawiono nowy kanal powiadomień",
@@ -66,5 +66,6 @@
   "group_disconnected": "Grupa {group} została odłączona od Vulcana. Wszyscy użytkownicy zostali z niej wyrejstrowani",
   "account_removed": "Twoje zarejstrowane konto w klasusiu na serwerze {server} zostało usunięte.",
   "removed_accounts": "Te konta zostały usunięte z bazy danych klasusia: \n{list}",
-  "deleting": "Usuwanie danych, czekaj..."
+  "deleting": "Usuwanie danych, czekaj...",
+  "wrong_number": "Numer z dziennika musi być większy od zera i mniejszy od 50"
 }
