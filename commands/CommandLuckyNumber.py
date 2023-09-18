@@ -34,7 +34,7 @@ class LuckyNumber(commands.Cog):
         if lucky_number == 0:
             await message.edit(messages['no_education'])
             return
-        msg: str = messages['lucky_number'].replace('{school}', user_data[0][1]).replace('{number}', str(lucky_number)).replace('{user}', '')
+        msg: str = messages['lucky_number'].replace('{school}', user_data[0][1]).replace('{number}', str(lucky_number)).replace('Użytkownik: {user}', '')
         await message.edit(msg)
 
 
