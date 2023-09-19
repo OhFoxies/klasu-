@@ -15,7 +15,7 @@ def load_config() -> Dict[str, str]:
         "activity": "Any activity",
     }
     logs_.log("Trying to read config files")
-    with open("./config/config.json", 'r+', encoding="UTF-8") as file:
+    with open("./config/config.json", 'r+', encoding="utf-8") as file:
         try:
             config_file: Dict[str, str] = json.load(file)
         except json.JSONDecodeError:
@@ -34,7 +34,7 @@ def load_config() -> Dict[str, str]:
             input()
             sys.exit()
 
-    with open("./config/config.json", 'w', encoding="UTF-8") as file:
+    with open("./config/config.json", 'w', encoding="utf-8") as file:
         json.dump(config_file, file, indent=4)
     logs_.log("Config files loaded")
     return config_file
@@ -46,7 +46,7 @@ def load_messages() -> Dict[str, str]:
     :return: dictionary with all messages
     """
     try:
-        with open("config/lang.json", encoding="UTF-8") as file:
+        with open("config/lang.json", encoding="utf-8") as file:
             messages_file: Dict[str, str] = json.load(file)
             logs_.log("Messages files found. Messages loaded.")
     except FileNotFoundError as error:

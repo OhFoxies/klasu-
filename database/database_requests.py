@@ -108,8 +108,8 @@ def create_school(guild_id: int, school_name: str) -> None:
     :param school_name: name of school given by user
     """
     with sqlite3.connect("database/database.db") as connection:
-        command: str = "INSERT INTO `schools` (`guild_id`, `school_name`) VALUES (?, ?)"
-        values: Tuple[str, ...] = (str(guild_id), school_name,)
+        command: str = "INSERT INTO `schools` (`guild_id`, `school_name`, `lucky_number`) VALUES (?, ?, ?)"
+        values: Tuple[str, ...] = (str(guild_id), school_name, "not_set")
         connection.execute(command, values)
         connection.commit()
 
@@ -355,7 +355,7 @@ def get_lucky_numbers(school_name: str, guild_id: int, number: int, group_name: 
         return lucky_users
 
 
-def get_groups_in_guild(school_name: str, guild_id: int) -> List[Tuple[str]]:
+def get_groups_in_school(school_name: str, guild_id: int) -> List[Tuple[str]]:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "SELECT group_name, class_name FROM `group` WHERE school_name=? AND guild_id=?"
         values: Tuple[str, ...] = (school_name, str(guild_id))
@@ -373,3 +373,32 @@ def get_group_channels(school_name: str, guild_id: int) -> List[str]:
             for j in i:
                 channels.append(j)
         return channels
+
+
+def save_lucky_number(guild_id: int, school_name: str, number: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "UPDATE `schools` SET `lucky_number`=? WHERE `school_name`=? AND `guild_id`=?"
+        values: Tuple[str, ...] = (str(number), school_name, str(guild_id))
+        connection.execute(command, values)
+        connection.commit()
+
+
+def get_lucky_number_in_school(guild_id: int, school_name: str) -> int | None:
+    """
+    Returns lucky number in given school. Return None if no lucky number
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT `lucky_number` FROM `schools` WHERE `school_name`=? AND `guild_id`=?"
+        values: Tuple[str, ...] = (school_name, str(guild_id))
+        lucky_number: List[Tuple[str]] = connection.execute(command, values).fetchall()
+        if lucky_number[0][0].isnumeric():
+            return int(lucky_number[0][0])
+        return None
+
+
+# noinspection SqlWithoutWhere
+def reset_lucky_number():
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "UPDATE `schools` SET `lucky_number`='not_set'"
+        connection.execute(command)
+        connection.commit()

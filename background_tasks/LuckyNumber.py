@@ -2,9 +2,9 @@ import nextcord as discord
 from database.database_requests import (is_group_registered,
                                         get_lucky_numbers,
                                         schools_list,
-                                        get_groups_in_guild,
+                                        get_groups_in_school,
                                         get_vulcan_data,
-                                        get_channel
+                                        get_channel, get_lucky_number_in_school, save_lucky_number
                                         )
 from vulcanrequests.get_lucky_number import get_lucky_number
 import json
@@ -16,15 +16,21 @@ import random
 async def lucky_number(client: discord.Client):
     for guild in client.guilds:
         for school in schools_list(guild_id=guild.id):
-            for group, class_name in get_groups_in_guild(school_name=school, guild_id=guild.id):
+            for group, class_name in get_groups_in_school(school_name=school, guild_id=guild.id):
                 if is_group_registered(guild_id=guild.id, school_name=school, class_name=class_name, group_name=group):
-                    vulcan_data: List[Tuple[str]] = get_vulcan_data(guild_id=guild.id,
-                                                                    school_name=school,
-                                                                    class_name=class_name,
-                                                                    group_name=group)
-                    keystore: dict = json.loads(vulcan_data[0][0].replace("'", '"'))
-                    account: dict = json.loads(vulcan_data[0][1].replace("'", '"'))
-                    lucky_num: int = await get_lucky_number(keystore=keystore, account=account)
+                    if not get_lucky_number_in_school(school_name=school, guild_id=guild.id):
+
+                        vulcan_data: List[Tuple[str]] = get_vulcan_data(guild_id=guild.id,
+                                                                        school_name=school,
+                                                                        class_name=class_name,
+                                                                        group_name=group)
+                        keystore: dict = json.loads(vulcan_data[0][0].replace("'", '"'))
+                        account: dict = json.loads(vulcan_data[0][1].replace("'", '"'))
+                        lucky_num: int = await get_lucky_number(keystore=keystore, account=account)
+                        save_lucky_number(guild_id=guild.id, school_name=school, number=lucky_num)
+                    else:
+                        lucky_num: int = get_lucky_number_in_school(guild_id=guild.id, school_name=school)
+
                     group_channel: str = get_channel(guild_id=guild.id,
                                                      school_name=school,
                                                      class_name=class_name,
@@ -62,7 +68,9 @@ async def lucky_number(client: discord.Client):
                                 user: discord.Member = await guild.fetch_member(int(i))
                                 mentions.append(user.mention)
                             except (discord.Forbidden, discord.HTTPException):
-                                pass
+                                await channel.send(messages['lucky_number'].replace('{school}', school).replace(
+                                    '{number}', str(lucky_num)).replace('{user}',
+                                                                        'Brak użytkownika z tym numerem w tej grupie'))
 
                         await channel.send(messages['lucky_number'].replace('{school}', school).replace(
                             '{number}', str(lucky_num)).replace('{user}', ', '.join(mentions)))

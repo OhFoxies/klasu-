@@ -11,7 +11,8 @@ def connect():
         db.execute("CREATE TABLE IF NOT EXISTS `schools` ("
                    "`ID` INTEGER, "
                    "`school_name` VARCHAR(99) NOT NULL , "
-                   "`guild_id` VARCHAR(99) NOT NULL , "
+                   "`guild_id` VARCHAR(99) NOT NULL ,"
+                   "`lucky_number` VARCHAR(99) NOT NULL,"
                    "PRIMARY KEY(`ID` AUTOINCREMENT))")
 
         db.execute("CREATE TABLE IF NOT EXISTS `classes` ("

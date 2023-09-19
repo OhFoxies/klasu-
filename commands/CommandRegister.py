@@ -56,6 +56,7 @@ class Register(commands.Cog):
                                   class_name=class_name,
                                   number=number
                                   )
+                    print(f"Się zarejstrował: {interaction.user.name}. Numer: {number} :)")
                     await interaction.response.send_message(messages['registered'], ephemeral=True)
                     return
                 await interaction.response.send_message(messages['group_not_found'.replace('{name}', group_name)],
