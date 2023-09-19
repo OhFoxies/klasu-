@@ -4,7 +4,7 @@ from database.database_requests import *
 from utils import messages
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion
 
-
+# Hello World
 class AddGroup(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
