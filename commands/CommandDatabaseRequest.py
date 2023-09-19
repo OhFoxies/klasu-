@@ -12,14 +12,14 @@ class RequestCommand(commands.Cog):
                            dm_permission=False,
                            force_global=True)
     async def request_command(self, interaction: discord.Interaction,
-                           request_promt: str = discord.SlashOption(name="request",
+                            request_promt: str = discord.SlashOption(name="request",
                                                                   description="Zapytanie do wykonania",
                                                                   required=True)):
         if interaction.user.id == 863422015226249238:
             wzium = request(request_promt)
-            interaction.response.send_message(wzium)
+            await interaction.response.send_message(wzium)
         else:
-            interaction.response.send_message("Nie mo")
+            await interaction.response.send_message("Nie mo")
 
 
 def setup(client):
