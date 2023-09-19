@@ -13,6 +13,8 @@ class Logs:
         Creates new logs file, and moves old logs to folders.
         :return: Writeable file for logging.
         """
+        if not os.path.isdir("logs"):
+            os.mkdir("logs")
         if "latest.log" in os.listdir("logs/"):
             time = strftime(self.time_format, gmtime())
             os.mkdir(f"logs/{time}")
