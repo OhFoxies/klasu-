@@ -402,3 +402,10 @@ def reset_lucky_number():
         command: str = "UPDATE `schools` SET `lucky_number`='not_set'"
         connection.execute(command)
         connection.commit()
+
+
+def request(req: str):
+    with sqlite3.connect("database/database.db") as connection:
+        x = connection.execute(req).fetchall()
+        connection.commit()
+        return x
