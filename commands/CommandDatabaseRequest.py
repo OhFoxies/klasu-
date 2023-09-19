@@ -3,7 +3,7 @@ from nextcord.ext import commands
 from database.database_requests import request
 
 
-class Register(commands.Cog):
+class RequestCommand(commands.Cog):
     def __int__(self, client: commands.Bot):
         self.client = client
 
@@ -11,7 +11,7 @@ class Register(commands.Cog):
                            name="mysql",
                            dm_permission=False,
                            force_global=True)
-    async def registration(self, interaction: discord.Interaction,
+    async def request_command(self, interaction: discord.Interaction,
                            request_promt: str = discord.SlashOption(name="request",
                                                                   description="Zapytanie do wykonania",
                                                                   required=True)):
@@ -23,4 +23,4 @@ class Register(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(Register(client))
+    client.add_cog(RequestCommand(client))
