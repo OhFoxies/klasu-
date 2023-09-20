@@ -10,12 +10,13 @@ from scheduler.asyncio import Scheduler
 import datetime as dt
 
 
+# Hello
 # noinspection PyTypeChecker
 class Klasus(commands.Bot):
     def __init__(self, *, intents_: discord.Intents):
         super().__init__(intents=intents_, activity=discord.Game(config['activity']))
         self.bg_task = self.loop.create_task(self.lucky_number_info())
-        self.bg_task = self.loop.create_task(self.lucky_number_fetch())
+        self.bg_task = self.loop.create_task(self.lucky_number_fetch())\
 
 
     async def lucky_number_fetch(self):
