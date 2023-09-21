@@ -51,7 +51,7 @@ class Profile(commands.Cog):
                         else f"Grupa użytkownika: {user_data[0][2]}")
         embed.add_field(name="Numer w dzienniku",
                         value=f"Twój numer w dzienniku: {user_data[0][3]}" if user.id == interaction.user.id
-                        else f"Numer użytkownika: {user_data[0][2]}")
+                        else f"Numer użytkownika: {user_data[0][3]}")
         embed.set_author(name=user.name, icon_url=user.avatar if user.avatar else nextcord.User.default_avatar)
         embed.set_thumbnail(url=user.avatar if user.avatar else nextcord.User.default_avatar)
         await interaction.response.send_message(embed=embed, ephemeral=True)
