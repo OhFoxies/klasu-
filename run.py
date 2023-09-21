@@ -1,23 +1,22 @@
-from utils import *
-from logs import logs_
-from database.connect_to_database import connect
-import nextcord as discord
-from nextcord.ext import commands
 import asyncio
-from background_tasks.LuckyNumber import lucky_number
-from background_tasks.SaveLuckyNumbers import save_lucky_numbers
-from scheduler.asyncio import Scheduler
 import datetime as dt
 
+import nextcord as discord
+from nextcord.ext import commands
+from scheduler.asyncio import Scheduler
 
-# Hello
+from background_tasks.LuckyNumber import lucky_number
+from background_tasks.SaveLuckyNumbers import save_lucky_numbers
+from database.connect_to_database import connect
+from utils import *
+
+
 # noinspection PyTypeChecker
 class Klasus(commands.Bot):
     def __init__(self, *, intents_: discord.Intents):
         super().__init__(intents=intents_, activity=discord.Game(config['activity']))
         self.bg_task = self.loop.create_task(self.lucky_number_info())
-        self.bg_task = self.loop.create_task(self.lucky_number_fetch())\
-
+        self.bg_task = self.loop.create_task(self.lucky_number_fetch())
 
     async def lucky_number_fetch(self):
         await self.wait_until_ready()

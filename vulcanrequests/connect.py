@@ -1,13 +1,15 @@
+from typing import Tuple
+
+from database.database_requests import save_vulcan_data
+from utils import messages
 from vulcan import Keystore, Account
+# noinspection PyProtectedMember
 from vulcan._exceptions import (ExpiredTokenException,
                                 InvalidTokenException,
                                 InvalidSymbolException,
                                 InvalidPINException,
                                 VulcanAPIException
                                 )
-from typing import Tuple
-from utils import messages
-from database.database_requests import save_vulcan_data
 
 
 async def create_new_connection(guild_id: int,

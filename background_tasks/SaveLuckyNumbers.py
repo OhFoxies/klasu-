@@ -1,4 +1,8 @@
+import json
+from typing import List, Tuple
+
 import nextcord as discord
+
 from database.database_requests import (is_group_registered,
                                         schools_list,
                                         get_groups_in_school,
@@ -7,10 +11,7 @@ from database.database_requests import (is_group_registered,
                                         get_lucky_number_in_school,
                                         reset_lucky_number
                                         )
-from typing import List, Tuple
-import json
 from vulcanrequests.get_lucky_number import get_lucky_number
-
 
 
 async def save_lucky_numbers(client: discord.Client):

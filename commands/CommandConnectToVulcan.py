@@ -1,11 +1,11 @@
 import nextcord as discord
 from nextcord.ext import commands
-from database.database_requests import *
-from utils import messages
+
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
-from vulcanrequests.connect import create_new_connection
+from database.database_requests import *
 from other_functions.Functions import send_message_group_channel
-from typing import List
+from utils import messages
+from vulcanrequests.connect import create_new_connection
 
 
 class ConnectToVulcan(commands.Cog):

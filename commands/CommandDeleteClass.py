@@ -1,10 +1,12 @@
+from typing import List
+
 import nextcord as discord
 from nextcord.ext import commands
-from database.database_requests import is_name_correct, class_list, delete_class, SchoolNotFoundError
-from utils import messages
+
 from autocompletion.AutoCompletions import classes_autocompletion, schools_autocompletion
-from typing import List
+from database.database_requests import is_name_correct, class_list, delete_class, SchoolNotFoundError
 from other_functions.Functions import user_delete_account_info
+from utils import messages
 
 
 class DeleteClass(commands.Cog):

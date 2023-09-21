@@ -1,8 +1,10 @@
+import json
+import os.path
 import sys
 from os import listdir
-from logs import logs_
-import json
 from typing import Dict
+
+from logs import logs_
 
 
 def load_config() -> Dict[str, str]:
@@ -15,6 +17,13 @@ def load_config() -> Dict[str, str]:
         "activity": "Any activity",
     }
     logs_.log("Trying to read config files")
+    if not os.path.isdir("./config/config.json"):
+        with open("./config/config.json", 'w', encoding="utf-8") as file:
+            json.dump(config_syntax, file, indent=4)
+            logs_.log(f"Config files have been updated. Please enter values in new options.")
+            print("Press ENTER to close the program")
+            input()
+
     with open("./config/config.json", 'r+', encoding="utf-8") as file:
         try:
             config_file: Dict[str, str] = json.load(file)

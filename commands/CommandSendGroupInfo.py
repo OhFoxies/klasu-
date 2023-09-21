@@ -1,14 +1,16 @@
+from typing import List
+
 import nextcord as discord
 from nextcord.ext import commands
+
+from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from database.database_requests import (class_list,
                                         group_list,
                                         is_group_registered,
                                         SchoolNotFoundError,
                                         )
-from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
-from utils import messages
 from other_functions.Functions import send_message_group_channel
-from typing import List
+from utils import messages
 
 
 class SendGroupInfo(commands.Cog):

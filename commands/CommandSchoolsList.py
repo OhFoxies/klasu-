@@ -1,8 +1,8 @@
 import nextcord as discord
 from nextcord.ext import commands
+
 from database.database_requests import *
 from utils import messages
-from typing import List
 
 
 class SchoolList(commands.Cog):

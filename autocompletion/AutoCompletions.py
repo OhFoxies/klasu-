@@ -1,6 +1,8 @@
-from database.database_requests import schools_list, class_list, group_list
 from typing import List, Union
+
 import nextcord as discord
+
+from database.database_requests import schools_list, class_list, group_list
 
 
 def schools_autocompletion(interaction: discord.Interaction, school_input: str) -> List[str]:

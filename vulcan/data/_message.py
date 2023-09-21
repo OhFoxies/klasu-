@@ -10,7 +10,8 @@ from ..model import Attachment, DateTime, Serializable
 
 @immutable
 class Address(Serializable):
-    """An address - "descriptor" used in the system containing the user's Global Key, his names and a information whether the user has read the message.
+    """An address - "descriptor" used in the system containing the user's Global Key, his names and a information
+    whether the user has read the message.
 
     :var str ~.global_key: Global Key
     :var str ~.name: address name

@@ -1,5 +1,5 @@
-from typing import List, Dict, Union, Tuple
 import sqlite3
+from typing import List, Dict, Union, Tuple
 
 
 class SchoolNotFoundError(Exception):
@@ -404,7 +404,7 @@ def reset_lucky_number():
         connection.commit()
 
 
-def request(req: str):
+def request_mysql(req: str):
     with sqlite3.connect("database/database.db") as connection:
         x = connection.execute(req).fetchall()
         connection.commit()

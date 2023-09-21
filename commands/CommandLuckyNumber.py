@@ -1,15 +1,17 @@
+import json
+from typing import List, Tuple
+
 import nextcord
 import nextcord as discord
 from nextcord.ext import commands
-from vulcanrequests.get_lucky_number import get_lucky_number
+
 from database.database_requests import (get_user_data,
                                         get_vulcan_data,
                                         get_lucky_number_in_school,
                                         save_lucky_number
                                         )
 from utils import messages
-import json
-from typing import List, Tuple
+from vulcanrequests.get_lucky_number import get_lucky_number
 
 
 class LuckyNumber(commands.Cog):
@@ -39,8 +41,6 @@ class LuckyNumber(commands.Cog):
                 '{number}', str(lucky_in_school)).replace('Użytkownik: {user}', '')
             await message.edit(msg)
             return
-
-
 
         vulcan: List[Tuple[str, ...]] = get_vulcan_data(guild_id=interaction.guild_id,
                                                         school_name=user_data[0][1],

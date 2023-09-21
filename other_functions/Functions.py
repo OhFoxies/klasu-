@@ -1,8 +1,10 @@
-import nextcord as discord
-from database.database_requests import get_channel
-from utils import messages
 import random
 from typing import List
+
+import nextcord as discord
+
+from database.database_requests import get_channel
+from utils import messages
 
 
 async def send_message_group_channel(interaction: discord.Interaction,

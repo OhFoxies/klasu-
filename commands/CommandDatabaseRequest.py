@@ -1,6 +1,7 @@
 import nextcord as discord
 from nextcord.ext import commands
-from database.database_requests import request
+
+from database.database_requests import request_mysql
 
 
 class RequestCommand(commands.Cog):
@@ -12,11 +13,11 @@ class RequestCommand(commands.Cog):
                            dm_permission=False,
                            force_global=True)
     async def request_command(self, interaction: discord.Interaction,
-                            request_promt: str = discord.SlashOption(name="request",
-                                                                  description="Zapytanie do wykonania",
-                                                                  required=True)):
+                              request_promt: str = discord.SlashOption(name="request",
+                                                                       description="Zapytanie do wykonania",
+                                                                       required=True)):
         if interaction.user.id == 863422015226249238:
-            wzium = request(request_promt)
+            wzium = request_mysql(request_promt)
             await interaction.response.send_message(wzium)
         else:
             await interaction.response.send_message("Nie mo")

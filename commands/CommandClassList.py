@@ -1,9 +1,9 @@
 import nextcord as discord
 from nextcord.ext import commands
+
+from autocompletion.AutoCompletions import schools_autocompletion
 from database.database_requests import *
 from utils import messages
-from autocompletion.AutoCompletions import schools_autocompletion
-from typing import List
 
 
 class ClassesList(commands.Cog):

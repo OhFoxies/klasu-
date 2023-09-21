@@ -19,7 +19,7 @@
   "class_not_found": "**Nie masz klasy z nazwą {name}. Możesz utworzyć klasy komendą /dodaj-klase. Pamiętaj aby wcześniej utworzyć szkołe.**",
   "group_created": "**Utworzono grupę z nazwą {name} w klasie {class} w szkole {school}**",
   "groups_limit": "**Osiągnałeś limit grup w swojej klasie (3)**",
-  "group_bad_name": "Nieprawidłowa nazwa grupy. Nazwa nie może zawierać spacji, lub znaków specjalnych. Dopuszczalne znaki: [aA-żŻ;0-9,_] i nie może mieć więcej niż 99 znaków",
+  "group_bad_name": "Nieprawidłowa nazwa grupy. Nazwa nie może zawierać spacji lub znaków specjalnych. Dopuszczalne znaki: [aA-żŻ;0-9,_] i nie może mieć więcej niż 99 znaków",
   "group_exists": "Grupa z taką nazwą już istnieje.",
   "groups_list": "Lista grup: {list}",
   "help_title": "Podłączenie klasusia do Vulcana",

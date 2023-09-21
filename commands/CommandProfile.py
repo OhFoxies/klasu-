@@ -1,9 +1,10 @@
+from datetime import datetime
+
 import nextcord
 import nextcord as discord
 from nextcord.ext import commands
+
 from database.database_requests import *
-from datetime import datetime
-from typing import List, Tuple
 
 
 class Profile(commands.Cog):

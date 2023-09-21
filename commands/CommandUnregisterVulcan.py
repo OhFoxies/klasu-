@@ -1,15 +1,17 @@
+from typing import List
+
 import nextcord as discord
 from nextcord.ext import commands
-from typing import List
+
+from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from database.database_requests import (SchoolNotFoundError,
                                         class_list,
                                         group_list,
                                         is_group_registered,
                                         delete_vulcan_connection
                                         )
-from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
-from utils import messages
 from other_functions.Functions import user_delete_account_info
+from utils import messages
 
 
 class DeleteVulcan(commands.Cog):

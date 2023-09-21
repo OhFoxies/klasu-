@@ -63,7 +63,8 @@ class VulcanData:
     ) -> Union[AsyncIterator[Message], List[int]]:
         """Yields messages received in the specified message box.
 
-        :param str message_box: the MessageBox's Global Key to get the messages from, can be obtained from get_message_boxes
+        :param str message_box: the MessageBox's Global Key to get the messages from, can be obtained
+        from get_message_boxes
         :param `datetime.datetime` last_sync: date of the last sync,
             gets only the objects updated since this date
         :param int folder: message folder: 1 - received; 2 - sent; 3 - deleted

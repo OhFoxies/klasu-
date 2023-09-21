@@ -1,6 +1,7 @@
+from typing import Any
+
 import vulcan.data
 from vulcan import Vulcan, Keystore, Account
-from typing import Any
 
 
 async def get_lucky_number(keystore, account) -> int:

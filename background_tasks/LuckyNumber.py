@@ -1,4 +1,9 @@
+import json
+import random
+from typing import List, Tuple
+
 import nextcord as discord
+
 from database.database_requests import (is_group_registered,
                                         get_lucky_numbers,
                                         schools_list,
@@ -6,11 +11,8 @@ from database.database_requests import (is_group_registered,
                                         get_vulcan_data,
                                         get_channel, get_lucky_number_in_school, save_lucky_number
                                         )
-from vulcanrequests.get_lucky_number import get_lucky_number
-import json
-from typing import List, Tuple
 from utils import messages
-import random
+from vulcanrequests.get_lucky_number import get_lucky_number
 
 
 async def lucky_number(client: discord.Client):
