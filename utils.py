@@ -50,6 +50,11 @@ def load_config() -> Dict[str, str]:
             sys.exit()
 
     password = config_file['database_password']
+    if password == 'any_password':
+        logs_.log("Set up your password!", is_error=True)
+        print("Press ENTER to close the program")
+        input()
+        sys.exit()
     if not password.startswith('hashed='):
         salt: bytes = bcrypt.gensalt()
         hashed: bytes = bcrypt.hashpw(str.encode(password), salt)
