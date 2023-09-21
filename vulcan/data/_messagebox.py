@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import AsyncIterator, List, Union
+from typing import AsyncIterator
 
 from related import IntegerField, StringField, immutable
 

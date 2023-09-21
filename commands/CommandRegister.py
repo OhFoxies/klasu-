@@ -16,7 +16,7 @@ class Register(commands.Cog):
                            force_global=True)
     async def registration(self, interaction: discord.Interaction,
                            school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                  description="Nazwa szkoly do której chodzisz",
+                                                                  description="Nazwa szkoły do której chodzisz",
                                                                   required=True),
                            class_name: str = discord.SlashOption(name="nazwa-klasy",
                                                                  description="Klasa do której chodzisz",
@@ -56,7 +56,6 @@ class Register(commands.Cog):
                                   class_name=class_name,
                                   number=number
                                   )
-                    print(f"Się zarejstrował: {interaction.user.name}. Numer: {number} :)")
                     await interaction.response.send_message(messages['registered'], ephemeral=True)
                     return
                 await interaction.response.send_message(messages['group_not_found'.replace('{name}', group_name)],

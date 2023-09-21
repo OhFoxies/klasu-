@@ -11,14 +11,13 @@ class AddClass(commands.Cog):
         self.client = client
 
     @discord.slash_command(name="dodaj-klase",
-                           description="Tworzy klasę w podanej szkole",
+                           description="Tworzy klasę w podanej szkole.",
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def add_class(self,
                         interaction: discord.Interaction,
                         school_name: str = discord.SlashOption(name="nazwa_szkoly",
-                                                               description="Nazwa szkoly ktora wczesniej utworzyles",
                                                                required=True),
                         class_name: str = discord.SlashOption(name="nazwa_klasy",
                                                               required=True)):

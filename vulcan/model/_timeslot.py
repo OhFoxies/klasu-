@@ -2,8 +2,8 @@
 
 from related import IntegerField, StringField, TimeField, immutable
 
-from .._utils import TIME_FORMAT_H_M
 from ._serializable import Serializable
+from .._utils import TIME_FORMAT_H_M
 
 
 @immutable

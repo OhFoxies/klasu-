@@ -10,7 +10,7 @@ class SchoolList(commands.Cog):
         self.client = client
 
     @discord.slash_command(name="lista-szkoły",
-                           description="Wyswietla listę szkół",
+                           description="Wyświetla listę szkół.",
                            dm_permission=False,
                            force_global=True)
     async def schools(self, interaction: discord.Interaction):

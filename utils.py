@@ -2,7 +2,9 @@ import json
 import os.path
 import sys
 from os import listdir
-from typing import Dict
+from typing import Dict, List
+
+import bcrypt
 
 from logs import logs_
 
@@ -15,15 +17,17 @@ def load_config() -> Dict[str, str]:
     config_syntax: Dict[str, str] = {
         "token": "Your bot token here ",
         "activity": "Any activity",
+        "database_password": "any_password",
+        "owner_id": "id_of_your_account"
     }
     logs_.log("Trying to read config files")
-    if not os.path.isdir("./config/config.json"):
+    if not os.path.isfile("./config/config.json"):
         with open("./config/config.json", 'w', encoding="utf-8") as file:
             json.dump(config_syntax, file, indent=4)
             logs_.log(f"Config files have been updated. Please enter values in new options.")
             print("Press ENTER to close the program")
             input()
-
+            sys.exit()
     with open("./config/config.json", 'r+', encoding="utf-8") as file:
         try:
             config_file: Dict[str, str] = json.load(file)
@@ -33,18 +37,26 @@ def load_config() -> Dict[str, str]:
             sys.exit()
         if list(config_syntax.keys()) != list(config_file.keys()):
             logs_.log("Updating config files...")
-            missing = [i for i in list(config_syntax.keys()) if i not in list(config_file.keys())]
+            missing: List[str] = [i for i in list(config_syntax.keys()) if i not in list(config_file.keys())]
 
             for i in missing:
                 config_file[i] = config_syntax[i]
                 logs_.log(f"Please check out new value in config.json file: {i}")
+            with open("./config/config.json", 'w', encoding="utf-8") as file_:
+                json.dump(config_file, file_, indent=4)
             logs_.log(f"Config files have been updated. Please enter values in new options.")
             print("Press ENTER to close the program")
             input()
             sys.exit()
 
+    password = config_file['database_password']
+    if not password.startswith('hashed='):
+        salt: bytes = bcrypt.gensalt()
+        hashed: bytes = bcrypt.hashpw(str.encode(password), salt)
+        config_file['database_password'] = 'hashed=' + str(hashed)[2:-1]
     with open("./config/config.json", 'w', encoding="utf-8") as file:
         json.dump(config_file, file, indent=4)
+
     logs_.log("Config files loaded")
     return config_file
 
@@ -78,7 +90,7 @@ def load_cogs(client) -> None:
             logs_.log(f"Loaded event extension {event[:-3]}")
 
     for command in listdir(f'./commands'):
-        if command.endswith('.py') and command.startswith('Command'):
+        if command.endswith('.py'):
             client.load_extension(f'commands.{command[:-3]}')
             logs_.log(f"Loaded command extension {command[:-3]}")
 

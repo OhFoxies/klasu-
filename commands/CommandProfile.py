@@ -16,7 +16,7 @@ class Profile(commands.Cog):
                            dm_permission=False,
                            force_global=True)
     async def me(self, interaction: discord.Interaction,
-                 user: discord.Member = nextcord.SlashOption(name="uzytkownik", required=False)):
+                 user: discord.Member = nextcord.SlashOption(name="użytkownik", required=False)):
         if not user:
             user: discord.Member = interaction.user
         user_data: List[Tuple[str, ...]] = get_user_data(guild_id=interaction.guild_id, user_id=user.id)
@@ -25,8 +25,8 @@ class Profile(commands.Cog):
                                                  title=user.name,
                                                  colour=discord.Colour.dark_blue(),
                                                  timestamp=datetime.now(),
-                                                 description="Ten użytkownik nie jest zarejstrowany do żadnej klasy! "
-                                                             "Zachęć go aby to zrobił"
+                                                 description="Ten użytkownik nie jest zarejestrowany do żadnej klasy! "
+                                                             "Zachęć go, aby to zrobił."
                                                  )
             embed.set_author(name=user.name, icon_url=user.avatar if user.avatar else nextcord.User.default_avatar)
             embed.set_thumbnail(url=user.avatar if user.avatar else nextcord.User.default_avatar)

@@ -3,12 +3,12 @@ from typing import List
 
 from related import ChildField, SequenceField, StringField, immutable
 
-from .._endpoints import STUDENT_LIST
 from ._period import Period
 from ._pupil import Pupil
 from ._school import School
 from ._serializable import Serializable
 from ._unit import Unit
+from .._endpoints import STUDENT_LIST
 
 
 @immutable

@@ -4,8 +4,8 @@ from datetime import date, datetime, time
 
 from related import DateField, IntegerField, TimeField, immutable
 
-from .._endpoints import DATA_INTERNAL_TIME
 from ._serializable import Serializable
+from .._endpoints import DATA_INTERNAL_TIME
 
 
 @immutable

@@ -11,10 +11,12 @@ from database.database_requests import (is_group_registered,
                                         get_lucky_number_in_school,
                                         reset_lucky_number
                                         )
+from utils import logs_
 from vulcanrequests.get_lucky_number import get_lucky_number
 
 
 async def save_lucky_numbers(client: discord.Client):
+    logs_.log("Clearing lucky numbers and saving new ones in every guild")
     reset_lucky_number()
     for guild in client.guilds:
         for school in schools_list(guild_id=guild.id):

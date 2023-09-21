@@ -17,21 +17,17 @@ class SendGroupInfo(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Wysyła wiadomość na kanał grupy",
+    @discord.slash_command(description="Wysyła wiadomość na kanał grupy.",
                            name="group-info",
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def change_channel(self, interaction: discord.Interaction,
                              school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                    description="Nazwa szkoly ktora wczesniej "
-                                                                                "utworzyles",
                                                                     required=True),
                              class_name: str = discord.SlashOption(name="nazwa-klasy",
-                                                                   description="Nazwa klasy ktora wczesniej utworzyles",
                                                                    required=True),
                              group_name: str = discord.SlashOption(name="nazwa-grupy",
-                                                                   description="Nazwa grupy ktora wczesniej utworzyles",
                                                                    required=True),
                              message: str = discord.SlashOption(name="wiadomość",
                                                                 required=True)):
