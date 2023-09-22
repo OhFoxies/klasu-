@@ -1,5 +1,6 @@
 import asyncio
 import datetime as dt
+from asyncio import Task
 
 import nextcord as discord
 from scheduler.asyncio import Scheduler
@@ -14,30 +15,21 @@ from utils import logs_
 class BackGroundTasks:
     def __init__(self, client: discord.Client):
         self.client: discord.Client = client
-        self.bg_task = self.client.loop.create_task(self.lucky_number_info())
-        self.bg_task = self.client.loop.create_task(self.lucky_number_fetch())
-        self.bg_task = self.client.loop.create_task(self.check_lucky_numbers())
+        self.bg_task: Task[None] = self.client.loop.create_task(self.background_tasks())
 
-    async def lucky_number_fetch(self):
-        logs_.log("Background task lucky number fetcher has been loaded")
+    async def background_tasks(self):
         await self.client.wait_until_ready()
         schedule: Scheduler = Scheduler()
+
         schedule.daily(dt.time(hour=0, minute=5), save_lucky_numbers, args=(self.client, ))
-        while not self.client.is_closed():
-            await asyncio.sleep(1)
+        logs_.log("Background task lucky number fetcher has been loaded")
 
-    async def lucky_number_info(self):
-        logs_.log("Background task lucky number sender has been loaded")
-        await self.client.wait_until_ready()
-        schedule = Scheduler()
         schedule.daily(dt.time(hour=7, minute=0), lucky_number, args=(self.client,))
-        while not self.client.is_closed():
-            await asyncio.sleep(1)
+        logs_.log("Background task lucky number sender has been loaded")
 
-    async def check_lucky_numbers(self):
-        logs_.log("Background task check lucky numbers has been loaded")
-        await self.client.wait_until_ready()
-        schedule = Scheduler()
         schedule.cyclic(dt.timedelta(hours=1), check_lucky_number, args=(self.client,))
+        logs_.log("Background task check lucky numbers has been loaded")
+
+        # Looping background task
         while not self.client.is_closed():
             await asyncio.sleep(1)

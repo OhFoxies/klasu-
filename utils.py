@@ -17,6 +17,7 @@ def load_config() -> Dict[str, str]:
     config_syntax: Dict[str, str] = {
         "token": "Your bot token here ",
         "activity": "Any activity",
+        "//comment": "Your password will be hashed after running the bot",
         "database_password": "any_password",
         "owner_id": "id_of_your_account"
     }
@@ -39,18 +40,19 @@ def load_config() -> Dict[str, str]:
             logs_.log("Updating config files...")
             missing: List[str] = [i for i in list(config_syntax.keys()) if i not in list(config_file.keys())]
 
-            for i in missing:
-                config_file[i] = config_syntax[i]
-                logs_.log(f"Please check out new value in config.json file: {i}")
-            with open("./config/config.json", 'w', encoding="utf-8") as file_:
-                json.dump(config_file, file_, indent=4)
-            logs_.log(f"Config files have been updated. Please enter values in new options.")
-            print("Press ENTER to close the program")
-            input()
-            sys.exit()
+            if missing:
+                for i in missing:
+                    config_file[i] = config_syntax[i]
+                    logs_.log(f"Please check out new value in config.json file: {i}")
+                with open("./config/config.json", 'w', encoding="utf-8") as file_:
+                    json.dump(config_file, file_, indent=4)
+                logs_.log(f"Config files have been updated. Please enter values in new options.")
+                print("Press ENTER to close the program")
+                input()
+                sys.exit()
 
     password = config_file['database_password']
-    if password == 'any_password':
+    if password == 'any_password' or password == "":
         logs_.log("Set up your password!", is_error=True)
         print("Press ENTER to close the program")
         input()

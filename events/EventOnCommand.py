@@ -13,7 +13,10 @@ class CommandLogger(commands.Cog):
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: discord.Interaction):
-        logs_.log(f"{interaction.user} used command /{interaction.application_command.name}")
+        try:
+            logs_.log(f"{interaction.user} used command /{interaction.application_command.name}")
+        except AttributeError:
+            pass
 
 
 def setup(client):

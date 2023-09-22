@@ -1,7 +1,6 @@
 import json
 from typing import List, Tuple
 
-import nextcord
 import nextcord as discord
 from nextcord.ext import commands
 
@@ -28,7 +27,7 @@ class LuckyNumber(commands.Cog):
             await interaction.response.send_message(messages['need_to_register'], ephemeral=True)
             return
 
-        message: nextcord.PartialInteractionMessage = await interaction.send(messages['connecting_to_vulcan'])
+        message: discord.PartialInteractionMessage = await interaction.send(messages['connecting_to_vulcan'])
         lucky_in_school: int | None = get_lucky_number_in_school(school_name=user_data[0][1],
                                                                  guild_id=interaction.guild_id
                                                                  )
