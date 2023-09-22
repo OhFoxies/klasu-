@@ -1,6 +1,7 @@
 {
     "token": "Your bot token here ",
     "activity": "Any activity",
+    "//comment": "Your password will be hashed after running the bot",
     "database_password": "any_password",
     "owner_id": "id_of_your_account"
 }
