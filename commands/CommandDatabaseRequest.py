@@ -28,6 +28,7 @@ class RequestCommand(commands.Cog):
                 request_return = request_mysql(queri)
                 await interaction.response.send_message(messages['done_request'].replace(
                     '{answer}', str(request_return)), ephemeral=True)
+                return
             await interaction.response.send_message(messages['wrong_pass'], ephemeral=True)
         except ValueError:
             await interaction.response.send_message(messages['config_error'], ephemeral=True)
