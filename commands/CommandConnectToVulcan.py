@@ -12,38 +12,28 @@ class ConnectToVulcan(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name="vulcan-podlacz",
-                           description="podłącza daną grupę do Vulcana",
+    @discord.slash_command(name=messages['vulcan_connect_command'],
+                           description=messages['vulcan_connect_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def connect_to_vulcan(self, interaction: discord.Interaction,
-                                school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                       description="Nazwa szkoly ktora wczesniej "
-                                                                                   "utworzyles",
+                                school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                        required=True),
-                                class_name: str = discord.SlashOption(name="nazwa-klasy",
-                                                                      description="Nazwa klasy ktora wczesniej "
-                                                                                  "utworzyles",
+                                class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                                       required=True),
-                                group_name: str = discord.SlashOption(name="nazwa-grupy",
-                                                                      description="Nazwa grupy ktora wczesniej "
-                                                                                  "utworzyles",
+                                group_name: str = discord.SlashOption(name=messages['value_group_name'],
                                                                       required=True),
-                                token: str = discord.SlashOption(name="token",
-                                                                 description="Token z Twojego dziennika Vulcan. "
-                                                                             "Więcej info komenda vulcanrequests-pomoc",
+                                token: str = discord.SlashOption(name=messages['value_token'],
+                                                                 description=messages['value_token_desc'],
                                                                  required=True),
-                                pin: str = discord.SlashOption(name="pin",
-                                                               description="Pin z Twojego dziennika Vulcan. Więcej "
-                                                                           "info komenda vulcanrequests-pomoc",
+                                pin: str = discord.SlashOption(name=messages['value_pin'],
+                                                               description=messages['value_pin_desc'],
                                                                required=True),
-                                symbol: str = discord.SlashOption(name="symbol",
-                                                                  description="Symbol z Twojego dziennika Vulcan. "
-                                                                              "Więcej info komenda "
-                                                                              "vulcanrequests-pomoc",
+                                symbol: str = discord.SlashOption(name=messages['value_symbol'],
+                                                                  description=messages['value_symbol_desc'],
                                                                   required=True),
-                                channel: discord.TextChannel = discord.SlashOption(name="kanał")):
+                                channel: discord.TextChannel = discord.SlashOption(name=messages['value_channel'])):
         try:
             classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if class_name in classes:

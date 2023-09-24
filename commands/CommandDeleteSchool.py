@@ -13,13 +13,12 @@ class DeleteSchool(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Usuwa wybraną szkołę",
-                           name="usun-szkole",
+    @discord.slash_command(name=messages['delete_school_command'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def delete_school(self, interaction: discord.Interaction,
-                            school_name: str = discord.SlashOption(name="nazwa-szkoły",
+                            school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                    required=True)):
 
         if not is_name_correct(name=school_name):

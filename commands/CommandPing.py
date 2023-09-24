@@ -8,8 +8,7 @@ class Ping(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name="ping",
-                           description="Ping klasusia",
+    @discord.slash_command(name=messages['ping_command'],
                            dm_permission=False,
                            force_global=True)
     async def ping(self, interaction: discord.Interaction):

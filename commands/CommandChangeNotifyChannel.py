@@ -19,28 +19,19 @@ class ChangeChannel(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Zmienia kanał powiadomień dla danej grupy",
-                           name="grupa-kanal",
+    @discord.slash_command(name=messages['channel_command'],
+                           description=messages['channel_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def change_channel(self, interaction: discord.Interaction,
-                             school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                    description="Nazwa szkoly ktora wczesniej "
-                                                                                "utworzyles",
+                             school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                     required=True),
-                             class_name: str = discord.SlashOption(name="nazwa-klasy",
-                                                                   description="Nazwa klasy ktora wczesniej utworzyles",
+                             class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                                    required=True),
-                             group_name: str = discord.SlashOption(name="nazwa-grupy",
-                                                                   description="Nazwa grupy ktora wczesniej utworzyles",
+                             group_name: str = discord.SlashOption(name=messages['value_group_name'],
                                                                    required=True),
-                             channel: discord.TextChannel = discord.SlashOption(name="kanal",
-                                                                                description="Kanał powiadomień dla "
-                                                                                            "danej "
-                                                                                            "grupy zostanie ustawiony "
-                                                                                            "na "
-                                                                                            "podany",
+                             channel: discord.TextChannel = discord.SlashOption(name=messages['value_channel'],
                                                                                 required=False)):
 
         try:

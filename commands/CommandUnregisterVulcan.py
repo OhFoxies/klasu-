@@ -18,17 +18,16 @@ class DeleteVulcan(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Usuwa połączenie vulcana z wybraną klasą.",
-                           name="vulcan-odlacz",
+    @discord.slash_command(name=messages['command_vulcan_disconnect'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def delete_vulcan(self, interaction: discord.Interaction,
-                            school_name: str = discord.SlashOption(name="nazwa-szkoly",
+                            school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                    required=True),
-                            class_name: str = discord.SlashOption(name="nazwa-klasy",
+                            class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                                   required=True),
-                            group_name: str = discord.SlashOption(name="nazwa-grupy",
+                            group_name: str = discord.SlashOption(name=messages['value_group_name'],
                                                                   required=True)):
         try:
             classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)

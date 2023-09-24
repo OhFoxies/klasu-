@@ -10,19 +10,17 @@ class AddGroup(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name="dodaj-grupe",
-                           description="Tworzy grupe w podanej klasie w szkole",
+    @discord.slash_command(name=messages['add_group_command'],
+                           description=messages['add_group_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def add_group(self, interaction: discord.Interaction,
-                        school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                               description="Nazwa szkoly ktora wczesniej utworzyles",
+                        school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                required=True),
-                        class_name: str = discord.SlashOption(name="nazwa-klasy",
-                                                              description="Nazwa klasy ktora wczesniej utworzyles",
+                        class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                               required=True),
-                        group_name: str = discord.SlashOption(name="nazwa-grupy",
+                        group_name: str = discord.SlashOption(name=messages['value_group_name'],
                                                               required=True)):
         if is_group_limit_reached(guild_id=interaction.guild_id, class_name=class_name, school_name=school_name):
             await interaction.response.send_message(f"{messages['groups_limit']}", ephemeral=True)

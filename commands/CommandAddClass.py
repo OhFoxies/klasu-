@@ -10,16 +10,16 @@ class AddClass(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name="dodaj-klase",
-                           description="Tworzy klasę w podanej szkole.",
+    @discord.slash_command(name=messages['add_class_command'],
+                           description=messages['add_class_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def add_class(self,
                         interaction: discord.Interaction,
-                        school_name: str = discord.SlashOption(name="nazwa_szkoly",
+                        school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                required=True),
-                        class_name: str = discord.SlashOption(name="nazwa_klasy",
+                        class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                               required=True)):
         if not is_name_correct(name=school_name):
             await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)

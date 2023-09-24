@@ -9,8 +9,7 @@ class SchoolList(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name="lista-szkoły",
-                           description="Wyświetla listę szkół.",
+    @discord.slash_command(name=messages['school_list_command'],
                            dm_permission=False,
                            force_global=True)
     async def schools(self, interaction: discord.Interaction):

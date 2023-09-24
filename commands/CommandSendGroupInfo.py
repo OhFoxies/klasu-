@@ -23,13 +23,13 @@ class SendGroupInfo(commands.Cog):
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def change_channel(self, interaction: discord.Interaction,
-                             school_name: str = discord.SlashOption(name="nazwa-szkoly",
+                             school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                     required=True),
-                             class_name: str = discord.SlashOption(name="nazwa-klasy",
+                             class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                                    required=True),
-                             group_name: str = discord.SlashOption(name="nazwa-grupy",
+                             group_name: str = discord.SlashOption(name=messages['value_group_name'],
                                                                    required=True),
-                             message: str = discord.SlashOption(name="wiadomość",
+                             message: str = discord.SlashOption(name=messages['message_value'],
                                                                 required=True)):
 
         try:

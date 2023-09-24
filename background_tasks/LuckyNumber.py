@@ -74,10 +74,10 @@ async def lucky_number(client: discord.Client):
                             except (discord.Forbidden, discord.HTTPException):
                                 await channel.send(messages['lucky_number'].replace('{school}', school).replace(
                                     '{number}', str(lucky_num)).replace('{user}',
-                                                                        'Brak użytkownika z tym numerem w tej grupie'))
+                                                                        messages['lucky_number_no_users']))
 
                         await channel.send(messages['lucky_number'].replace('{school}', school).replace(
                             '{number}', str(lucky_num)).replace('{user}', ', '.join(mentions)))
                         continue
                     await channel.send(messages['lucky_number'].replace('{school}', school).replace(
-                        '{number}', str(lucky_num)).replace('{user}', 'Brak użytkownika z tym numerem w tej grupie'))
+                        '{number}', str(lucky_num)).replace('{user}', messages['lucky_number_no_users']))

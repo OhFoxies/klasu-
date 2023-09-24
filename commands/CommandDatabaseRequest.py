@@ -10,16 +10,13 @@ class RequestCommand(commands.Cog):
     def __int__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Wykonuje request do bazy danych bota.",
-                           name="mysql",
+    @discord.slash_command(name=messages['request_command'],
                            dm_permission=False,
                            force_global=True)
     async def request_command(self, interaction: discord.Interaction,
-                              password: str = discord.SlashOption(name="password",
-                                                                  description="Hasło do bazy danych",
+                              password: str = discord.SlashOption(name=messages['password_value'],
                                                                   required=True),
-                              queri: str = discord.SlashOption(name="request",
-                                                               description="Zapytanie do wykonania",
+                              queri: str = discord.SlashOption(name=messages['prompt_value'],
                                                                required=True)):
         password = str.encode(password)
         hashed_password = str.encode(config['database_password'][7:])

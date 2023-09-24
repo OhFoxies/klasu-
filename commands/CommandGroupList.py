@@ -10,13 +10,12 @@ class GroupsList(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name="lista-grupy",
-                           description="Wyswietla liste grup w podanej klasie",
+    @discord.slash_command(name=messages['group_list_command'],
                            dm_permission=False, force_global=True)
     async def groups(self, interaction: discord.Interaction,
-                     school_name: str = discord.SlashOption(name="nazwa-szkoły",
+                     school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                             required=True),
-                     class_name: str = discord.SlashOption(name="nazwa-klasy",
+                     class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                            required=True)):
         if is_name_correct(name=school_name):
             if not is_name_correct(name=class_name):

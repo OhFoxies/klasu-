@@ -10,12 +10,12 @@ class ClassesList(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name="lista-klasy",
-                           description="Wyswietla liste klas w podanej szkole",
+    @discord.slash_command(name=messages['class_list_command'],
+                           description=messages['class_list_desc'],
                            dm_permission=False,
                            force_global=True)
     async def classes(self, interaction: discord.Interaction,
-                      school_name: str = discord.SlashOption(name="nazwa-szkoły",
+                      school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                              required=True)):
         if not is_name_correct(name=school_name):
             await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)

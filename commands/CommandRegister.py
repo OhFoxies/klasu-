@@ -10,22 +10,17 @@ class Register(commands.Cog):
     def __int__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Rejestracja do bazy danych klasusia",
-                           name="rejestracja",
+    @discord.slash_command(name=messages['register_command'],
                            dm_permission=False,
                            force_global=True)
     async def registration(self, interaction: discord.Interaction,
-                           school_name: str = discord.SlashOption(name="nazwa-szkoly",
-                                                                  description="Nazwa szkoły do której chodzisz",
+                           school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                   required=True),
-                           class_name: str = discord.SlashOption(name="nazwa-klasy",
-                                                                 description="Klasa do której chodzisz",
+                           class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                                  required=True),
-                           group_name: str = discord.SlashOption(name="nazwa-grupy",
-                                                                 description="Twoja grupa w klasie",
+                           group_name: str = discord.SlashOption(name=messages['value_group_name'],
                                                                  required=True),
-                           number: int = discord.SlashOption(name="numer-w-dzienniku",
-                                                             description="Twój numer z dziennika",
+                           number: int = discord.SlashOption(name=messages['number_value'],
                                                              required=True)):
 
         try:

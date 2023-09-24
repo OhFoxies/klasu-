@@ -17,8 +17,7 @@ class LuckyNumber(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(description="Szczęśliwy numerek dzisiaj",
-                           name="szczesliwy-numer",
+    @discord.slash_command(name=messages['lucky_number_command'],
                            dm_permission=False,
                            force_global=True)
     async def lucky_number(self, interaction: discord.Interaction):
