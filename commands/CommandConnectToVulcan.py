@@ -15,8 +15,7 @@ class ConnectToVulcan(commands.Cog):
     @discord.slash_command(name=messages['vulcan_connect_command'],
                            description=messages['vulcan_connect_desc'],
                            dm_permission=False,
-                           force_global=True,
-                           default_member_permissions=discord.Permissions(permissions=8))
+                           force_global=True)
     async def connect_to_vulcan(self, interaction: discord.Interaction,
                                 school_name: str = discord.SlashOption(name=messages['value_school_name'],
                                                                        required=True),
