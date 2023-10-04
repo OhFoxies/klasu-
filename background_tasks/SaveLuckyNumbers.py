@@ -31,5 +31,4 @@ async def save_lucky_numbers(client: discord.Client):
                         keystore: dict = json.loads(vulcan_data[0][0].replace("'", '"'))
                         account: dict = json.loads(vulcan_data[0][1].replace("'", '"'))
                         lucky_num: int = await get_lucky_number(keystore=keystore, account=account)
-                        print(lucky_num)
                         save_lucky_number(school_name=school, guild_id=guild.id, number=lucky_num)
