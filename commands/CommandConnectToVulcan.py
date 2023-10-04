@@ -15,13 +15,17 @@ class ConnectToVulcan(commands.Cog):
     @discord.slash_command(name=messages['vulcan_connect_command'],
                            description=messages['vulcan_connect_desc'],
                            dm_permission=False,
-                           force_global=True)
+                           force_global=True,
+                           default_member_permissions=discord.Permissions(permissions=8))
     async def connect_to_vulcan(self, interaction: discord.Interaction,
                                 school_name: str = discord.SlashOption(name=messages['value_school_name'],
+                                                                       description=messages['school_value_desc'],
                                                                        required=True),
                                 class_name: str = discord.SlashOption(name=messages['value_class_name'],
+                                                                      description=messages['class_value_desc'],
                                                                       required=True),
                                 group_name: str = discord.SlashOption(name=messages['value_group_name'],
+                                                                      description=messages['group_value_desc'],
                                                                       required=True),
                                 token: str = discord.SlashOption(name=messages['value_token'],
                                                                  description=messages['value_token_desc'],

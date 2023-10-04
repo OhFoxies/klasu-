@@ -10,6 +10,7 @@ class SchoolList(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['school_list_command'],
+                           description=messages['school_list_desc'],
                            dm_permission=False,
                            force_global=True)
     async def schools(self, interaction: discord.Interaction):

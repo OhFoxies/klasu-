@@ -28,8 +28,7 @@ class LuckyNumber(commands.Cog):
 
         message: discord.PartialInteractionMessage = await interaction.send(messages['connecting_to_vulcan'])
         lucky_in_school: int | None = get_lucky_number_in_school(school_name=user_data[0][1],
-                                                                 guild_id=interaction.guild_id
-                                                                 )
+                                                                 guild_id=interaction.guild_id)
         if lucky_in_school:
             if lucky_in_school == 0:
                 await message.edit(messages['no_education'])

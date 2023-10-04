@@ -16,6 +16,7 @@ class ClassesList(commands.Cog):
                            force_global=True)
     async def classes(self, interaction: discord.Interaction,
                       school_name: str = discord.SlashOption(name=messages['value_school_name'],
+                                                             description=messages['school_value_desc'],
                                                              required=True)):
         if not is_name_correct(name=school_name):
             await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)

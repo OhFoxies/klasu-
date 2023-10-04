@@ -12,6 +12,7 @@ class Unregister(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['unregister_command'],
+                           description=messages['unregister_command_desc'],
                            dm_permission=False,
                            force_global=True)
     async def unregister(self, interaction: discord.Interaction):

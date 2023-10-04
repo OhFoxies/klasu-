@@ -16,7 +16,9 @@ class Profile(commands.Cog):
                            dm_permission=False,
                            force_global=True)
     async def profile(self, interaction: discord.Interaction,
-                      user: discord.Member = nextcord.SlashOption(name=messages['user_value'], required=False)):
+                      user: discord.Member = nextcord.SlashOption(name=messages['user_value'],
+                                                                  description=messages['user_value_desc'],
+                                                                  required=False)):
         if not user:
             user: discord.Member = interaction.user
         user_data: List[Tuple[str, ...]] = get_user_data(guild_id=interaction.guild_id, user_id=user.id)

@@ -19,15 +19,19 @@ class DeleteVulcan(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['command_vulcan_disconnect'],
+                           description=messages['command_vulcan_disconnect_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
     async def delete_vulcan(self, interaction: discord.Interaction,
                             school_name: str = discord.SlashOption(name=messages['value_school_name'],
+                                                                   description=messages['school_new_value_desc'],
                                                                    required=True),
                             class_name: str = discord.SlashOption(name=messages['value_class_name'],
+                                                                  description=messages['class_new_value_desc'],
                                                                   required=True),
                             group_name: str = discord.SlashOption(name=messages['value_group_name'],
+                                                                  description=messages['group_new_value_desc'],
                                                                   required=True)):
         try:
             classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)

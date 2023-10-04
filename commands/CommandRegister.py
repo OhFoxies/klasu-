@@ -11,10 +11,12 @@ class Register(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['register_command'],
+                           description=messages['register_desc'],
                            dm_permission=False,
                            force_global=True)
     async def registration(self, interaction: discord.Interaction,
                            school_name: str = discord.SlashOption(name=messages['value_school_name'],
+                                                                  description=messages['school_new_value_desc'],
                                                                   required=True),
                            class_name: str = discord.SlashOption(name=messages['value_class_name'],
                                                                  required=True),
