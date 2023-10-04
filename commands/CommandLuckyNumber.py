@@ -18,6 +18,7 @@ class LuckyNumber(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['lucky_number_command'],
+                           description=messages['lucky_number_desc'],
                            dm_permission=False,
                            force_global=True)
     async def lucky_number(self, interaction: discord.Interaction):

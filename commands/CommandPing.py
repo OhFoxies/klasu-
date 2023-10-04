@@ -9,6 +9,7 @@ class Ping(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['ping_command'],
+                           description=messages['ping_desc'],
                            dm_permission=False,
                            force_global=True)
     async def ping(self, interaction: discord.Interaction):

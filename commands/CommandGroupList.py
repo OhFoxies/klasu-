@@ -11,11 +11,14 @@ class GroupsList(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['group_list_command'],
+                           description=messages['group_list_desc'],
                            dm_permission=False, force_global=True)
     async def groups(self, interaction: discord.Interaction,
                      school_name: str = discord.SlashOption(name=messages['value_school_name'],
+                                                            description=messages['school_value_desc'],
                                                             required=True),
                      class_name: str = discord.SlashOption(name=messages['value_class_name'],
+                                                           description=messages['class_value_desc'],
                                                            required=True)):
         if is_name_correct(name=school_name):
             if not is_name_correct(name=class_name):

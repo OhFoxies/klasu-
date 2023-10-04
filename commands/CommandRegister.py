@@ -19,10 +19,13 @@ class Register(commands.Cog):
                                                                   description=messages['school_new_value_desc'],
                                                                   required=True),
                            class_name: str = discord.SlashOption(name=messages['value_class_name'],
+                                                                 description=messages['class_new_value_desc'],
                                                                  required=True),
                            group_name: str = discord.SlashOption(name=messages['value_group_name'],
+                                                                 description=messages['group_new_value_desc'],
                                                                  required=True),
                            number: int = discord.SlashOption(name=messages['number_value'],
+                                                             description=messages['number_value_desc'],
                                                              required=True)):
 
         try:

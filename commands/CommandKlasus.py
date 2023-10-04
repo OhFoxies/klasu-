@@ -9,6 +9,7 @@ class KlasusCommand(commands.Cog):
         self.client = client
 
     @nextcord.slash_command(name=messages['command_klasus'],
+                            description=messages['klasus_desc'],
                             dm_permission=False,
                             force_global=True)
     async def klasus_command(self, interaction: nextcord.Interaction):

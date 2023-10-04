@@ -18,8 +18,10 @@ class AddClass(commands.Cog):
     async def add_class(self,
                         interaction: discord.Interaction,
                         school_name: str = discord.SlashOption(name=messages['value_school_name'],
+                                                               description=messages['school_value_desc'],
                                                                required=True),
                         class_name: str = discord.SlashOption(name=messages['value_class_name'],
+                                                              description=messages['class_new_value_desc'],
                                                               required=True)):
         if not is_name_correct(name=school_name):
             await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)

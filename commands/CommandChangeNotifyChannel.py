@@ -26,13 +26,19 @@ class ChangeChannel(commands.Cog):
                            default_member_permissions=discord.Permissions(permissions=8))
     async def change_channel(self, interaction: discord.Interaction,
                              school_name: str = discord.SlashOption(name=messages['value_school_name'],
+                                                                    description=messages['school_value_desc'],
                                                                     required=True),
                              class_name: str = discord.SlashOption(name=messages['value_class_name'],
+                                                                   description=messages['class_value_desc'],
                                                                    required=True),
                              group_name: str = discord.SlashOption(name=messages['value_group_name'],
+                                                                   description=messages['group_value_desc'],
                                                                    required=True),
-                             channel: discord.TextChannel = discord.SlashOption(name=messages['value_channel'],
-                                                                                required=False)):
+                             channel: discord.TextChannel = discord.SlashOption(
+                                 name=messages['value_channel'],
+                                 description=messages['channel_value_desc'],
+                                 required=False)
+                             ):
 
         try:
             classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)

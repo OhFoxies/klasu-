@@ -13,6 +13,7 @@ class Profile(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['profile_command'],
+                           description=messages['profile_desc'],
                            dm_permission=False,
                            force_global=True)
     async def profile(self, interaction: discord.Interaction,

@@ -11,12 +11,15 @@ class RequestCommand(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['request_command'],
+                           description=messages['request_desc'],
                            dm_permission=False,
                            force_global=True)
     async def request_command(self, interaction: discord.Interaction,
                               password: str = discord.SlashOption(name=messages['password_value'],
+                                                                  description=messages['password_value_desc'],
                                                                   required=True),
                               queri: str = discord.SlashOption(name=messages['prompt_value'],
+                                                               description=messages['prompt_value_desc'],
                                                                required=True)):
         password = str.encode(password)
         hashed_password = str.encode(config['database_password'][7:])

@@ -36,7 +36,10 @@ class ConnectToVulcan(commands.Cog):
                                 symbol: str = discord.SlashOption(name=messages['value_symbol'],
                                                                   description=messages['value_symbol_desc'],
                                                                   required=True),
-                                channel: discord.TextChannel = discord.SlashOption(name=messages['value_channel'])):
+                                channel: discord.TextChannel = discord.SlashOption(name=messages['value_channel'],
+                                                                                   description=messages['channel_value_desc'],
+                                                                                   required=True)):
+
         try:
             classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
             if class_name in classes:

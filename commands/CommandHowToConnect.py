@@ -9,6 +9,7 @@ class HowToConnect(commands.Cog):
         self.client = client
 
     @discord.slash_command(name=messages['vulcan_help_command'],
+                           description=messages['vulcan_help_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
