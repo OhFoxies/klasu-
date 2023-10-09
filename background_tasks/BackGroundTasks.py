@@ -27,7 +27,7 @@ class BackGroundTasks:
         schedule.daily(dt.time(hour=7, minute=0), lucky_number, args=(self.client,))
         logs_.log("Background task lucky number sender has been loaded")
 
-        schedule.cyclic(dt.timedelta(hours=1), check_lucky_number, args=(self.client,))
+        schedule.hourly(dt.time(minute=0, second=0), check_lucky_number, args=(self.client,))
         logs_.log("Background task check lucky numbers has been loaded")
 
         # Looping background task
