@@ -78,7 +78,7 @@ class ExamsCommand(commands.Cog):
                                                  )
 
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar if interaction.user.avatar
-            else discord.User.default_avatar)
+                             else discord.User.default_avatar)
             embed.add_field(name=messages['date'].replace('{type}', type_formatted),
                             value=i.deadline.date,
                             inline=False

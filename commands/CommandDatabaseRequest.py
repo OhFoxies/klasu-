@@ -13,7 +13,8 @@ class RequestCommand(commands.Cog):
     @discord.slash_command(name=messages['request_command'],
                            description=messages['request_desc'],
                            dm_permission=False,
-                           force_global=True)
+                           force_global=True,
+                           default_member_permissions=discord.Permissions(permissions=8))
     async def request_command(self, interaction: discord.Interaction,
                               password: str = discord.SlashOption(name=messages['password_value'],
                                                                   description=messages['password_value_desc'],
