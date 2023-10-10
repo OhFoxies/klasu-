@@ -31,7 +31,7 @@ class BackGroundTasks:
         schedule.hourly(dt.time(minute=0, second=0), check_lucky_number, args=(self.client,))
         logs_.log("Background task check lucky numbers has been loaded")
 
-        schedule.cyclic(dt.timedelta(minutes=0.5), exams, args=(self.client, ))
+        schedule.cyclic(dt.timedelta(minutes=5), exams, args=(self.client, ))
         logs_.log("Background task exams fetcher has been loaded")
         # Looping background task
         while not self.client.is_closed():
