@@ -86,7 +86,8 @@ class ExamsCommand(commands.Cog):
                             )
             if i.deadline.date == datetime.date.today():
                 embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
-                                value=messages['exam_today'].replace('{type}', i.type),
+                                value="Ten sprawdzian jest dzisiaj!"
+                                if i.type.lower() == "sprawdzian" else "Ta kartkówka jest dzisiaj!",
                                 inline=False)
             else:
                 embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),

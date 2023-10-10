@@ -103,14 +103,19 @@ async def exams(client: discord.Client):
                                         value=exam.deadline.date,
                                         inline=False
                                         )
-                        embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
-                                        value=f"{exam.deadline.date - datetime.date.today()}".replace(
-                                            ", 0:00:00", "")
-                                        .replace("days", "dni")
-                                        .replace("day", "dzień")
-                                        .replace("month", "miesiąc")
-                                        .replace("months", "miesięcy"),
-                                        inline=False)
+                        if exam.deadline.date == datetime.date.today():
+                            embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
+                                            value="Ten sprawdzian jest dzisiaj!"
+                                            if exam.type.lower() == "sprawdzian" else "Ta kartkówka jest dzisiaj!",
+                                            inline=False)
+                        else:
+                            embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
+                                            value=f"{exam.deadline.date - datetime.date.today()}".replace(", 0:00:00", "")
+                                            .replace("days", "dni")
+                                            .replace("day", "dzień")
+                                            .replace("month", "miesiąc")
+                                            .replace("months", "miesięcy"),
+                                            inline=False)
                         embed.add_field(name=messages['teacher'],
                                         value=f"{exam.creator.name} {exam.creator.surname}",
                                         inline=False)
