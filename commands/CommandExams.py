@@ -1,6 +1,5 @@
 import datetime
 import json
-from typing import List
 
 import nextcord as discord
 from nextcord.ext import commands
@@ -11,7 +10,7 @@ from vulcan.data import Exam
 from vulcanrequests.get_exams import get_exams_klasus
 
 
-class Test(commands.Cog):
+class ExamsCommand(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
@@ -20,7 +19,7 @@ class Test(commands.Cog):
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
-    async def test(self, interaction: discord.Interaction,
+    async def exams(self, interaction: discord.Interaction,
                    date_to: str = discord.SlashOption(name=messages['date_value'],
                                                       description=messages['date_value_desc'],
                                                       required=False)):
@@ -85,20 +84,24 @@ class Test(commands.Cog):
                             value=i.deadline.date,
                             inline=False
                             )
-            embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
-                            value=f"{i.deadline.date - datetime.date.today()}".replace(", 0:00:00", "")
-                            .replace("days", "dni")
-                            .replace("day", "dzień")
-                            .replace("month", "miesiąc")
-                            .replace("months", "miesięcy"),
-                            inline=False)
+            if i.deadline.date == datetime.date.today():
+                embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
+                                value=messages['exam_today'].replace('{type}', i.type),
+                                inline=False)
+            else:
+                embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
+                                value=f"{i.deadline.date - datetime.date.today()}".replace(", 0:00:00", "")
+                                .replace("days", "dni")
+                                .replace("day", "dzień")
+                                .replace("month", "miesiąc")
+                                .replace("months", "miesięcy"),
+                                inline=False)
             embed.add_field(name=messages['teacher'], value=f"{i.creator.name} {i.creator.surname}", inline=False)
             embed.add_field(name=messages['type'], value=i.type, inline=False)
             embed.add_field(name=messages['description'], value=i.topic, inline=False)
             embeds.append(embed)
-
         await msg.edit(embeds=embeds, content="")
 
 
 def setup(client):
-    client.add_cog(Test(client))
+    client.add_cog(ExamsCommand(client))

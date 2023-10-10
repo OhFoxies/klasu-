@@ -42,5 +42,6 @@ def connect():
                    "`group_name` VARCHAR(999) NOT NULL , "
                    "`guild_id` VARCHAR(99) NOT NULL, "
                    "`number` VARCHAR(99) NOT NULL, "
+                   "`exams_ids` TEXT,"
                    "PRIMARY KEY(`ID` AUTOINCREMENT))")
         db.commit()

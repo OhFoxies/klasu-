@@ -487,3 +487,39 @@ def request_mysql(req: str) -> Optional[List[Optional[Tuple[str]]]]:
         x = connection.execute(req).fetchall()
         connection.commit()
         return x
+
+
+def get_last_exams_ids(school_name: str, guild_id: int, group_name: str, class_name: str) -> List[str] | None:
+    """
+
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = ("SELECT `exams_ids` FROM `group` WHERE school_name=? AND guild_id=? "
+                        "AND group_name=? AND class_name=?")
+        values: Tuple[str, ...] = (school_name, str(guild_id), group_name, class_name)
+        last_exam = connection.execute(command, values).fetchall()
+        if not last_exam[0][0]:
+            return None
+
+        last_exam[0][0].split(", ")
+        return last_exam[0][0].split(", ")
+
+
+def save_last_exams_ids(new_exams: List[str], school_name: str, guild_id: int, group_name: str, class_name: str) -> None:
+    """
+
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        last_exams: List[str] | None = get_last_exams_ids(school_name=school_name,
+                                                          class_name=class_name,
+                                                          group_name=group_name,
+                                                          guild_id=guild_id
+                                                          )
+        if last_exams:
+            new_exams += last_exams
+        exams_updated: str = ", ".join(new_exams)
+        command: str = ("UPDATE `group` SET exams_ids=? WHERE school_name=? AND guild_id=? "
+                        "AND group_name=? AND class_name=?")
+        values: Tuple[str, str, str, str, str] = (exams_updated, school_name, str(guild_id), group_name, class_name)
+        connection.execute(command, values)
+        connection.commit()

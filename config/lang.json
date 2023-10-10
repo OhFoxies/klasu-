@@ -170,5 +170,7 @@
   "date": "Data {type}:",
   "exams_command": "sprawdziany",
   "exams_command_desc": "Wyświetla sprawdziany i kartkówki dla twojej grupy.",
-  "no_exams": "Nie znalazłem sprawdzianów w tej dacie lub nie ma żadnych wpisanych sprawdzianów."
+  "no_exams": "Nie znalazłem sprawdzianów w tej dacie lub nie ma żadnych wpisanych sprawdzianów.",
+  "exam_today": "Ten/ta {type} jest dzisiaj!",
+  "new_exam": "Nowy/a {type}! :("
 }

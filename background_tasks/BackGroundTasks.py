@@ -8,6 +8,7 @@ from scheduler.asyncio import Scheduler
 from background_tasks.CheckLuckyNumbers import check_lucky_number
 from background_tasks.LuckyNumber import lucky_number
 from background_tasks.SaveLuckyNumbers import save_lucky_numbers
+from background_tasks.Exams import exams
 from utils import logs_
 
 
@@ -30,6 +31,8 @@ class BackGroundTasks:
         schedule.hourly(dt.time(minute=0, second=0), check_lucky_number, args=(self.client,))
         logs_.log("Background task check lucky numbers has been loaded")
 
+        schedule.cyclic(dt.timedelta(minutes=0.5), exams, args=(self.client, ))
+        logs_.log("Background task exams fetcher has been loaded")
         # Looping background task
         while not self.client.is_closed():
             await asyncio.sleep(1)
