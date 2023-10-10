@@ -44,4 +44,5 @@ def connect():
                    "`number` VARCHAR(99) NOT NULL, "
                    "`exams_ids` TEXT,"
                    "PRIMARY KEY(`ID` AUTOINCREMENT))")
+        db.execute("ALTER TABLE user DROP COLUMN `exams_ids`")
         db.commit()

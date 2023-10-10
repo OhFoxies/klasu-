@@ -17,12 +17,11 @@ class ExamsCommand(commands.Cog):
     @discord.slash_command(name=messages['exams_command'],
                            description=messages['exams_command_desc'],
                            dm_permission=False,
-                           force_global=True,
-                           default_member_permissions=discord.Permissions(permissions=8))
+                           force_global=True)
     async def exams(self, interaction: discord.Interaction,
-                   date_to: str = discord.SlashOption(name=messages['date_value'],
-                                                      description=messages['date_value_desc'],
-                                                      required=False)):
+                    date_to: str = discord.SlashOption(name=messages['date_value'],
+                                                       description=messages['date_value_desc'],
+                                                       required=False)):
 
         user_data: List[Tuple[str, ...]] = get_user_data(user_id=interaction.user.id, guild_id=interaction.guild_id)
         if not user_data:
@@ -79,7 +78,7 @@ class ExamsCommand(commands.Cog):
                                                  )
 
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar if interaction.user.avatar
-                             else discord.User.default_avatar)
+            else discord.User.default_avatar)
             embed.add_field(name=messages['date'].replace('{type}', type_formatted),
                             value=i.deadline.date,
                             inline=False
