@@ -37,7 +37,8 @@ class ConnectToVulcan(commands.Cog):
                                                                   description=messages['value_symbol_desc'],
                                                                   required=True),
                                 channel: discord.TextChannel = discord.SlashOption(name=messages['value_channel'],
-                                                                                   description=messages['channel_value_desc'],
+                                                                                   description=messages[
+                                                                                       'channel_value_desc'],
                                                                                    required=True)):
 
         try:

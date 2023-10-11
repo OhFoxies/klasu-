@@ -1,5 +1,4 @@
-import json
-from typing import List, Tuple
+from typing import Dict
 
 import nextcord as discord
 
@@ -20,14 +19,14 @@ async def check_lucky_number(client: discord.Client):
         for school in schools_list(guild_id=guild.id):
             for group, class_name in get_groups_in_school(school_name=school, guild_id=guild.id):
                 if is_group_registered(guild_id=guild.id, school_name=school, class_name=class_name, group_name=group):
-                    vulcan_data: List[Tuple[str]] = get_vulcan_data(guild_id=guild.id,
-                                                                    school_name=school,
-                                                                    class_name=class_name,
-                                                                    group_name=group
-                                                                    )
-                    keystore: dict = json.loads(vulcan_data[0][0].replace("'", '"'))
-                    account: dict = json.loads(vulcan_data[0][1].replace("'", '"'))
-                    lucky_num: int = await get_lucky_number(keystore=keystore, account=account)
+                    vulcan_data: Dict[str, Dict[str, str]] = get_vulcan_data(guild_id=guild.id,
+                                                                             school_name=school,
+                                                                             class_name=class_name,
+                                                                             group_name=group
+                                                                             )
+                    lucky_num: int = await get_lucky_number(keystore=vulcan_data["keystore"],
+                                                            account=vulcan_data["account"]
+                                                            )
                     if get_lucky_number_in_school(guild_id=guild.id, school_name=school) != lucky_num:
                         save_lucky_number(school_name=school, guild_id=guild.id, number=lucky_num)
                         logs_.log(f"Lucky number for school {school} was incorrect. Correcting. (Guild id: {guild.id}")

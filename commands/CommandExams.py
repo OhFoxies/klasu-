@@ -1,5 +1,4 @@
 import datetime
-import json
 
 import nextcord as discord
 from nextcord.ext import commands
@@ -8,6 +7,7 @@ from database.database_requests import *
 from utils import messages
 from vulcan.data import Exam
 from vulcanrequests.get_exams import get_exams_klasus
+from embeds.embeds import exam_embed
 
 
 class ExamsCommand(commands.Cog):
@@ -28,13 +28,11 @@ class ExamsCommand(commands.Cog):
             await interaction.response.send_message(messages['need_to_register'], ephemeral=True)
             return
 
-        vulcan: List[Tuple[str, ...]] = get_vulcan_data(guild_id=interaction.guild_id,
-                                                        school_name=user_data[0][1],
-                                                        class_name=user_data[0][0],
-                                                        group_name=user_data[0][2]
-                                                        )
-        keystore: dict = json.loads(vulcan[0][0].replace("'", '"'))
-        account: dict = json.loads(vulcan[0][1].replace("'", '"'))
+        vulcan_data: Dict[str, Dict[str, str]] = get_vulcan_data(guild_id=interaction.guild_id,
+                                                                 school_name=user_data[0][1],
+                                                                 class_name=user_data[0][0],
+                                                                 group_name=user_data[0][2]
+                                                                 )
 
         msg: discord.PartialInteractionMessage = await interaction.send(messages["getting_exams"], ephemeral=True)
         date = None
@@ -58,47 +56,16 @@ class ExamsCommand(commands.Cog):
                 await msg.edit(messages['date_format_not_correct'])
                 return
 
-        exams: List[Exam | None] = await get_exams_klasus(keystore=keystore, account=account,
+        exams: List[Exam | None] = await get_exams_klasus(keystore=vulcan_data["keystore"],
+                                                          account=vulcan_data["account"],
                                                           date_to=date if date_to else None)
         embeds: List[discord.Embed] = []
         if not exams:
             await msg.edit(messages['no_exams'])
-        for i in exams:
-            match i.type.lower():
-                case "sprawdzian":
-                    type_formatted: str = messages['exam_form2']
-                case "kartkówka":
-                    type_formatted: str = messages['short_test_form2']
-                case _:
-                    type_formatted: str = "testu"
-            embed: discord.Embed = discord.Embed(type="rich", title=i.subject.name,
-                                                 color=discord.Color.green() if i.type == "Kartkówka" else
-                                                 discord.Color.red(),
-                                                 timestamp=datetime.datetime.now()
-                                                 )
-
+        for exam in exams:
+            embed: discord.Embed = exam_embed(exam)
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar if interaction.user.avatar
                              else discord.User.default_avatar)
-            embed.add_field(name=messages['date'].replace('{type}', type_formatted),
-                            value=i.deadline.date,
-                            inline=False
-                            )
-            if i.deadline.date == datetime.date.today():
-                embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
-                                value="Ten sprawdzian jest dzisiaj!"
-                                if i.type.lower() == "sprawdzian" else "Ta kartkówka jest dzisiaj!",
-                                inline=False)
-            else:
-                embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
-                                value=f"{i.deadline.date - datetime.date.today()}".replace(", 0:00:00", "")
-                                .replace("days", "dni")
-                                .replace("day", "dzień")
-                                .replace("month", "miesiąc")
-                                .replace("months", "miesięcy"),
-                                inline=False)
-            embed.add_field(name=messages['teacher'], value=f"{i.creator.name} {i.creator.surname}", inline=False)
-            embed.add_field(name=messages['type'], value=i.type, inline=False)
-            embed.add_field(name=messages['description'], value=i.topic, inline=False)
             embeds.append(embed)
         await msg.edit(embeds=embeds, content="")
 

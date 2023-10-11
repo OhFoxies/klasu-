@@ -1,6 +1,5 @@
-import json
 import random
-from typing import List, Tuple
+from typing import List, Dict
 
 import nextcord as discord
 
@@ -23,14 +22,13 @@ async def lucky_number(client: discord.Client):
             for group, class_name in get_groups_in_school(school_name=school, guild_id=guild.id):
                 if is_group_registered(guild_id=guild.id, school_name=school, class_name=class_name, group_name=group):
                     if not get_lucky_number_in_school(school_name=school, guild_id=guild.id):
-
-                        vulcan_data: List[Tuple[str]] = get_vulcan_data(guild_id=guild.id,
-                                                                        school_name=school,
-                                                                        class_name=class_name,
-                                                                        group_name=group)
-                        keystore: dict = json.loads(vulcan_data[0][0].replace("'", '"'))
-                        account: dict = json.loads(vulcan_data[0][1].replace("'", '"'))
-                        lucky_num: int = await get_lucky_number(keystore=keystore, account=account)
+                        vulcan_data: Dict[str, Dict[str, str]] = get_vulcan_data(guild_id=guild.id,
+                                                                                 school_name=school,
+                                                                                 class_name=class_name,
+                                                                                 group_name=group
+                                                                                 )
+                        lucky_num: int = await get_lucky_number(keystore=vulcan_data["keystore"],
+                                                                account=vulcan_data["account"])
                         save_lucky_number(guild_id=guild.id, school_name=school, number=lucky_num)
                     else:
                         lucky_num: int = get_lucky_number_in_school(guild_id=guild.id, school_name=school)

@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from typing import List, Dict, Union, Tuple, Optional
 
@@ -241,7 +242,7 @@ def get_user_data(user_id: int, guild_id: int) -> List[Tuple[str]]:
         return data
 
 
-def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str) -> List[Tuple[str]]:
+def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str) -> Dict[str, Dict[str, str]]:
     """
     Gets keystore and account data to send requests to vulcan.
     :returns: keystore and account. Every item as tuple inside list.
@@ -251,7 +252,9 @@ def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name
                        "AND group_name=? AND guild_id=?"
         values: Tuple[str, ...] = (school_name, class_name, group_name, str(guild_id))
         vulcan_data: List[Tuple[str]] = connection.execute(command, values).fetchall()
-        return vulcan_data
+        keystore: dict = json.loads(vulcan_data[0][0].replace("'", '"'))
+        account: dict = json.loads(vulcan_data[0][1].replace("'", '"'))
+        return {"keystore": keystore, "account": account}
 
 
 def is_group_registered(guild_id: int, school_name: str, class_name: str, group_name: str) -> bool:
@@ -505,7 +508,11 @@ def get_last_exams_ids(school_name: str, guild_id: int, group_name: str, class_n
         return last_exam[0][0].split(", ")
 
 
-def save_last_exams_ids(new_exams: List[str], school_name: str, guild_id: int, group_name: str, class_name: str) -> None:
+def save_last_exams_ids(new_exams: List[str],
+                        school_name: str,
+                        guild_id: int,
+                        group_name: str,
+                        class_name: str) -> None:
     """
 
     """
