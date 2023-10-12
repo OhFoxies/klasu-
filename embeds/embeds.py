@@ -5,8 +5,6 @@ import datetime
 
 
 def exam_embed(exam: Exam) -> discord.Embed:
-    print(exam.deadline.datetime)
-    print(exam.date_created.datetime)
     print(exam.date_created)
     match exam.type.lower():
         case "sprawdzian":
