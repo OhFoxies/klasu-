@@ -4,10 +4,10 @@ import nextcord as discord
 from nextcord.ext import commands
 
 from database.database_requests import *
+from embeds.embeds import exam_embed
 from utils import messages
 from vulcan.data import Exam
 from vulcanrequests.get_exams import get_exams_klasus
-from embeds.embeds import exam_embed
 
 
 class ExamsCommand(commands.Cog):
@@ -23,16 +23,16 @@ class ExamsCommand(commands.Cog):
                                                        description=messages['date_value_desc'],
                                                        required=False)):
 
-        user_data: List[Tuple[str, ...]] = get_user_data(user_id=interaction.user.id, guild_id=interaction.guild_id)
+        user_data: User | None = get_user_data(user_id=interaction.user.id, guild_id=interaction.guild_id)
         if not user_data:
             await interaction.response.send_message(messages['need_to_register'], ephemeral=True)
             return
 
-        vulcan_data: Dict[str, Dict[str, str]] = get_vulcan_data(guild_id=interaction.guild_id,
-                                                                 school_name=user_data[0][1],
-                                                                 class_name=user_data[0][0],
-                                                                 group_name=user_data[0][2]
-                                                                 )
+        vulcan_data: VulcanData = get_vulcan_data(guild_id=interaction.guild_id,
+                                                  school_name=user_data.school_name,
+                                                  class_name=user_data.class_name,
+                                                  group_name=user_data.group_name
+                                                  )
 
         msg: discord.PartialInteractionMessage = await interaction.send(messages["getting_exams"], ephemeral=True)
         date = None
@@ -56,8 +56,8 @@ class ExamsCommand(commands.Cog):
                 await msg.edit(messages['date_format_not_correct'])
                 return
 
-        exams: List[Exam | None] = await get_exams_klasus(keystore=vulcan_data["keystore"],
-                                                          account=vulcan_data["account"],
+        exams: List[Exam | None] = await get_exams_klasus(keystore=vulcan_data.keystore,
+                                                          account=vulcan_data.account,
                                                           date_to=date if date_to else None)
         embeds: List[discord.Embed] = []
         if not exams:

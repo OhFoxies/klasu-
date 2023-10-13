@@ -1,6 +1,21 @@
 import json
 import sqlite3
 from typing import List, Dict, Union, Tuple, Optional
+from dataclasses import dataclass
+
+
+@dataclass
+class User:
+    school_name: str
+    class_name: str
+    group_name: str
+    number: int
+
+
+@dataclass
+class VulcanData:
+    keystore: dict
+    account: dict
 
 
 class SchoolNotFoundError(Exception):
@@ -229,20 +244,26 @@ def register_user(guild_id: int, user_id: int, school_name: str, class_name: str
         connection.commit()
 
 
-def get_user_data(user_id: int, guild_id: int) -> List[Tuple[str]]:
+def get_user_data(user_id: int, guild_id: int) -> User | None:
     """
     Gets user data by user's ID and guild ID.
-    :returns: class_name, school_name, group_name, user's e-grade book number. Every item as tuple inside list.
+    :returns: User class. None if user is not registered
 
     """
     with sqlite3.connect("database/database.db") as connection:
         command: str = "SELECT class_name, school_name, group_name, number FROM `user` WHERE user_id=? AND guild_id=?"
         values: Tuple[str, str] = (str(user_id), str(guild_id))
-        data: List[Tuple[str]] = connection.execute(command, values).fetchall()
-        return data
+        user_data: List[Tuple[str]] = connection.execute(command, values).fetchall()
+        if not user_data:
+            return None
+        return User(school_name=user_data[0][1],
+                    class_name=user_data[0][0],
+                    group_name=user_data[0][2],
+                    number=int(user_data[0][3])
+                    )
 
 
-def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str) -> Dict[str, Dict[str, str]]:
+def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name: str) -> VulcanData:
     """
     Gets keystore and account data to send requests to vulcan.
     :returns: keystore and account. Every item as tuple inside list.
@@ -254,7 +275,7 @@ def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name
         vulcan_data: List[Tuple[str]] = connection.execute(command, values).fetchall()
         keystore: dict = json.loads(vulcan_data[0][0].replace("'", '"'))
         account: dict = json.loads(vulcan_data[0][1].replace("'", '"'))
-        return {"keystore": keystore, "account": account}
+        return VulcanData(keystore=keystore, account=account)
 
 
 def is_group_registered(guild_id: int, school_name: str, class_name: str, group_name: str) -> bool:
@@ -530,3 +551,6 @@ def save_last_exams_ids(new_exams: List[str],
         values: Tuple[str, str, str, str, str] = (exams_updated, school_name, str(guild_id), group_name, class_name)
         connection.execute(command, values)
         connection.commit()
+
+
+

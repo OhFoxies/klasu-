@@ -22,7 +22,7 @@ class Profile(commands.Cog):
                                                                   required=False)):
         if not user:
             user: discord.Member = interaction.user
-        user_data: List[Tuple[str, ...]] = get_user_data(guild_id=interaction.guild_id, user_id=user.id)
+        user_data: User | None = get_user_data(guild_id=interaction.guild_id, user_id=user.id)
         if not user_data:
             embed: discord.Embed = discord.Embed(type="rich",
                                                  title=user.name,
@@ -42,21 +42,25 @@ class Profile(commands.Cog):
                                              timestamp=datetime.now()
                                              )
         embed.add_field(name=messages['school'],
-                        value=messages['your_school'].replace('{school}', user_data[0][1])
+                        value=messages['your_school'].replace('{school}', user_data.school_name)
                         if user.id == interaction.user.id
-                        else messages['user_school'].replace('{school}', user_data[0][1]))
+                        else messages['user_school'].replace('{school}', user_data.school_name),
+                        inline=False)
         embed.add_field(name=messages['class'],
-                        value=messages['your_class'].replace('{class}', user_data[0][0])
+                        value=messages['your_class'].replace('{class}', user_data.class_name)
                         if user.id == interaction.user.id
-                        else messages['user_class'].replace('{class}', user_data[0][0]))
+                        else messages['user_class'].replace('{class}', user_data.class_name),
+                        inline=False)
         embed.add_field(name=messages['group'],
-                        value=messages['your_group'].replace('{group}', user_data[0][2])
+                        value=messages['your_group'].replace('{group}', user_data.group_name)
                         if user.id == interaction.user.id
-                        else messages['user_group'].replace('{group}', user_data[0][2]))
+                        else messages['user_group'].replace('{group}', user_data.group_name),
+                        inline=False)
         embed.add_field(name=messages['number'],
-                        value=messages['your_number'].replace('{number}', user_data[0][3])
+                        value=messages['your_number'].replace('{number}', str(user_data.number))
                         if user.id == interaction.user.id
-                        else messages['user_number'].replace('{number}', user_data[0][3]))
+                        else messages['user_number'].replace('{number}', str(user_data.number)),
+                        inline=False)
         embed.set_author(name=user.name, icon_url=user.avatar if user.avatar else nextcord.User.default_avatar)
         embed.set_thumbnail(url=user.avatar if user.avatar else nextcord.User.default_avatar)
         await interaction.response.send_message(embed=embed, ephemeral=True)

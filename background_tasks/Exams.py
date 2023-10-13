@@ -1,5 +1,4 @@
-from other_functions.group_channel import get_group_channel
-from typing import List, Dict
+from typing import List
 
 import nextcord as discord
 
@@ -9,12 +8,14 @@ from database.database_requests import (is_group_registered,
                                         get_vulcan_data,
                                         get_channel,
                                         get_last_exams_ids,
-                                        save_last_exams_ids
+                                        save_last_exams_ids,
+                                        VulcanData
                                         )
+from embeds.embeds import exam_embed
+from other_functions.group_channel import get_group_channel
 from utils import logs_
 from vulcan.data import Exam
 from vulcanrequests.get_new_exams import get_new_exams
-from embeds.embeds import exam_embed
 
 
 async def exams(client: discord.Client):
@@ -23,13 +24,13 @@ async def exams(client: discord.Client):
         for school in schools_list(guild_id=guild.id):
             for group, class_name in get_groups_in_school(school_name=school, guild_id=guild.id):
                 if is_group_registered(guild_id=guild.id, school_name=school, class_name=class_name, group_name=group):
-                    vulcan_data: Dict[str, Dict[str, str]] = get_vulcan_data(guild_id=guild.id,
-                                                                             school_name=school,
-                                                                             class_name=class_name,
-                                                                             group_name=group
-                                                                             )
-                    exams_list: List[Exam | None] = await get_new_exams(keystore=vulcan_data["keystore"],
-                                                                        account=vulcan_data["account"]
+                    vulcan_data: VulcanData = get_vulcan_data(guild_id=guild.id,
+                                                              school_name=school,
+                                                              class_name=class_name,
+                                                              group_name=group
+                                                              )
+                    exams_list: List[Exam | None] = await get_new_exams(keystore=vulcan_data.keystore,
+                                                                        account=vulcan_data.account
                                                                         )
                     last_exams_ids: List[str] | None = get_last_exams_ids(guild_id=guild.id,
                                                                           school_name=school,

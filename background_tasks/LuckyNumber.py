@@ -1,5 +1,5 @@
 import random
-from typing import List, Dict
+from typing import List
 
 import nextcord as discord
 
@@ -8,7 +8,10 @@ from database.database_requests import (is_group_registered,
                                         schools_list,
                                         get_groups_in_school,
                                         get_vulcan_data,
-                                        get_channel, get_lucky_number_in_school, save_lucky_number
+                                        get_channel,
+                                        get_lucky_number_in_school,
+                                        save_lucky_number,
+                                        VulcanData
                                         )
 from utils import logs_
 from utils import messages
@@ -22,13 +25,13 @@ async def lucky_number(client: discord.Client):
             for group, class_name in get_groups_in_school(school_name=school, guild_id=guild.id):
                 if is_group_registered(guild_id=guild.id, school_name=school, class_name=class_name, group_name=group):
                     if not get_lucky_number_in_school(school_name=school, guild_id=guild.id):
-                        vulcan_data: Dict[str, Dict[str, str]] = get_vulcan_data(guild_id=guild.id,
-                                                                                 school_name=school,
-                                                                                 class_name=class_name,
-                                                                                 group_name=group
-                                                                                 )
-                        lucky_num: int = await get_lucky_number(keystore=vulcan_data["keystore"],
-                                                                account=vulcan_data["account"])
+                        vulcan_data: VulcanData = get_vulcan_data(guild_id=guild.id,
+                                                                  school_name=school,
+                                                                  class_name=class_name,
+                                                                  group_name=group
+                                                                  )
+                        lucky_num: int = await get_lucky_number(keystore=vulcan_data.keystore,
+                                                                account=vulcan_data.account)
                         save_lucky_number(guild_id=guild.id, school_name=school, number=lucky_num)
                     else:
                         lucky_num: int = get_lucky_number_in_school(guild_id=guild.id, school_name=school)

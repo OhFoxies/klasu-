@@ -43,10 +43,10 @@ class Register(commands.Cog):
                     if number <= 0 or number > 50:
                         await interaction.response.send_message(messages['wrong_number'])
                         return
-                    user_data: List[Tuple[str, ...]] = get_user_data(interaction.user.id, interaction.guild_id)
+                    user_data: User | None = get_user_data(interaction.user.id, interaction.guild_id)
                     if get_user_data(interaction.user.id, interaction.guild_id):
-                        msg: str = messages['already_registered'].replace('{class}', user_data[0][0]).replace(
-                            '{school}', user_data[0][1]).replace('{group}', user_data[0][2])
+                        msg: str = messages['already_registered'].replace('{class}', user_data.class_name).replace(
+                            '{school}', user_data.school_name).replace('{group}', user_data.group_name)
                         await interaction.response.send_message(msg, ephemeral=True)
                         return
                     register_user(guild_id=interaction.guild_id,

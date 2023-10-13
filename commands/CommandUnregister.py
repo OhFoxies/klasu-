@@ -1,9 +1,7 @@
-from typing import List, Tuple
-
 import nextcord as discord
 from nextcord.ext import commands
 
-from database.database_requests import get_user_data, clear_user_data
+from database.database_requests import get_user_data, clear_user_data, User
 from utils import messages
 
 
@@ -17,7 +15,7 @@ class Unregister(commands.Cog):
                            force_global=True)
     async def unregister(self, interaction: discord.Interaction):
         user: discord.Member = interaction.user
-        user_data: List[Tuple[str, ...]] = get_user_data(guild_id=interaction.guild_id, user_id=user.id)
+        user_data: User | None = get_user_data(guild_id=interaction.guild_id, user_id=user.id)
         if not user_data:
             await interaction.response.send_message(messages['need_to_register_to_unregister'], ephemeral=True)
             return
