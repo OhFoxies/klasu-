@@ -280,7 +280,7 @@ def get_vulcan_data(guild_id: int, school_name: str, class_name: str, group_name
 
 def is_group_registered(guild_id: int, school_name: str, class_name: str, group_name: str) -> bool:
     """
-    Checks if group with given name is connected to vulcan.
+    Checks if group  with given name is connected to vulcan.
     :returns: True if group is connected, False if not.
     """
     with sqlite3.connect("database/database.db") as connection:
@@ -553,4 +553,35 @@ def save_last_exams_ids(new_exams: List[str],
         connection.commit()
 
 
+@dataclass
+class Group:
+    school_name: str
+    class_name: str
+    group_name: str
+    keystore: dict
+    account: dict
+    guild_id: int
+    channel_id: int
+    id: int
 
+
+def get_all_groups() -> List[Optional[Group]]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = ("SELECT school_name, class_name, group_name, keystore, account, guild_id, channel_id, ID "
+                        "FROM 'group' WHERE keystore != 'not_set' AND account != 'not_set'")
+        response = connection.execute(command).fetchall()
+        groups = []
+        for i in response:
+            keystore: dict = json.loads(i[3].replace("'", '"'))
+            account: dict = json.loads(i[4].replace("'", '"'))
+            group: Group = Group(school_name=i[0],
+                                 class_name=i[1],
+                                 group_name=i[2],
+                                 keystore=keystore,
+                                 account=account,
+                                 guild_id=int(i[5]),
+                                 channel_id=int(i[6]),
+                                 id=i[7]
+                                 )
+            groups.append(group)
+        return groups

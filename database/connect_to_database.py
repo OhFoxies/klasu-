@@ -44,11 +44,13 @@ def connect():
                    "`number` VARCHAR(99) NOT NULL, "
                    "`exams_ids` TEXT,"
                    "PRIMARY KEY(`ID` AUTOINCREMENT))")
-        db.execute("CREATE TABLE IF NOT EXISTS `exams` ("
-                   "`ID` INTEGER, "
-                   "`exam_id` INTEGER NOT NULL , "
-                   "`group_id` INTEGER NOT NULL,"
-                   "`message_id` INTEGER NOT NULL,"
-                   "`date_modified` VARCHAR(999) NOT NULL,"
-                   "PRIMARY KEY(`ID` AUTOINCREMENT))")
+
+        db.execute("CREATE TABLE IF NOT EXISTS exams ("
+                   "`ID` INTEGER NOT NULL, "
+                   "`exam_id` INTEGER NOT NULL, "
+                   "`group_id` INTEGER NOT NULL, "
+                   "`message_id` INTEGER NOT NULL, "
+                   "`date_modified` VARCHAR(999) NOT NULL, "
+                   "PRIMARY KEY(`ID` AUTOINCREMENT), "
+                   "FOREIGN KEY(group_id) REFERENCES 'group'(ID))")
         db.commit()

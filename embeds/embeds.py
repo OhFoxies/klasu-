@@ -2,7 +2,6 @@ import nextcord as discord
 from utils import messages
 from vulcan.data import Exam
 import datetime
-import time
 
 
 def exam_embed(exam: Exam) -> discord.Embed:
@@ -33,14 +32,8 @@ def exam_embed(exam: Exam) -> discord.Embed:
                         inline=False)
     else:
         embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
-                        value=f"<t:{(exam.deadline.date_time + datetime.timedelta(hours=12)).timestamp()}:R>".replace(".0", ""), inline=False)
-        # embed.add_field(name=messages['time_left'].replace('{type}', type_formatted),
-        #                 value=f"{exam.deadline.date - datetime.date.today()}".replace(", 0:00:00", "")
-        #                 .replace("days", "dni")
-        #                 .replace("day", "dzień")
-        #                 .replace("month", "miesiąc")
-        #                 .replace("months", "miesięcy"),
-        #                 inline=False)
+                        value=f"<t:{(exam.deadline.date_time + datetime.timedelta(hours=12)).timestamp()}:R>".replace(
+                            ".0", ""), inline=False)
     embed.add_field(name=messages['teacher'],
                     value=f"{exam.creator.name} {exam.creator.surname}",
                     inline=False)

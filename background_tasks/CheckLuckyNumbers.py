@@ -1,34 +1,23 @@
-import nextcord as discord
-
-from database.database_requests import (is_group_registered,
-                                        schools_list,
-                                        get_groups_in_school,
-                                        get_vulcan_data,
+from typing import List
+from database.database_requests import (Group,
                                         save_lucky_number,
-                                        get_lucky_number_in_school,
-                                        VulcanData
-                                        )
+                                        get_lucky_number_in_school,)
 from utils import logs_
 from vulcanrequests.get_lucky_number import get_lucky_number
 
 
-async def check_lucky_number(client: discord.Client):
-    logs_.log("Checking if all lucky numbers are correct")
-    for guild in client.guilds:
-        for school in schools_list(guild_id=guild.id):
-            for group, class_name in get_groups_in_school(school_name=school, guild_id=guild.id):
-                if is_group_registered(guild_id=guild.id, school_name=school, class_name=class_name, group_name=group):
-                    vulcan_data: VulcanData = get_vulcan_data(guild_id=guild.id,
-                                                              school_name=school,
-                                                              class_name=class_name,
-                                                              group_name=group
-                                                              )
-                    lucky_num: int = await get_lucky_number(keystore=vulcan_data.keystore,
-                                                            account=vulcan_data.account
-                                                            )
-                    if get_lucky_number_in_school(guild_id=guild.id, school_name=school) != lucky_num:
-                        save_lucky_number(school_name=school, guild_id=guild.id, number=lucky_num)
-                        logs_.log(f"Lucky number for school {school} was incorrect. Correcting. (Guild id: {guild.id}")
-                        break
-                    logs_.log(f"Lucky number for school {school} was correct. (Guild id: {guild.id}")
-                    break
+async def check_lucky_number(groups_splitted: List[Group], thread_num: int):
+    logs_.log(f"Starting checking if lucky numbers are correct. Thread: {thread_num}")
+    checked = []
+    for i in groups_splitted:
+        if not (i.guild_id, i.school_name) in checked:
+            lucky_num: int = await get_lucky_number(keystore=i.keystore,
+                                                    account=i.account
+                                                    )
+            if get_lucky_number_in_school(guild_id=i.guild_id, school_name=i.school_name) != lucky_num:
+                save_lucky_number(school_name=i.school_name, guild_id=i.guild_id, number=lucky_num)
+                logs_.log(f"Lucky number for school {i.school_name} was incorrect. Correcting. (Guild id: {i.guild_id}")
+            else:
+                logs_.log(f"Lucky number for school {i.school_name} was correct. (Guild id: {i.guild_id}")
+            checked.append((i.guild_id, i.school_name))
+    logs_.log(f"Checking if lucky numbers are correct is done. Thread: {thread_num}")

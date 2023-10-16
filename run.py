@@ -1,7 +1,7 @@
 import nextcord as discord
 from nextcord.ext import commands
 
-from background_tasks.BackGroundTasks import BackGroundTasks
+from background_tasks.BackgroundTasks import BackgroundTasks
 from database.connect_to_database import connect
 from utils import *
 
@@ -10,7 +10,7 @@ from utils import *
 class Klasus(commands.Bot):
     def __init__(self, *, intents_: discord.Intents):
         super().__init__(intents=intents_, activity=discord.Game(config['activity']))
-        self.bg_tasks: BackGroundTasks = BackGroundTasks(self)
+        self.bg_tasks: BackgroundTasks = BackgroundTasks(self)
 
     def start_bot(self):
         logs_.log("Staring bot.")

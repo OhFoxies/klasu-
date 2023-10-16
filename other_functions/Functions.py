@@ -1,4 +1,4 @@
-from other_functions.group_channel import get_group_channel
+from other_functions.GroupChannel import get_group_channel
 from typing import List
 
 import nextcord as discord
