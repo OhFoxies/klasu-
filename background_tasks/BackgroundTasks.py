@@ -42,6 +42,7 @@ class BackgroundTasks:
         # schedule.every().hour.at(":00").do(self.start_new_tasks, task=self.lucky_numbers_checker_between_callbacks)
 
         while not self.client.is_closed():
+            schedule.exec_jobs()
             # schedule.run_pending()
             # print(schedule.get_jobs())
             print("XD")
