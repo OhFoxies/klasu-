@@ -28,20 +28,20 @@ class BackgroundTasks:
         logs_.log("Background task lucky numbers checker (Every hour) has been loaded")
 
         # check new exams
-        schedule.every(5).minutes.do(self.start_new_tasks, task=self.exams_sender_between_callbacks)
+        # schedule.every(5).minutes.do(self.start_new_tasks, task=self.exams_sender_between_callbacks)
 
         # send lucky numbers
-        schedule.every().day.at("7:00").do(self.start_new_tasks, task=self.lucky_numbers_sender_between_callbacks)
+        # schedule.every().day.at("7:00").do(self.start_new_tasks, task=self.lucky_numbers_sender_between_callbacks)
 
         # save lucky numbers
-        schedule.every().day.at("0:05").do(self.start_new_tasks, task=self.lucky_numbers_saver_between_callbacks)
+        # schedule.every().day.at("0:05").do(self.start_new_tasks, task=self.lucky_numbers_saver_between_callbacks)
 
         # check lucky numbers
-        schedule.every().hour.at(":00").do(self.start_new_tasks, task=self.lucky_numbers_checker_between_callbacks)
+        # schedule.every().hour.at(":00").do(self.start_new_tasks, task=self.lucky_numbers_checker_between_callbacks)
 
         while not self.client.is_closed():
-            schedule.run_pending()
-            print(schedule.get_jobs())
+            # schedule.run_pending()
+            # print(schedule.get_jobs())
             print("XD")
             await asyncio.sleep(1)
 
