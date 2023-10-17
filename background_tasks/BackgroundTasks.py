@@ -46,7 +46,7 @@ class BackgroundTasks:
             schedule.exec_jobs()
             # schedule.run_pending()
             # print(schedule.get_jobs())
-            print("XD")
+            print(schedule)
             await asyncio.sleep(1)
 
     @staticmethod
