@@ -41,6 +41,7 @@ class BackgroundTasks:
 
         while not self.client.is_closed():
             schedule.run_pending()
+            print(schedule.get_jobs())
             await asyncio.sleep(1)
 
     @staticmethod
