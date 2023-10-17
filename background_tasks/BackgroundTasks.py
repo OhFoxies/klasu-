@@ -4,7 +4,7 @@ from threading import Thread
 from typing import List
 
 import nextcord as discord
-import schedule
+from scheduler import Scheduler
 from .Exams import exams_sender
 from .LuckyNumber import lucky_numbers_sender
 from .SaveLuckyNumbers import save_and_clear_lucky_numbers
@@ -22,6 +22,8 @@ class BackgroundTasks:
 
     async def background_tasks(self):
         await self.client.wait_until_ready()
+        schedule = Scheduler()
+        schedule.cyclic(dt.timedelta(seconds=30), self.start_new_tasks, args=(self.exams_sender_between_callbacks,))
         logs_.log("Background task lucky numbers sender (Every day at 7:00) has been loaded")
         logs_.log("Background task exams sender (Every 5 minutes) has been loaded")
         logs_.log("Background task lucky numbers saver (Every day at 00:05) has been loaded")
