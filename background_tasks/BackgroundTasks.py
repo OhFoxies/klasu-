@@ -45,6 +45,8 @@ class BackgroundTasks:
 
     @staticmethod
     def start_new_tasks(task):
+
+        print("uwu")
         groups = create_groups_chunks()
 
         if not groups:
