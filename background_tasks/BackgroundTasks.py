@@ -24,7 +24,7 @@ class BackgroundTasks:
     async def background_tasks(self):
         await self.client.wait_until_ready()
         schedule = Scheduler()
-        schedule.cyclic(dt.timedelta(seconds=30), self.start_new_tasks, args=(self.exams_sender_between_callbacks,))
+        schedule.cyclic(dt.timedelta(minutes=5), self.start_new_tasks, args=(self.exams_sender_between_callbacks,))
         logs_.log("Background task lucky numbers sender (Every day at 7:00) has been loaded")
         logs_.log("Background task exams sender (Every 5 minutes) has been loaded")
         logs_.log("Background task lucky numbers saver (Every day at 00:05) has been loaded")
@@ -46,7 +46,7 @@ class BackgroundTasks:
             schedule.exec_jobs()
             # schedule.run_pending()
             # print(schedule.get_jobs())
-            print(schedule)
+           
             await asyncio.sleep(1)
 
     @staticmethod
