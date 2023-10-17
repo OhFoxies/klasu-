@@ -11,6 +11,7 @@ from .SaveLuckyNumbers import save_and_clear_lucky_numbers
 from .PrepareGroups import create_groups_chunks
 from .CheckLuckyNumbers import check_lucky_number
 from utils import logs_
+import datetime as dt
 
 from database.database_requests import Group
 
