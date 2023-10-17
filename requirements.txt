@@ -8,4 +8,4 @@ pytz~=2022.7
 uonet-request-signer-hebe==0.1.1
 
 bcrypt~=4.0.1
-schedule~=1.2.1
+scheduler~=0.8.4
