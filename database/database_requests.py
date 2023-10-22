@@ -1,7 +1,8 @@
+import datetime
 import json
 import sqlite3
-from typing import List, Dict, Union, Tuple, Optional
 from dataclasses import dataclass
+from typing import List, Dict, Union, Tuple, Optional, Any
 
 
 @dataclass
@@ -508,49 +509,9 @@ def request_mysql(req: str) -> Optional[List[Optional[Tuple[str]]]]:
     :returns: None if query is not a select, if it is, it returns fetched data
     """
     with sqlite3.connect("database/database.db") as connection:
-        x = connection.execute(req).fetchall()
+        x: List[Any] = connection.execute(req).fetchall()
         connection.commit()
         return x
-
-
-def get_last_exams_ids(school_name: str, guild_id: int, group_name: str, class_name: str) -> List[str] | None:
-    """
-
-    """
-    with sqlite3.connect("database/database.db") as connection:
-        command: str = ("SELECT `exams_ids` FROM `group` WHERE school_name=? AND guild_id=? "
-                        "AND group_name=? AND class_name=?")
-        values: Tuple[str, ...] = (school_name, str(guild_id), group_name, class_name)
-        last_exam = connection.execute(command, values).fetchall()
-        if not last_exam[0][0]:
-            return None
-
-        last_exam[0][0].split(", ")
-        return last_exam[0][0].split(", ")
-
-
-def save_last_exams_ids(new_exams: List[str],
-                        school_name: str,
-                        guild_id: int,
-                        group_name: str,
-                        class_name: str) -> None:
-    """
-
-    """
-    with sqlite3.connect("database/database.db") as connection:
-        last_exams: List[str] | None = get_last_exams_ids(school_name=school_name,
-                                                          class_name=class_name,
-                                                          group_name=group_name,
-                                                          guild_id=guild_id
-                                                          )
-        if last_exams:
-            new_exams += last_exams
-        exams_updated: str = ", ".join(new_exams)
-        command: str = ("UPDATE `group` SET exams_ids=? WHERE school_name=? AND guild_id=? "
-                        "AND group_name=? AND class_name=?")
-        values: Tuple[str, str, str, str, str] = (exams_updated, school_name, str(guild_id), group_name, class_name)
-        connection.execute(command, values)
-        connection.commit()
 
 
 @dataclass
@@ -569,8 +530,8 @@ def get_all_groups() -> List[Optional[Group]]:
     with sqlite3.connect("database/database.db") as connection:
         command: str = ("SELECT school_name, class_name, group_name, keystore, account, guild_id, channel_id, ID "
                         "FROM 'group' WHERE keystore != 'not_set' AND account != 'not_set'")
-        response = connection.execute(command).fetchall()
-        groups = []
+        response: List[Any] = connection.execute(command).fetchall()
+        groups: List[Group] = []
         for i in response:
             keystore: dict = json.loads(i[3].replace("'", '"'))
             account: dict = json.loads(i[4].replace("'", '"'))
@@ -585,3 +546,51 @@ def get_all_groups() -> List[Optional[Group]]:
                                  )
             groups.append(group)
         return groups
+
+
+@dataclass
+class ExamSaved:
+    id_db: int
+    exam_id: int
+    message_id: int
+    date_modified: datetime.datetime
+
+
+# dt.datetime.strptime("2023-10-10 10:10:18", "%Y-%m-%d %H:%M:%S")
+
+def get_exams_in_group(group_id: int) -> List[Optional[ExamSaved]]:
+    """
+
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT ID, exam_id, message_id, date_modified FROM `exams` WHERE group_id=?"
+        values: Tuple[int] = (group_id,)
+        response: List[Any] = connection.execute(command, values).fetchall()
+        exams: List[Optional[ExamSaved]] = []
+        for i in response:
+            exam: ExamSaved = ExamSaved(id_db=i[0], exam_id=i[1], message_id=i[2],
+                                        date_modified=datetime.datetime.strptime(i[3], "%Y-%m-%d %H:%M:%S"))
+            exams.append(exam)
+
+        return exams
+
+
+def save_exams_to_group(new_exams: List[ExamSaved],
+                        group_id: int) -> None:
+    """
+
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "INSERT INTO exams (exam_id, group_id, message_id, date_modified) VALUES (?, ?, ?, ?)"
+        for exam in new_exams:
+            values: Tuple[int, int, int, str] = (exam.exam_id, group_id, exam.message_id, str(exam.date_modified))
+            connection.execute(command, values)
+        connection.commit()
+
+
+def save_changes_to_exam(exam: ExamSaved, group_id: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "UPDATE `exams` SET date_modified=?, message_id=? WHERE group_id=? AND exam_id=?"
+        values: Tuple[str, int, int, int] = (str(exam.date_modified), exam.message_id, group_id, exam.exam_id)
+        connection.execute(command, values)
+        connection.commit()

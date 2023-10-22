@@ -13,7 +13,7 @@ def exam_embed(exam: Exam) -> discord.Embed:
         case _:
             type_formatted: str = "testu"
     embed: discord.Embed = discord.Embed(type="rich", title=exam.subject.name,
-                                         color=discord.Color.green()
+                                         color=discord.Color.yellow()
                                          if exam.type == "Kartkówka" else
                                          discord.Color.red(),
                                          timestamp=datetime.datetime.now()
