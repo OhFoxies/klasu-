@@ -8,13 +8,12 @@ from embeds.embeds import exam_embed
 from other_functions.GroupChannel import get_group_channel
 from utils import logs_
 from vulcan.data import Exam
-from vulcanrequests.get_exams import get_exams_klasus
-
+from vulcanrequests.get_new_exams import get_new_exams
 
 async def exams_sender(groups_splitted: List[Group], client: discord.Client, thread_num: int):
     logs_.log(f"Starting sending exams in new thread ({thread_num})")
     for i in groups_splitted:
-        exams_list: List[Exam | None] = await get_exams_klasus(keystore=i.keystore,
+        exams_list: List[Exam | None] = await get_new_exams(keystore=i.keystore,
                                                             account=i.account)
         if not exams_list:
             continue
