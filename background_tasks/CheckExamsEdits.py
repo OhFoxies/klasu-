@@ -9,8 +9,8 @@ from embeds.embeds import exam_embed
 from other_functions.GroupChannel import get_group_channel
 from utils import logs_
 from vulcan.data import Exam
-from vulcanrequests.get_new_exams import get_new_exams
 
+from vulcanrequests.get_exams import get_exams_klasus
 
 def get_exam_by_id(exam_id, exams_list: List[ExamSaved]) -> Optional[ExamSaved]:
     for exam in exams_list:
@@ -22,8 +22,9 @@ def get_exam_by_id(exam_id, exams_list: List[ExamSaved]) -> Optional[ExamSaved]:
 async def check_exams_edits(groups_splitted: List[Group], client: discord.Client, thread_num: int):
     logs_.log(f"Checking for exams edits in thread ({thread_num})")
     for i in groups_splitted:
-        upcoming_exams: List[Exam | None] = await get_new_exams(keystore=i.keystore,
+        upcoming_exams: List[Exam | None] = await get_exams_klasus(keystore=i.keystore,
                                                             account=i.account)
+                                                        
         if not upcoming_exams:
             continue
         exams_in_group: List[Optional[ExamSaved]] = get_exams_in_group(group_id=i.id)
