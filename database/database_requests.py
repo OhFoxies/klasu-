@@ -550,7 +550,6 @@ def get_all_groups() -> List[Optional[Group]]:
 
 @dataclass
 class ExamSaved:
-    id_db: int
     exam_id: int
     message_id: int
     date_modified: datetime.datetime
@@ -563,13 +562,13 @@ def get_exams_in_group(group_id: int) -> List[Optional[ExamSaved]]:
 
     """
     with sqlite3.connect("database/database.db") as connection:
-        command: str = "SELECT ID, exam_id, message_id, date_modified FROM `exams` WHERE group_id=?"
+        command: str = "SELECT exam_id, message_id, date_modified FROM `exams` WHERE group_id=?"
         values: Tuple[int] = (group_id,)
         response: List[Any] = connection.execute(command, values).fetchall()
         exams: List[Optional[ExamSaved]] = []
         for i in response:
-            exam: ExamSaved = ExamSaved(id_db=i[0], exam_id=i[1], message_id=i[2],
-                                        date_modified=datetime.datetime.strptime(i[3], "%Y-%m-%d %H:%M:%S"))
+            exam: ExamSaved = ExamSaved(exam_id=i[0], message_id=i[1],
+                                        date_modified=datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S"))
             exams.append(exam)
 
         return exams
