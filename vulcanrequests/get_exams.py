@@ -21,12 +21,5 @@ async def get_exams_klasus(keystore, account, date_to: Optional[dt.date] = None)
                         exams_in_date.append(i)
                 else:
                     exams_in_date.append(i)
-    swapped: bool = False
-    for n in range(len(exams_in_date.copy()) - 1, 0, -1):
-        for i in range(n):
-            if exams_in_date[i].deadline.date > exams_in_date[i+1].deadline.date:
-                swapped = True
-                exams_in_date[i], exams_in_date[i + 1] = exams_in_date[i + 1], exams_in_date[i]
-        if not swapped:
-            return exams_in_date
+    exams_in_date.sort(key=lambda x: x.deadline.date)
     return exams_in_date

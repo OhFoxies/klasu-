@@ -6,8 +6,9 @@ from database.database_requests import (get_lucky_numbers,
                                         get_lucky_number_in_school,
                                         save_lucky_number, Group)
 from other_functions.GroupChannel import get_group_channel
-from utils import messages, logs_
+from utils import logs_
 from vulcanrequests.get_lucky_number import get_lucky_number
+from embeds.embeds import lucky_number_embed_daily
 
 
 async def lucky_numbers_sender(groups_splitted: List[Group], client: discord.Client, thread_num: int):
@@ -37,25 +38,20 @@ async def lucky_numbers_sender(groups_splitted: List[Group], client: discord.Cli
                                                                       guild=guild)
         if not channel:
             continue
-
         if lucky_num == 0:
-            await channel.send(messages['no_education'])
             continue
+        users: List[discord.Member] = []
+
         if users_with_lucky:
-            mentions: List[str] = []
             for j in users_with_lucky:
                 try:
                     user: discord.Member = await guild.fetch_member(int(j))
-                    mentions.append(user.mention)
+                    users.append(user)
                 except (discord.Forbidden, discord.HTTPException):
-                    await channel.send(messages['lucky_number'].replace('{school}', i.school_name).replace(
-                        '{number}', str(lucky_num)).replace('{user}',
-                                                            messages['lucky_number_no_users']))
+                    pass
+        lucky_embed: discord.Embed = lucky_number_embed_daily(lucky_num=lucky_num, group=i, users=users)
 
-            await channel.send(messages['lucky_number'].replace('{school}', i.school_name).replace(
-                '{number}', str(lucky_num)).replace('{user}', ', '.join(mentions)))
-            continue
-        await channel.send(messages['lucky_number'].replace('{school}', i.school_name).replace(
-            '{number}', str(lucky_num)).replace('{user}', messages['lucky_number_no_users']))
+        await channel.send(embed=lucky_embed, content=', '.join([user.mention for user in users]) if users else '')
+
     logs_.log(f"Done sending lucky numbers in thread {thread_num}")
     return
