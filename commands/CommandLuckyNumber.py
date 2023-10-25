@@ -10,7 +10,7 @@ from database.database_requests import (get_user_data,
                                         )
 from utils import messages
 from vulcanrequests.get_lucky_number import get_lucky_number
-from embeds.embeds import lucky_number_embed, connecting
+from embeds.embeds import lucky_number_embed, connecting, error_embed
 
 
 class LuckyNumber(commands.Cog):
@@ -24,9 +24,11 @@ class LuckyNumber(commands.Cog):
     async def lucky_number(self, interaction: discord.Interaction):
         user_data: User | None = get_user_data(user_id=interaction.user.id, guild_id=interaction.guild_id)
         if not user_data:
-            await interaction.response.send_message(messages['need_to_register'], ephemeral=True)
+            err_embed: discord.Embed = error_embed(error=messages['need_to_register'])
+            await interaction.response.send_message(embed=err_embed, ephemeral=True)
             return
-        embed: discord.Embed = connecting(interaction.user)
+
+        embed: discord.Embed = connecting()
         message: discord.PartialInteractionMessage = await interaction.send(embed=embed)
         lucky_in_school: int | None = get_lucky_number_in_school(school_name=user_data.school_name,
                                                                  guild_id=interaction.guild_id)

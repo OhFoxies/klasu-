@@ -51,6 +51,7 @@ class SendGroupInfo(commands.Cog):
                                                          group_name=group_name,
                                                          interaction=interaction,
                                                          message=message,
+                                                         title=messages['group_channel_title'],
                                                          pin=False
                                                          )
                         await interaction.response.send_message(messages['send'], ephemeral=True)

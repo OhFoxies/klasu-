@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import nextcord
 import nextcord as discord
 from nextcord.ext import commands
@@ -27,7 +25,7 @@ class Profile(commands.Cog):
             embed: discord.Embed = discord.Embed(type="rich",
                                                  title=user.name,
                                                  colour=discord.Colour.dark_blue(),
-                                                 timestamp=datetime.now(),
+                                                 timestamp=datetime.datetime.now(),
                                                  description=messages['user_no_account']
                                                  if user.id != interaction.user.id
                                                  else messages['no_account']
@@ -39,7 +37,7 @@ class Profile(commands.Cog):
         embed: discord.Embed = discord.Embed(type="rich",
                                              title=user.name,
                                              colour=discord.Colour.dark_blue(),
-                                             timestamp=datetime.now()
+                                             timestamp=datetime.datetime.now()
                                              )
         embed.add_field(name=messages['school'],
                         value=messages['your_school'].replace('{school}', user_data.school_name)

@@ -75,7 +75,8 @@ class ChangeChannel(commands.Cog):
                                                          group_name=group_name,
                                                          interaction=interaction,
                                                          message=msg,
-                                                         pin=True
+                                                         pin=True,
+                                                         title=messages['channel_registered_title']
                                                          )
                         await interaction.response.send_message(messages['channel_set'], ephemeral=True)
                         return

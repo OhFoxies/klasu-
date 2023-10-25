@@ -4,7 +4,7 @@ from typing import List
 import nextcord as discord
 
 from database.database_requests import get_channel
-from utils import messages
+from embeds.embeds import any_embed, removed_account, removed_accounts
 
 
 async def send_message_group_channel(interaction: discord.Interaction,
@@ -12,7 +12,8 @@ async def send_message_group_channel(interaction: discord.Interaction,
                                      class_name: str,
                                      group_name: str,
                                      message: str,
-                                     pin: bool):
+                                     pin: bool,
+                                     title: str):
     channel_id: str = get_channel(guild_id=interaction.guild_id,
                                   school_name=school_name,
                                   class_name=class_name,
@@ -23,9 +24,10 @@ async def send_message_group_channel(interaction: discord.Interaction,
                                                            class_name=class_name,
                                                            group=group_name,
                                                            channel_id=int(channel_id))
+    embed: discord.Embed = any_embed(title=title, desc=message)
     if not channel:
         return
-    send: discord.Message = await channel.send(message)
+    send: discord.Message = await channel.send(embed=embed)
     if pin:
         await send.pin()
 
@@ -36,11 +38,13 @@ async def user_delete_account_info(deleted_users: List[str], interaction: discor
         try:
             user: discord.Member = await interaction.guild.fetch_member(int(i))
             mentions.append(user.mention)
-            await user.send(messages['account_removed'].replace('{server}', interaction.guild.name))
+            embed: discord.Embed = removed_account(interaction.guild.name)
+            await user.send(embed=embed)
         except (discord.Forbidden, discord.HTTPException):
             pass
 
     channel: discord.TextChannel = interaction.guild.system_channel
     if not channel:
         channel = await interaction.guild.fetch_channel(interaction.channel_id)
-    await channel.send(messages['removed_accounts'].replace('{list}', '\n'.join(mentions)))
+    embed: discord.Embed = removed_accounts(mentions)
+    await channel.send(embed=embed, content='\n'.join(mentions) if mentions else "")

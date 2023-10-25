@@ -4,6 +4,7 @@ from nextcord.ext import commands
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from database.database_requests import *
 from utils import messages
+from embeds.embeds import error_embed, registered
 
 
 class Register(commands.Cog):
@@ -38,16 +39,21 @@ class Register(commands.Cog):
                                                school_name=school_name,
                                                class_name=class_name,
                                                group_name=group_name):
-                        await interaction.response.send_message(messages['group_not_registered'], ephemeral=True)
+                        err_embed: discord.Embed = error_embed(messages['group_not_registered'])
+                        await interaction.response.send_message(embed=err_embed, ephemeral=True)
                         return
+
                     if number <= 0 or number > 50:
-                        await interaction.response.send_message(messages['wrong_number'])
+                        err_embed: discord.Embed = error_embed(messages['wrong_number'])
+                        await interaction.response.send_message(embed=err_embed, ephemeral=True)
                         return
+
                     user_data: User | None = get_user_data(interaction.user.id, interaction.guild_id)
-                    if get_user_data(interaction.user.id, interaction.guild_id):
+                    if user_data:
                         msg: str = messages['already_registered'].replace('{class}', user_data.class_name).replace(
                             '{school}', user_data.school_name).replace('{group}', user_data.group_name)
-                        await interaction.response.send_message(msg, ephemeral=True)
+                        err_embed: discord.Embed = error_embed(msg)
+                        await interaction.response.send_message(embed=err_embed, ephemeral=True)
                         return
                     register_user(guild_id=interaction.guild_id,
                                   user_id=interaction.user.id,
@@ -56,17 +62,24 @@ class Register(commands.Cog):
                                   class_name=class_name,
                                   number=number
                                   )
-                    await interaction.response.send_message(messages['registered'], ephemeral=True)
+                    embed: discord.Embed = registered()
+                    await interaction.response.send_message(embed=embed, ephemeral=True)
                     return
-                await interaction.response.send_message(messages['group_not_found'.replace('{name}', group_name)],
-                                                        ephemeral=True)
+
+                err_embed: discord.Embed = error_embed(messages['group_not_found'].replace("{name}", group_name))
+
+                await interaction.response.send_message(embed=err_embed, ephemeral=True)
                 return
-            await interaction.response.send_message(
-                f"{messages['class_not_found']}".replace("{name}", class_name), ephemeral=True)
+
+            err_embed: discord.Embed = error_embed(messages['class_not_found'].replace("{name}", class_name))
+
+            await interaction.response.send_message(embed=err_embed, ephemeral=True)
             return
+
         except SchoolNotFoundError:
-            await interaction.response.send_message(
-                f"{messages['school_not_found']}".replace("{name}", school_name), ephemeral=True)
+            err_embed: discord.Embed = error_embed(messages['school_not_found'].replace("{name}", school_name))
+
+            await interaction.response.send_message(embed=err_embed, ephemeral=True)
             return
 
     @registration.on_autocomplete("school_name")

@@ -4,6 +4,7 @@ from nextcord.ext import commands
 from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion
 from database.database_requests import *
 from utils import messages
+from embeds.embeds import error_embed, any_embed
 
 
 class GroupsList(commands.Cog):
@@ -22,7 +23,8 @@ class GroupsList(commands.Cog):
                                                            required=True)):
         if is_name_correct(name=school_name):
             if not is_name_correct(name=class_name):
-                await interaction.response.send_message(f"{messages['class_bad_name']}", ephemeral=True)
+                err_embed: discord.Embed = error_embed(error=messages['class_bad_name'])
+                await interaction.response.send_message(embed=err_embed, ephemeral=True)
                 return
             try:
                 classes: List[str] = class_list(guild_id=interaction.guild_id, school_name=school_name)
@@ -31,20 +33,22 @@ class GroupsList(commands.Cog):
                                                    school_name=school_name,
                                                    class_name=class_name
                                                    )
-                    await interaction.response.send_message(
-                        f"{messages['groups_list']}".replace("{list}", ', '.join(groups)), ephemeral=True)
+                    embed: discord.Embed = any_embed(desc=messages['groups_list'].replace("{list}", ', '.join(groups)),
+                                                     title=messages['groups_list_title'])
+                    await interaction.response.send_message(embed=embed, ephemeral=True)
                     return
                 else:
-                    await interaction.response.send_message(
-                        f"{messages['class_not_found']}".replace("{name}", class_name), ephemeral=True)
+                    err_embed: discord.Embed = error_embed(
+                        error=messages['class_not_found'].replace("{name}", class_name))
+                    await interaction.response.send_message(embed=err_embed, ephemeral=True)
                     return
             except SchoolNotFoundError:
-                await interaction.response.send_message(
-                    f"{messages['school_not_found']}".replace("{name}", school_name),
-                    ephemeral=True)
+                err_embed: discord.Embed = error_embed(
+                    error=messages['school_not_found'].replace("{name}", school_name))
+                await interaction.response.send_message(embed=err_embed, ephemeral=True)
                 return
-        await interaction.response.send_message(f"{messages['school_bad_name']}", ephemeral=True)
-        return
+        err_embed: discord.Embed = error_embed(error=messages['school_bad_name'])
+        await interaction.response.send_message(embed=err_embed, ephemeral=True)
 
     @groups.on_autocomplete("school_name")
     async def get_schools(self, interaction: discord.Interaction, school_input: str):

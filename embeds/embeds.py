@@ -1,9 +1,11 @@
+import datetime
+from typing import List
+
 import nextcord as discord
+
+from database.database_requests import Group
 from utils import messages
 from vulcan.data import Exam
-import datetime
-from database.database_requests import Group
-from typing import List
 
 
 def exam_embed(exam: Exam) -> discord.Embed:
@@ -86,10 +88,67 @@ def lucky_number_embed(lucky_num: int, user: discord.Member, school_name: str) -
     return embed
 
 
-def connecting(user: discord.Member) -> discord.Embed:
+def connecting() -> discord.Embed:
     embed: discord.Embed = discord.Embed(type="rich", title=messages['connecting_title'],
                                          color=discord.Color.yellow(),
                                          timestamp=datetime.datetime.now(),
                                          description=messages['connecting_to_vulcan'])
-    embed.set_author(name=user.name, icon_url=user.avatar if user.avatar else user.default_avatar)
+    return embed
+
+
+def error_embed(error: str) -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=messages['error_title'],
+                                         color=discord.Color.red(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=error)
+    return embed
+
+
+def registered() -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=messages['register_success'],
+                                         color=discord.Color.green(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=messages['registered'])
+    return embed
+
+
+def unregistered() -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=messages['unregister_title'],
+                                         color=discord.Color.green(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=messages['unregistered'])
+    return embed
+
+
+def no_exams() -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=messages['no_exams_title'],
+                                         color=discord.Color.green(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=messages['no_exams'])
+    return embed
+
+
+def any_embed(title: str, desc: str) -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=title,
+                                         color=discord.Color.green(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=desc)
+    return embed
+
+
+def removed_account(guild_name: str) -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=messages['account_deletion_title'],
+                                         color=discord.Color.red(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=messages['account_removed'].replace('{server}', guild_name))
+    return embed
+
+
+def removed_accounts(accounts: List[str]) -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=messages['accounts_deletion_title'],
+                                         color=discord.Color.red(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=messages['removed_accounts'].replace('{test}',
+                                                                                          ', '.join(accounts)
+                                                                                          if accounts else ""))
     return embed

@@ -75,7 +75,8 @@ class ConnectToVulcan(commands.Cog):
                                                      group_name=group_name,
                                                      interaction=interaction,
                                                      message=msg,
-                                                     pin=True
+                                                     pin=True,
+                                                     title=messages['channel_registered_title']
                                                      )
 
                     await message.edit(connecting[1])
