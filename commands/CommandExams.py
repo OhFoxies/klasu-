@@ -60,16 +60,16 @@ class ExamsCommand(commands.Cog):
         exams: List[Exam | None] = await get_exams_klasus(keystore=vulcan_data.keystore,
                                                           account=vulcan_data.account,
                                                           date_to=date if date_to else None)
-        embeds: List[discord.Embed] = []
+        # embeds: List[discord.Embed] = []
         if not exams:
             no_exams_embed: discord.Embed = no_exams()
             await msg.edit(embed=no_exams_embed)
+        await msg.delete()
         for exam in exams:
             embed: discord.Embed = exam_embed(exam)
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar if interaction.user.avatar
-                             else discord.User.default_avatar)
-            embeds.append(embed)
-        await msg.edit(embeds=embeds, content="")
+            else discord.User.default_avatar)
+            await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(client):

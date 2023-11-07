@@ -4,6 +4,8 @@ import sqlite3
 from dataclasses import dataclass
 from typing import List, Dict, Union, Tuple, Optional, Any
 
+import vulcan.data
+
 
 @dataclass
 class User:
@@ -529,7 +531,7 @@ class Group:
 def get_all_groups() -> List[Optional[Group]]:
     with sqlite3.connect("database/database.db") as connection:
         command: str = ("SELECT school_name, class_name, group_name, keystore, account, guild_id, channel_id, ID "
-                        "FROM 'group' WHERE keystore != 'not_set' AND account != 'not_set'")
+                        "FROM `group` WHERE keystore != 'not_set' AND account != 'not_set'")
         response: List[Any] = connection.execute(command).fetchall()
         groups: List[Group] = []
         for i in response:
@@ -553,6 +555,7 @@ class ExamSaved:
     exam_id: int
     message_id: int
     date_modified: datetime.datetime
+    deadline: datetime.date
 
 
 # dt.datetime.strptime("2023-10-10 10:10:18", "%Y-%m-%d %H:%M:%S")
@@ -562,13 +565,14 @@ def get_exams_in_group(group_id: int) -> List[Optional[ExamSaved]]:
 
     """
     with sqlite3.connect("database/database.db") as connection:
-        command: str = "SELECT exam_id, message_id, date_modified FROM `exams` WHERE group_id=?"
+        command: str = "SELECT exam_id, message_id, date_modified, deadline FROM `exams` WHERE group_id=?"
         values: Tuple[int] = (group_id,)
         response: List[Any] = connection.execute(command, values).fetchall()
         exams: List[Optional[ExamSaved]] = []
         for i in response:
             exam: ExamSaved = ExamSaved(exam_id=i[0], message_id=i[1],
-                                        date_modified=datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S"))
+                                        date_modified=datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S"),
+                                        deadline=datetime.datetime.strptime(i[3], "%Y-%m-%d"))
             exams.append(exam)
 
         return exams
@@ -580,16 +584,78 @@ def save_exams_to_group(new_exams: List[ExamSaved],
 
     """
     with sqlite3.connect("database/database.db") as connection:
-        command: str = "INSERT INTO exams (exam_id, group_id, message_id, date_modified) VALUES (?, ?, ?, ?)"
+        command: str = "INSERT INTO exams (exam_id, group_id, message_id, date_modified, deadline, removed) VALUES (?, ?, ?, ?, ?, ?)"
         for exam in new_exams:
-            values: Tuple[int, int, int, str] = (exam.exam_id, group_id, exam.message_id, str(exam.date_modified))
+            values: Tuple[int, int, int, str, str, int] = (
+                exam.exam_id, group_id, exam.message_id, str(exam.date_modified), str(exam.deadline), 0)
             connection.execute(command, values)
         connection.commit()
 
 
 def save_changes_to_exam(exam: ExamSaved, group_id: int) -> None:
     with sqlite3.connect("database/database.db") as connection:
-        command: str = "UPDATE `exams` SET date_modified=?, message_id=? WHERE group_id=? AND exam_id=?"
-        values: Tuple[str, int, int, int] = (str(exam.date_modified), exam.message_id, group_id, exam.exam_id)
+        command: str = "UPDATE `exams` SET date_modified=?, message_id=?, deadline=? WHERE group_id=? AND exam_id=?"
+        values: Tuple[str, int, str, int, int] = (str(exam.date_modified), exam.message_id, str(exam.deadline), group_id, exam.exam_id)
         connection.execute(command, values)
         connection.commit()
+
+
+def update_exam(e: vulcan.data.Exam, group_id: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "UPDATE `exams` SET deadline=?, removed=?, date_modified=? WHERE group_id=? AND exam_id=?"
+        values = (str(e.deadline.date), 0, str(e.date_modified), group_id, e.id)
+        connection.execute(command, values)
+        connection.commit()
+
+
+def get_exam_by_id(e: int, group_id: int) -> bool:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT * FROM `exams` WHERE exam_id=? AND group_id=?"
+        values = (e, group_id)
+        x = connection.execute(command, values).fetchall()
+        if not x:
+            return False
+        else:
+            return True
+
+
+def get_old_exams(group_id: int) -> List[Optional[ExamSaved]]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT exam_id, message_id, date_modified, deadline FROM `exams` WHERE group_id=? AND removed=0"
+        values = (group_id,)
+        x = connection.execute(command, values).fetchall()
+        old_exams: Optional[List[ExamSaved]] = []
+        for exam in x:
+            if datetime.datetime.strptime(exam[3], "%Y-%m-%d").date() < datetime.date.today():
+                old_exams.append(ExamSaved(exam_id=exam[0],
+                                           message_id=exam[1],
+                                           date_modified=datetime.datetime.strptime(exam[2], "%Y-%m-%d %H:%M:%S"),
+                                           deadline=datetime.datetime.strptime(exam[3], "%Y-%m-%d"))
+                                 )
+        return old_exams
+
+
+def get_today_exams(group_id: int) -> List[Optional[ExamSaved]]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT exam_id, message_id, date_modified, deadline FROM `exams` WHERE group_id=? AND removed=0"
+        values = (group_id,)
+        x = connection.execute(command, values).fetchall()
+        today_exams: Optional[List[ExamSaved]] = []
+        for exam in x:
+            if datetime.datetime.strptime(exam[3], "%Y-%m-%d").date() == datetime.date.today():
+                today_exams.append(ExamSaved(exam_id=exam[0],
+                                             message_id=exam[1],
+                                             date_modified=datetime.datetime.strptime(exam[2], "%Y-%m-%d %H:%M:%S"),
+                                             deadline=datetime.datetime.strptime(exam[3], "%Y-%m-%d"))
+                                   )
+        return today_exams
+
+
+def remove_exam(group_id: int, exam_id: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "UPDATE `exams` SET removed=1 WHERE group_id=? AND exam_id=?"
+        values = (group_id, exam_id)
+        connection.execute(command, values)
+        connection.commit()
+
+print(get_today_exams(1))

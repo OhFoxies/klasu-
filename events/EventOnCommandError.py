@@ -17,7 +17,7 @@ class SlashCommandError(commands.Cog):
     async def on_application_command_error(self, interaction: discord.Interaction,
                                            error: discord.errors.ApplicationError):
         if isinstance(error, discord.errors.ApplicationError):
-            await interaction.response.send_message(f"{messages['response_error']}\n"
+            await interaction.send(f"{messages['response_error']}\n"
                                                     f"```{error}```", ephemeral=True)
             logs_.log(f"Command {interaction.application_command.name} used by {interaction.user} caused error", True)
             logs_.log(f"{error}", True)

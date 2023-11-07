@@ -51,6 +51,8 @@ def connect():
                    "`group_id` INTEGER NOT NULL, "
                    "`message_id` INTEGER NOT NULL, "
                    "`date_modified` VARCHAR(999) NOT NULL, "
-                   "PRIMARY KEY(`ID` AUTOINCREMENT), "
+                   "`deadline` VARCHAR(999) NOT NULL,"
+                   "`removed` INTEGER NOT NULL, "
+                   " PRIMARY KEY(`ID` AUTOINCREMENT), "
                    "FOREIGN KEY(group_id) REFERENCES 'group'(ID))")
         db.commit()

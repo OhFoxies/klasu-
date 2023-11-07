@@ -42,7 +42,7 @@ def exam_embed(exam: Exam) -> discord.Embed:
                     value=f"{exam.creator.name} {exam.creator.surname}",
                     inline=False)
     embed.add_field(name=messages['type'], value=exam.type, inline=False)
-    embed.add_field(name=messages['description'], value=exam.topic, inline=False)
+    embed.add_field(name=messages['description'], value=exam.topic if exam.topic else messages['no_desc'], inline=False)
     return embed
 
 

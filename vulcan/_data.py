@@ -93,7 +93,7 @@ class VulcanData:
 
     async def get_exams(
         self, last_sync: datetime = None, deleted=False, **kwargs
-    ) -> Union[AsyncIterator[Grade], List[int]]:
+    ) -> Union[AsyncIterator[Exam], List[int]]:
         """Yields the student's exams.
 
         :param `datetime.datetime` last_sync: date of the last sync,

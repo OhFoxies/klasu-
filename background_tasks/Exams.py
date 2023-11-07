@@ -54,7 +54,8 @@ async def exams_sender(groups_splitted: List[Group], client: discord.Client, thr
             msg: discord.Message = await channel.send(embed=embed)
             exam_to_save: ExamSaved = ExamSaved(exam_id=exam.id,
                                                 message_id=msg.id,
-                                                date_modified=exam.deadline.date_time)
+                                                date_modified=exam.date_modified.date_time,
+                                                deadline=exam.deadline.date)
             exams_to_save.append(exam_to_save)
             logs_.log("New exam found RIP")
         save_exams_to_group(new_exams=exams_to_save, group_id=i.id)

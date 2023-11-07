@@ -43,6 +43,7 @@ async def check_exams_edits(group: Group, exams: List[Optional[Exam]], channel: 
 
                 msg: discord.Message = await channel.send(embed=embed)
                 exam_in_group.date_modified = exam.date_modified.date_time
+                exam_in_group.deadline = exam.deadline.date
                 exam_in_group.message_id = msg.id
                 logs_.log(f"Updated exam in guild {group.guild_id}")
                 save_changes_to_exam(exam=exam_in_group, group_id=group.id)
