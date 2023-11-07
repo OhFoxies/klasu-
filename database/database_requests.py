@@ -657,5 +657,3 @@ def remove_exam(group_id: int, exam_id: int) -> None:
         values = (group_id, exam_id)
         connection.execute(command, values)
         connection.commit()
-
-print(get_today_exams(1))
