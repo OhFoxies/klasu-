@@ -17,8 +17,8 @@ class UpdateExams(commands.Cog):
         self.client = client
 
     @commands.is_owner()
-    @discord.slash_command(name="exams_update",
-                           description=messages['ping_desc'],
+    @discord.slash_command(name=messages['manual_exams'],
+                           description=messages['manual_exams_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))

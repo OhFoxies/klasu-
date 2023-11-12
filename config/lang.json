@@ -192,6 +192,8 @@
   "account_deletion_title": "Konto wyrejestrowane z klasusia!",
   "accounts_deletion_title": "Te konta zostały wyrejestrowane z klasusia!",
   "klasus_title": "Klasuuuś",
-  "no_desc": "Brak opisu"
+  "no_desc": "Brak opisu",
+  "manual_exams": "manual-exams-sender",
+  "manual_exams_desc": "Wziumuje..."
 
 }

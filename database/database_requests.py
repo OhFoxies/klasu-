@@ -567,14 +567,13 @@ def get_exams_in_group(group_id: int) -> List[Optional[ExamSaved]]:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "SELECT exam_id, message_id, date_modified, deadline FROM `exams` WHERE group_id=?"
         values: Tuple[int] = (group_id,)
-        response: List[Any] = connection.execute(command, values).fetchall()
+        response = connection.execute(command, values).fetchall()
         exams: List[Optional[ExamSaved]] = []
         for i in response:
             exam: ExamSaved = ExamSaved(exam_id=i[0], message_id=i[1],
                                         date_modified=datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S"),
                                         deadline=datetime.datetime.strptime(i[3], "%Y-%m-%d"))
             exams.append(exam)
-
         return exams
 
 
@@ -603,7 +602,7 @@ def save_changes_to_exam(exam: ExamSaved, group_id: int) -> None:
 def update_exam(e: vulcan.data.Exam, group_id: int) -> None:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "UPDATE `exams` SET deadline=?, removed=?, date_modified=? WHERE group_id=? AND exam_id=?"
-        values = (str(e.deadline.date), 0, str(e.date_modified), group_id, e.id)
+        values = (str(e.deadline.date), 0, str(e.date_modified.date_time), group_id, e.id)
         connection.execute(command, values)
         connection.commit()
 

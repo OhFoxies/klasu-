@@ -27,11 +27,13 @@ async def exams_sender(groups_splitted: List[Group], client: discord.Client, thr
                                                                       class_name=i.class_name,
                                                                       group=i.group_name,
                                                                       channel_id=i.channel_id)
+
         if not channel:
             continue
 
         exams_list: Exams = await get_all_exams(keystore=i.keystore,
                                                 account=i.account)
+
         if not exams_list.new_exams:
             await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
             continue
@@ -43,7 +45,6 @@ async def exams_sender(groups_splitted: List[Group], client: discord.Client, thr
         if not exams_to_send:
             await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
             continue
-
         exams_to_save: List[ExamSaved] = []
 
         for exam in exams_to_send:
