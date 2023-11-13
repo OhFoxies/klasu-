@@ -46,7 +46,6 @@ class BackgroundTasks:
             self.lucky_numbers_saver_between_callbacks,))
         logs_.log("Background task lucky numbers saver (Every day at 00:05) has been loaded")
 
-        self.start_new_tasks(self.exams_sender_between_callbacks)
         while not self.client.is_closed():
             schedule.exec_jobs()
             await asyncio.sleep(1)
