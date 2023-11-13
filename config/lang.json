@@ -171,7 +171,7 @@
   "exams_command": "sprawdziany",
   "exams_command_desc": "Wyświetla sprawdziany i kartkówki dla twojej grupy.",
   "no_exams": "Nie znalazłem sprawdzianów w tej dacie lub nie ma żadnych wpisanych sprawdzianów.",
-  "new_exam": "Nowy/a {type}! :(",
+  "new_exam": "Nowy/a {type}!",
   "connecting_title": ":hourglass:  Łączenie do vulcana :hourglass: ",
   "lucky_number_title": ":four_leaf_clover:  Szczęśliwy numerek :four_leaf_clover: ",
   "new_short_test": "Nowa kartkówka!",
@@ -194,6 +194,11 @@
   "klasus_title": "Klasuuuś",
   "no_desc": "Brak opisu",
   "manual_exams": "manual-exams-sender",
-  "manual_exams_desc": "Wziumuje..."
+  "manual_exams_desc": "Wziumuje...",
+  "deleted_exam_title": "Usunięty sprawdzian!",
+  "deleted_short_exam_title": "Usunięta kartkówka!",
+  "deleted_exam_desc": "Usunięty został sprawdzian z przedmiotu {lesson}, sprawdzian miał się odbyć dnia: {date}! Opis sprawdzianu: {desc}",
+  "deleted_short_exam_desc": "Usunięta została kartkówka z przedmiotu {lesson}, kartkówka miała się odbyć dnia: {date}! Opis kartkówki: {desc}"
+
 
 }

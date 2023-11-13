@@ -1,6 +1,5 @@
 import nextcord as discord
 from utils import messages
-from random import choice
 
 
 async def get_group_channel(channel_id: int,
@@ -18,8 +17,13 @@ async def get_group_channel(channel_id: int,
         msg: str = msg.replace('{group}', group)
         if system_channel:
             await system_channel.send(msg)
-        random_channel: discord.TextChannel = choice(guild.text_channels)
-        await random_channel.send(msg)
-        return None
+            return
+
+        all_channels = await guild.fetch_channels()
+        for channel in all_channels:
+            if type(channel) == discord.TextChannel:
+                await channel.send(msg)
+                return
+        return
     except (discord.HTTPException, discord.InvalidData):
-        return None
+        return

@@ -152,3 +152,31 @@ def removed_accounts(accounts: List[str]) -> discord.Embed:
                                                                                           ', '.join(accounts)
                                                                                           if accounts else ""))
     return embed
+
+
+def exam_deletion_embed(date: str, desc: str, exam_type: str, subject: str) -> discord.Embed:
+    match exam_type.lower():
+        case "sprawdzian":
+            title: str = messages['deleted_exam_title']
+        case "kartkówka":
+            title: str = messages['deleted_short_exam_title']
+        case _:
+            title: str = messages['deleted_exam_title']
+    embed: discord.Embed = discord.Embed(type="rich", title=title,
+                                         color=discord.Color.purple(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=messages['deleted_exam_desc']
+                                         .replace('{lesson}', subject)
+                                         .replace('{date}', date)
+                                         .replace('{desc}', desc)
+                                         if title == messages['deleted_exam_title']
+
+                                         else
+                                         messages['deleted_short_exam_desc']
+                                         .replace('{lesson}', subject)
+                                         .replace('{date}', date)
+                                         .replace('{desc}', desc)
+                                         )
+
+    return embed
+

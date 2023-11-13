@@ -562,8 +562,7 @@ class ExamSaved:
 
 def get_exams_in_group(group_id: int) -> List[Optional[ExamSaved]]:
     """
-
-    """
+    Returns all saved exams in group as ExamSaved object    """
     with sqlite3.connect("database/database.db") as connection:
         command: str = "SELECT exam_id, message_id, date_modified, deadline FROM `exams` WHERE group_id=?"
         values: Tuple[int] = (group_id,)
@@ -653,6 +652,14 @@ def get_today_exams(group_id: int) -> List[Optional[ExamSaved]]:
 def remove_exam(group_id: int, exam_id: int) -> None:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "UPDATE `exams` SET removed=1 WHERE group_id=? AND exam_id=?"
+        values = (group_id, exam_id)
+        connection.execute(command, values)
+        connection.commit()
+
+
+def delete_exam(group_id: int, exam_id: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "DELETE FROM `exams` WHERE group_id=? AND exam_id=?"
         values = (group_id, exam_id)
         connection.execute(command, values)
         connection.commit()

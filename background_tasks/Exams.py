@@ -12,6 +12,7 @@ from utils import logs_, messages
 from vulcan.data import Exam
 from vulcanrequests.get_all_exams import get_all_exams, Exams
 from .CheckExamsEdits import check_exams_edits
+from .CheckForExamsDeletions import check_for_exams_deletions
 
 
 async def exams_sender(groups_splitted: List[Group], client: discord.Client, thread_num: int):
@@ -35,6 +36,7 @@ async def exams_sender(groups_splitted: List[Group], client: discord.Client, thr
                                                 account=i.account)
 
         if not exams_list.new_exams:
+            await check_for_exams_deletions(group=i, all_exams=exams_list.all_exams, channel=channel)
             await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
             continue
 
@@ -43,6 +45,7 @@ async def exams_sender(groups_splitted: List[Group], client: discord.Client, thr
                                      [j.exam_id for j in exams_in_group]]
 
         if not exams_to_send:
+            await check_for_exams_deletions(group=i, all_exams=exams_list.all_exams, channel=channel)
             await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
             continue
         exams_to_save: List[ExamSaved] = []
@@ -61,6 +64,7 @@ async def exams_sender(groups_splitted: List[Group], client: discord.Client, thr
             logs_.log("New exam found RIP")
         save_exams_to_group(new_exams=exams_to_save, group_id=i.id)
 
+        await check_for_exams_deletions(group=i, all_exams=exams_list.all_exams, channel=channel)
         await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
     logs_.log(f"Done sending exams in thread ({thread_num})")
     return
