@@ -1,13 +1,12 @@
 
-
 import nextcord as discord
 from nextcord.ext import commands
 
 from utils import messages, logs_, config
 from database.database_requests import get_exam_by_id, update_exam
 from vulcanrequests.get_all_exams import get_all_exams
-from background_tasks.CheckForOldExams import update_exams_dates
-from background_tasks.PrepareGroups import *
+from background_tasks.exams_date_update import update_exams_dates
+from helpers.create_groups_chunks import *
 from threading import Thread
 import asyncio
 

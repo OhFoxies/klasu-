@@ -7,12 +7,12 @@ from database.database_requests import (ExamSaved,
                                         get_exams_in_group,
                                         save_exams_to_group)
 from embeds.embeds import exam_embed
-from other_functions.GroupChannel import get_group_channel
+from helpers.group_channel import get_group_channel
 from utils import logs_, messages
 from vulcan.data import Exam
 from vulcanrequests.get_all_exams import get_all_exams, Exams
-from .CheckExamsEdits import check_exams_edits
-from .CheckForExamsDeletions import check_for_exams_deletions
+from .exams_edits import check_exams_edits
+from .deleted_exams import check_for_exams_deletions
 
 
 async def exams_sender(groups_splitted: List[Group], client: discord.Client, thread_num: int):

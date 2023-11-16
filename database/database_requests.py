@@ -582,7 +582,8 @@ def save_exams_to_group(new_exams: List[ExamSaved],
 
     """
     with sqlite3.connect("database/database.db") as connection:
-        command: str = "INSERT INTO exams (exam_id, group_id, message_id, date_modified, deadline, removed) VALUES (?, ?, ?, ?, ?, ?)"
+        command: str = ("INSERT INTO exams (exam_id, group_id, message_id, date_modified, deadline, removed) "
+                        "VALUES (?, ?, ?, ?, ?, ?)")
         for exam in new_exams:
             values: Tuple[int, int, int, str, str, int] = (
                 exam.exam_id, group_id, exam.message_id, str(exam.date_modified), str(exam.deadline), 0)
@@ -593,7 +594,8 @@ def save_exams_to_group(new_exams: List[ExamSaved],
 def save_changes_to_exam(exam: ExamSaved, group_id: int) -> None:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "UPDATE `exams` SET date_modified=?, message_id=?, deadline=? WHERE group_id=? AND exam_id=?"
-        values: Tuple[str, int, str, int, int] = (str(exam.date_modified), exam.message_id, str(exam.deadline), group_id, exam.exam_id)
+        values: Tuple[str, int, str, int, int] = (str(exam.date_modified), exam.message_id, str(exam.deadline),
+                                                  group_id, exam.exam_id)
         connection.execute(command, values)
         connection.commit()
 

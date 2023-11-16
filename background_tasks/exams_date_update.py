@@ -3,7 +3,7 @@ from typing import List
 import nextcord as discord
 
 from database.database_requests import Group, get_old_exams, remove_exam, get_today_exams
-from other_functions.GroupChannel import get_group_channel
+from helpers.group_channel import get_group_channel
 from utils import logs_
 
 

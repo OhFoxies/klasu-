@@ -92,12 +92,12 @@ def load_cogs(client) -> None:
     """
     logs_.log("Starting loading cogs.")
     for event in listdir('./events'):
-        if event.endswith('.py'):
+        if event.endswith('.py') and event != '__init__.py':
             client.load_extension(f'events.{event[:-3]}')
             logs_.log(f"Loaded event extension {event[:-3]}")
 
     for command in listdir(f'./commands'):
-        if command.endswith('.py'):
+        if command.endswith('.py') and command != '__init__.py':
             client.load_extension(f'commands.{command[:-3]}')
             logs_.log(f"Loaded command extension {command[:-3]}")
 

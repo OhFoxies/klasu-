@@ -9,12 +9,12 @@ from scheduler import Scheduler
 
 from database.database_requests import Group
 from utils import logs_
-from .CheckForOldExams import update_exams_dates
-from .CheckLuckyNumbers import check_lucky_number
-from .Exams import exams_sender
-from .LuckyNumber import lucky_numbers_sender
-from .PrepareGroups import create_groups_chunks
-from .SaveLuckyNumbers import save_and_clear_lucky_numbers
+from .exams_date_update import update_exams_dates
+from .check_lucky_numbers import check_lucky_number
+from .exams import exams_sender
+from .lucky_number import lucky_numbers_sender
+from helpers.create_groups_chunks import create_groups_chunks
+from .save_lucky_numbers import save_and_clear_lucky_numbers
 
 
 class BackgroundTasks:

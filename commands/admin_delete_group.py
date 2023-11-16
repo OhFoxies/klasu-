@@ -3,9 +3,9 @@ from typing import List
 import nextcord as discord
 from nextcord.ext import commands
 
-from autocompletion.AutoCompletions import schools_autocompletion, classes_autocompletion, groups_autocompletion
+from autocompletion.auto_completions import schools_autocompletion, classes_autocompletion, groups_autocompletion
 from database.database_requests import SchoolNotFoundError, class_list, group_list, delete_group
-from other_functions.Functions import user_delete_account_info
+from helpers.helpers import user_delete_account_info
 from utils import messages
 
 

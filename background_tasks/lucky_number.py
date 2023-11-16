@@ -5,7 +5,7 @@ import nextcord as discord
 from database.database_requests import (get_lucky_numbers,
                                         get_lucky_number_in_school,
                                         save_lucky_number, Group)
-from other_functions.GroupChannel import get_group_channel
+from helpers.group_channel import get_group_channel
 from utils import logs_
 from vulcanrequests.get_lucky_number import get_lucky_number
 from embeds.embeds import lucky_number_embed_daily
