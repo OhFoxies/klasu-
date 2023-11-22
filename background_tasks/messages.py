@@ -42,7 +42,7 @@ class MessagesSender:
 
                 msg = None
                 for i in self.keywords:
-                    if i in message.content or i in message.subject:
+                    if i in message.content.lower() or i in message.subject.lower():
                         if "RE: " in message.subject:
                             continue
                         embed = message_embed(message)
