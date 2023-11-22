@@ -33,12 +33,15 @@ class MessagesSender:
                 continue
 
             messages = await get_new_messages(keystore=group.keystore, account=group.account, old=self.old_message)
+            if not messages:
+                continue
             sent_messages = get_messages_in_group(group_id=group.id)
             messages_to_send = [i for i in messages if i.id not in [j.msg_id for j in sent_messages]]
+
             for message in messages_to_send:
+
                 msg = None
                 for i in self.keywords:
-
                     if i in message.content or i in message.subject:
                         if "RE: " in message.subject:
                             continue
@@ -51,6 +54,7 @@ class MessagesSender:
 
                 message_to_save = VulcanMessage(msg_id=message.id, group_id=group.id, messsage_id=msg.id if msg else 0)
                 save_message(message_to_save)
+
         logs_.log(f"Done sending messages in thread {self.thread_num}")
 
     @staticmethod
