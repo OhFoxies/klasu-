@@ -5,7 +5,7 @@ import nextcord as discord
 from helpers.group_channel import get_group_channel
 from vulcanrequests.get_messages import get_new_messages
 from embeds.embeds import message_embed
-
+from utils import logs_
 
 class MessagesSender:
     def __init__(self, thread_num: int, groups_splitted: List[Group], client: discord.Client, old=False):
@@ -16,6 +16,7 @@ class MessagesSender:
         self.old_message = old
 
     async def check_for_new_messages(self):
+        logs_.log(f"Starting sending messages in thread {self.thread_num}")
         for group in self.groups_list:
             try:
                 guild: discord.Guild = await self.client.fetch_guild(group.guild_id)
@@ -50,6 +51,7 @@ class MessagesSender:
 
                 message_to_save = VulcanMessage(msg_id=message.id, group_id=group.id, messsage_id=msg.id if msg else 0)
                 save_message(message_to_save)
+        logs_.log(f"Done sending messages in thread {self.thread_num}")
 
     @staticmethod
     def get_keywords():
