@@ -3,6 +3,7 @@ from typing import List
 
 import nextcord as discord
 
+import vulcan.data
 from database.database_requests import Group
 from utils import messages
 from vulcan.data import Exam
@@ -180,3 +181,22 @@ def exam_deletion_embed(date: str, desc: str, exam_type: str, subject: str) -> d
 
     return embed
 
+
+def message_embed(message: vulcan.data.Message) -> discord.Embed:
+    embed = discord.Embed(type="rich", title=messages["new_message_title"],
+                          color=discord.Color.blue(),
+                          timestamp=datetime.datetime.now(),
+                          )
+    embed.add_field(name=messages['new_message_author'], value=message.sender.name, inline=False)
+    embed.add_field(name=messages['new_message_theme'], value=message.subject, inline=False)
+    content = message.content.replace("<p><br></p>", "\n").replace("<p>", "").replace("</p>", "\n").replace("<li>", "- ").replace("</li>", "\n").replace("<ol>", "").replace("</ol>", "").replace("<br>", "\n").replace("</blockquote>", "").replace("<blockquote>", "> ").replace("<ul>", "").replace("</ul>", "")
+
+    embed.add_field(name=messages['new_message_content'], value=content, inline=False)
+    if message.attachments:
+        attachment_format = ""
+        for attachment in message.attachments:
+            attachment_format += "[" + attachment.name + "]" + "(" + attachment.link + ")\n"
+        embed.add_field(name=messages['new_message_attachments'], value=attachment_format, inline=False)
+
+    embed.add_field(name=messages['new_message_date'], value=message.sent_date, inline=False)
+    return embed

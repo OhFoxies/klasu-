@@ -665,3 +665,30 @@ def delete_exam(group_id: int, exam_id: int) -> None:
         values = (group_id, exam_id)
         connection.execute(command, values)
         connection.commit()
+
+@dataclass
+class VulcanMessage:
+    msg_id: str
+    group_id: int
+    messsage_id: int
+
+
+def save_message(message: VulcanMessage):
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "INSERT INTO `messages` (msg_id, group_id, message_id) VALUES (?, ?, ?)"
+        values = (message.msg_id, message.group_id, message.messsage_id)
+        connection.execute(command, values)
+        connection.commit()
+
+
+def get_messages_in_group(group_id: int) -> List[Optional[VulcanMessage]]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT msg_id, message_id, group_id FROM messages WHERE group_id=?"
+        values = (group_id, )
+        response = connection.execute(command, values).fetchall()
+        messages = []
+        for i in response:
+            messages.append(VulcanMessage(msg_id=i[0], group_id=group_id, messsage_id=i[1]))
+        return messages
+
+

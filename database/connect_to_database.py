@@ -55,4 +55,12 @@ def connect():
                    "`removed` INTEGER NOT NULL, "
                    " PRIMARY KEY(`ID` AUTOINCREMENT), "
                    "FOREIGN KEY(group_id) REFERENCES 'group'(ID))")
+
+        db.execute("CREATE TABLE IF NOT EXISTS messages ("
+                   "`ID` INTEGER NOT NULL, "
+                   "`msg_id` VARCHAR(999) NOT NULL, "
+                   "`group_id` INTEGER NOT NULL, "
+                   "`message_id` INTEGER NOT NULL, "
+                   " PRIMARY KEY(`ID` AUTOINCREMENT), "
+                   "FOREIGN KEY(group_id) REFERENCES 'group'(ID))")
         db.commit()

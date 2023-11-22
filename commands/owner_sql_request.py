@@ -10,6 +10,7 @@ class RequestCommand(commands.Cog):
     def __int__(self, client: commands.Bot):
         self.client = client
 
+    @commands.is_owner()
     @discord.slash_command(name=messages['request_command'],
                            description=messages['request_desc'],
                            dm_permission=False,
