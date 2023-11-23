@@ -11,11 +11,10 @@ from database.database_requests import Group
 from helpers.create_groups_chunks import create_groups_chunks
 from utils import logs_
 from .check_lucky_numbers import check_lucky_number
-from .exams import exams_sender
 from .exams_date_update import update_exams_dates
 from .lucky_number import lucky_numbers_sender
-from .messages import MessagesSender
 from .save_lucky_numbers import save_and_clear_lucky_numbers
+from .cyclic_data_handler import CyclicDataSender
 
 
 class BackgroundTasks:
@@ -32,7 +31,7 @@ class BackgroundTasks:
         logs_.log("Checking for exams edits loaded (Every day at 00:10) has been loaded")
 
         schedule.cyclic(dt.timedelta(minutes=5), self.start_new_tasks, args=(
-            self.exams_sender_between_callbacks,))
+            self.cyclic_data_between_callbacks,))
         logs_.log("Background task exam sender (Every 5 minutes) has been loaded")
 
         schedule.daily(dt.time(hour=7, minute=0), self.start_new_tasks, args=(
@@ -46,10 +45,6 @@ class BackgroundTasks:
         schedule.daily(dt.time(hour=0, minute=5), self.start_new_tasks, args=(
             self.lucky_numbers_saver_between_callbacks,))
         logs_.log("Background task lucky numbers saver (Every day at 00:05) has been loaded")
-
-        schedule.cyclic(dt.timedelta(minutes=5), self.start_new_tasks, args=(
-            self.messages_sender_between_callbacks,))
-        logs_.log("Background messages sender (Every 5 minutes) has been loaded")
 
         while not self.client.is_closed():
             schedule.exec_jobs()
@@ -78,12 +73,10 @@ class BackgroundTasks:
     def lucky_numbers_checker_between_callbacks(self, groups_splitted, thread_num: int):
         asyncio.run_coroutine_threadsafe(check_lucky_number(groups_splitted, thread_num), self.client.loop)
 
-    def exams_sender_between_callbacks(self, groups_splitted: List[Group], thread_num: int):
-        asyncio.run_coroutine_threadsafe(exams_sender(groups_splitted, self.client, thread_num), self.client.loop)
+    def cyclic_data_between_callbacks(self, groups_splitted: List[Group], thread_num: int):
+        cyclic_data_handler: CyclicDataSender = CyclicDataSender(thread_num=thread_num, client=self.client, groups=groups_splitted)
+        asyncio.run_coroutine_threadsafe(cyclic_data_handler.handle_data(), self.client.loop)
 
     def exams_date_update_between_callbacks(self, groups_splitted: List[Group], thread_num: int):
         asyncio.run_coroutine_threadsafe(update_exams_dates(groups_splitted, self.client, thread_num), self.client.loop)
 
-    def messages_sender_between_callbacks(self, groups_splitted: List[Group], thread_num: int):
-        sender = MessagesSender(groups_splitted=groups_splitted, thread_num=thread_num, client=self.client)
-        asyncio.run_coroutine_threadsafe(sender.check_for_new_messages(), self.client.loop)

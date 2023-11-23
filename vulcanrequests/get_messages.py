@@ -14,7 +14,6 @@ async def get_new_messages(keystore, account, old=False):
         messages_list = []
 
         async for i in boxes:
-
             messages = await user.data.get_messages(i.global_key)
             async for message in messages:
                 if old:

@@ -2,69 +2,113 @@ from typing import List, Optional
 
 import nextcord as discord
 
-from database.database_requests import (ExamSaved,
-                                        Group,
+from database.database_requests import (Group,
                                         get_exams_in_group,
-                                        save_exams_to_group)
-from embeds.embeds import exam_embed
-from helpers.group_channel import get_group_channel
-from utils import logs_, messages
+                                        ExamSaved,
+                                        save_exams_to_group,
+                                        save_changes_to_exam,
+                                        delete_exam
+                                        )
+from embeds.embeds import exam_embed, exam_deletion_embed
+from utils import logs_
+from utils import messages
 from vulcan.data import Exam
-from vulcanrequests.get_all_exams import get_all_exams, Exams
-from .exams_edits import check_exams_edits
-from .deleted_exams import check_for_exams_deletions
+from vulcanrequests.exams import Exams
 
 
-async def exams_sender(groups_splitted: List[Group], client: discord.Client, thread_num: int):
-    logs_.log(f"Starting sending exams in new thread ({thread_num})")
-    for i in groups_splitted:
-        try:
-            guild: discord.Guild = await client.fetch_guild(i.guild_id)
-        except (discord.Forbidden, discord.HTTPException):
-            continue
+class ExamsSender:
+    def __init__(self, group: Group, channel, thread):
+        self.group = group
+        self.channel = channel
+        self.thread = thread
 
-        channel: discord.TextChannel | None = await get_group_channel(guild=guild,
-                                                                      school=i.school_name,
-                                                                      class_name=i.class_name,
-                                                                      group=i.group_name,
-                                                                      channel_id=i.channel_id)
+    async def start_tasks(self, exams_list: Exams):
+        logs_.log(f"Starting sending exams in thread {self.thread}")
 
-        if not channel:
-            continue
+        if exams_list.new_exams:
+            exams_in_group: List[Optional[ExamSaved]] = get_exams_in_group(group_id=self.group.id)
+            exams_to_send: List[Exam] = [exam for exam in exams_list.new_exams if exam.id not in
+                                         [j.exam_id for j in exams_in_group]]
+            if exams_to_send:
+                await self.send_new_exams(exams_to_send)
 
-        exams_list: Exams = await get_all_exams(keystore=i.keystore,
-                                                account=i.account)
+        if exams_list.upcoming_exams:
+            await self.check_exams_edits(exams_list.upcoming_exams)
 
-        if not exams_list.new_exams:
-            await check_for_exams_deletions(group=i, all_exams=exams_list.all_exams, channel=channel)
-            await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
-            continue
+        if exams_list.all_exams:
+            await self.check_for_exams_deletions(exams_list.all_exams)
+        logs_.log(f"Done sending exams in thread {self.thread}")
 
-        exams_in_group: List[Optional[ExamSaved]] = get_exams_in_group(group_id=i.id)
-        exams_to_send: List[Exam] = [exam for exam in exams_list.new_exams if exam.id not in
-                                     [j.exam_id for j in exams_in_group]]
-
-        if not exams_to_send:
-            await check_for_exams_deletions(group=i, all_exams=exams_list.all_exams, channel=channel)
-            await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
-            continue
+    async def send_new_exams(self, exams):
         exams_to_save: List[ExamSaved] = []
 
-        for exam in exams_to_send:
+        for exam in exams:
             embed: discord.Embed = exam_embed(exam)
 
-            embed.set_author(name=messages['new_short_test'] if exam.type.lower() == "kartkówka"
-                             else messages['new_exam_normal'])
-            msg: discord.Message = await channel.send(embed=embed)
+            embed.set_author(
+                name=messages['new_short_test'] if exam.type.lower() == "kartkówka" else messages['new_exam_normal'])
+
+            msg: discord.Message = await self.channel.send(embed=embed)
             exam_to_save: ExamSaved = ExamSaved(exam_id=exam.id,
                                                 message_id=msg.id,
                                                 date_modified=exam.date_modified.date_time,
                                                 deadline=exam.deadline.date)
             exams_to_save.append(exam_to_save)
-            logs_.log("New exam found RIP")
-        save_exams_to_group(new_exams=exams_to_save, group_id=i.id)
+        save_exams_to_group(new_exams=exams_to_save, group_id=self.group.id)
 
-        await check_for_exams_deletions(group=i, all_exams=exams_list.all_exams, channel=channel)
-        await check_exams_edits(group=i, exams=exams_list.upcoming_exams, channel=channel)
-    logs_.log(f"Done sending exams in thread ({thread_num})")
-    return
+    async def check_exams_edits(self, exams):
+        exams_in_group: List[Optional[ExamSaved]] = get_exams_in_group(group_id=self.group.id)
+        if not exams_in_group:
+            return
+
+        for exam in exams:
+            if exam.date_modified.date_time != exam.date_created.date_time:
+                exam_in_group: Optional[ExamSaved] = self.get_exam_by_id(exam_id=exam.id, exams_list=exams_in_group)
+                if not exam_in_group:
+                    continue
+
+                if exam_in_group.date_modified != exam.date_modified.date_time:
+                    try:
+                        old_exam_msg: discord.Message = await self.channel.fetch_message(exam_in_group.message_id)
+                        await old_exam_msg.delete()
+                    except (discord.NotFound, discord.HTTPException, discord.Forbidden):
+                        pass
+                    embed: discord.Embed = exam_embed(exam)
+                    embed.set_author(name=messages['short_test_edit'] if exam.type.lower() == "kartkówka"
+                    else messages['exam_edit'])
+
+                    msg: discord.Message = await self.channel.send(embed=embed)
+                    exam_in_group.date_modified = exam.date_modified.date_time
+                    exam_in_group.deadline = exam.deadline.date
+                    exam_in_group.message_id = msg.id
+                    logs_.log(f"Updated exam in guild {self.group.guild_id}")
+                    save_changes_to_exam(exam=exam_in_group, group_id=self.group.id)
+
+    async def check_for_exams_deletions(self, all_exams):
+        exams_in_group: List[Optional[ExamSaved]] = get_exams_in_group(group_id=self.group.id)
+        all_exams_ids: List[int] = [i.id for i in all_exams]
+
+        for exam_saved in exams_in_group:
+            if exam_saved.exam_id not in all_exams_ids:
+                try:
+                    exam_msg: discord.Message = await self.channel.fetch_message(exam_saved.message_id)
+                except (discord.NotFound, discord.HTTPException, discord.Forbidden):
+                    continue
+
+                subject = exam_msg.embeds[0].title
+                date = exam_msg.embeds[0].fields[0].value
+                exam_type = exam_msg.embeds[0].fields[3].value
+                exam_desc = exam_msg.embeds[0].fields[4].value
+                await exam_msg.delete()
+
+                embed = exam_deletion_embed(date=date, subject=subject, desc=exam_desc, exam_type=exam_type)
+                delete_exam(exam_id=exam_saved.exam_id, group_id=self.group.id)
+
+                await self.channel.send(embed=embed)
+
+    @staticmethod
+    def get_exam_by_id(exam_id, exams_list: List[ExamSaved]) -> Optional[ExamSaved]:
+        for exam in exams_list:
+            if exam.exam_id == exam_id:
+                return exam
+        return None

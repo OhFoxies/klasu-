@@ -189,7 +189,7 @@ def message_embed(message: vulcan.data.Message) -> discord.Embed:
                           )
     embed.add_field(name=messages['new_message_author'], value=message.sender.name, inline=False)
     embed.add_field(name=messages['new_message_theme'], value=message.subject, inline=False)
-    content = message.content.replace("<p><br></p>", "\n").replace("<p>", "").replace("</p>", "\n").replace("<li>", "- ").replace("</li>", "\n").replace("<ol>", "").replace("</ol>", "").replace("<br>", "\n").replace("</blockquote>", "").replace("<blockquote>", "> ").replace("<ul>", "").replace("</ul>", "")
+    content = message.content.replace("<p><br></p>", "\n").replace("<p>", "").replace("</p>", "\n").replace("<li>", "- ").replace("</li>", "\n").replace("<ol>", "").replace("</ol>", "").replace("<br>", "\n").replace("</blockquote>", "\n").replace("<blockquote>", "> ").replace("<ul>", "").replace("</ul>", "").replace("<strong>", "**").replace("</strong>", "**").replace("<em>", "*").replace("</em>", "*").replace("<u>", "__").replace("</u>", "__")
 
     embed.add_field(name=messages['new_message_content'], value=content, inline=False)
     if message.attachments:
