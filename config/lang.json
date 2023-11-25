@@ -206,6 +206,13 @@
   "new_message_date": ":date: Data wiadomości",
   "new_message_attachments": ":paperclips: Załączniki",
   "send_messages_manual": "messages-sender",
-  "send_messages_manual_desc": "Forces bot to check for new messages"
+  "send_messages_manual_desc": "Forces bot to check for new messages",
+  "messages_command": "wiadomości",
+  "messages_command_desc": "Wysyła wiadomości z zagadnieniami i prezentacjami.",
+  "messages_how_old_value_desc": "Decyduje, sprzed ilu dni mają być wiadomości. Domyślnie: 14 dni.",
+  "messages_how_old_value": "wiek-wiadomości",
+  "message": ":loudspeaker: Wiadomość :loudspeaker:",
+  "no_messages": "Brak wiadomości!",
+  "no_messages_desc": "W podanym zakresie czasowym nie znaleziono żadnych wiadomości."
 
 }

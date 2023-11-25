@@ -200,3 +200,12 @@ def message_embed(message: vulcan.data.Message) -> discord.Embed:
 
     embed.add_field(name=messages['new_message_date'], value=message.sent_date, inline=False)
     return embed
+
+
+def no_messages() -> discord.Embed:
+    embed = discord.Embed(type="rich", title=messages["no_messages"],
+                          color=discord.Color.blue(),
+                          timestamp=datetime.datetime.now(),
+                          description=messages["no_messages_desc"]
+                          )
+    return embed
