@@ -563,6 +563,7 @@ def get_role(guild_id: int, school_name: str, class_name: str, group_name: str) 
 
         return data[0][0]
 
+
 def set_role(guild_id: int, school_name: str, class_name: str, group_name: str, role_id: int):
     """
     """
@@ -570,7 +571,7 @@ def set_role(guild_id: int, school_name: str, class_name: str, group_name: str, 
 
         command: str = "UPDATE `group` SET role_id=? WHERE class_name=? AND guild_id=? AND school_name=? " \
                        "AND group_name=?"
-        values: Tuple[str, ...] = (role_id, class_name, str(guild_id), school_name, group_name)
+        values = (role_id, class_name, str(guild_id), school_name, group_name)
         connection.execute(command, values)
         connection.commit()
 

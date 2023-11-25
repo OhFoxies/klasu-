@@ -1,6 +1,5 @@
 import datetime as dt
-from typing import Any, AsyncIterator, Optional, List
-from dataclasses import dataclass
+from typing import AsyncIterator, Optional, List
 import vulcan.data
 from vulcan import Vulcan, Keystore, Account
 from vulcanrequests.exams import Exams
@@ -41,5 +40,5 @@ class CyclicDataGetter:
         async for i in boxes:
             messages = await self.user.data.get_messages(i.global_key)
             async for message in messages:
-                if message.sent_date.date_time >= dt.datetime.today() - dt.timedelta(days=50):
+                if message.sent_date.date_time >= dt.datetime.today() - dt.timedelta(days=1):
                     self.messages.append(message)
