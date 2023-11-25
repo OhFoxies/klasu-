@@ -25,7 +25,7 @@ def exam_embed(exam: Exam) -> discord.Embed:
                                          )
 
     embed.set_author(name=messages['new_short_test'] if exam.type.lower() == "kartkówka"
-                     else messages['new_exam_normal'])
+    else messages['new_exam_normal'])
     embed.add_field(name=messages['date'].replace('{type}', type_formatted),
                     value=exam.deadline.date,
                     inline=False
@@ -129,9 +129,9 @@ def no_exams() -> discord.Embed:
     return embed
 
 
-def any_embed(title: str, desc: str) -> discord.Embed:
+def any_embed(title: str, desc: str, color=discord.Color.green()) -> discord.Embed:
     embed: discord.Embed = discord.Embed(type="rich", title=title,
-                                         color=discord.Color.green(),
+                                         color=color,
                                          timestamp=datetime.datetime.now(),
                                          description=desc)
     return embed
@@ -189,7 +189,13 @@ def message_embed(message: vulcan.data.Message) -> discord.Embed:
                           )
     embed.add_field(name=messages['new_message_author'], value=message.sender.name, inline=False)
     embed.add_field(name=messages['new_message_theme'], value=message.subject, inline=False)
-    content = message.content.replace("<p><br></p>", "\n").replace("<p>", "").replace("</p>", "\n").replace("<li>", "- ").replace("</li>", "\n").replace("<ol>", "").replace("</ol>", "").replace("<br>", "\n").replace("</blockquote>", "\n").replace("<blockquote>", "> ").replace("<ul>", "").replace("</ul>", "").replace("<strong>", "**").replace("</strong>", "**").replace("<em>", "*").replace("</em>", "*").replace("<u>", "__").replace("</u>", "__")
+    content = message.content.replace("<p><br></p>", "\n").replace("<p>", "").replace("</p>", "\n").replace("<li>",
+                                                                                                            "- ").replace(
+        "</li>", "\n").replace("<ol>", "").replace("</ol>", "").replace("<br>", "\n").replace("</blockquote>",
+                                                                                              "\n").replace(
+        "<blockquote>", "> ").replace("<ul>", "").replace("</ul>", "").replace("<strong>", "**").replace("</strong>",
+                                                                                                         "**").replace(
+        "<em>", "*").replace("</em>", "*").replace("<u>", "__").replace("</u>", "__")
 
     embed.add_field(name=messages['new_message_content'], value=content, inline=False)
     if message.attachments:
@@ -207,5 +213,14 @@ def no_messages() -> discord.Embed:
                           color=discord.Color.blue(),
                           timestamp=datetime.datetime.now(),
                           description=messages["no_messages_desc"]
+                          )
+    return embed
+
+
+def role_embed() -> discord.Embed:
+    embed = discord.Embed(type="rich", title=messages["role_embed"],
+                          color=discord.Color.blue(),
+                          timestamp=datetime.datetime.now(),
+                          description=messages["role_embed_desc"]
                           )
     return embed

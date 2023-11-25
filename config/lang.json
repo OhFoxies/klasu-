@@ -213,6 +213,25 @@
   "messages_how_old_value": "wiek-wiadomości",
   "message": ":loudspeaker: Wiadomość :loudspeaker:",
   "no_messages": "Brak wiadomości!",
-  "no_messages_desc": "W podanym zakresie czasowym nie znaleziono żadnych wiadomości."
+  "no_messages_desc": "W podanym zakresie czasowym nie znaleziono żadnych wiadomości.",
+  "current_role": "Aktualna rola dla grupy {group} to: {role}",
+  "no_role": "Brak przypisanej roli dla grupy {group}.",
+  "set_role": "Ustawiono wybraną rolę ({role}), jako role dla powiedomień dla grupy: {group}.",
+  "role_command": "grupa-rola",
+  "role_command_desc": "Ustawia lub wyświetla role dla danej grupy.",
+  "role_value": "rola",
+  "role_value_desc": "Ustawi rolę grupy na podaną.",
+  "role_embed": "Rola do powiadomień",
+  "role_embed_desc": "Naciśnij przycisk, aby otrzymać powiadomienia w swojej grupie o:\n- sprawdzianach\n- kartkówkach\n- wiadomościach\n- zadaniach itd...",
+  "role_button": "Przełącz powiadomienia",
+  "role_added": "Włączyłaś/eś powiadomienia",
+  "role_deleted": "Wyłączyłaś/eś powiadomienia",
+  "role_not_in": "Nie jesteś w żadnej grupie lub twoja grupa nie ma przypisanej roli.",
+  "role_added_title": ":white_check_mark: Dodano role :white_check_mark:",
+  "role_deleted_title": ":x:  Usunięto role :x: ",
+  "role_message": "dodawanie-roli",
+  "role_message_desc": "Wysyła wiadomość z przyciskiem do dodania roli."
+
+
 
 }

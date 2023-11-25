@@ -4,23 +4,22 @@ import nextcord as discord
 from nextcord.ext import commands
 
 from autocompletion.auto_completions import schools_autocompletion, classes_autocompletion, groups_autocompletion
-from database.database_requests import (change_group_channel,
+from database.database_requests import (set_role,
                                         class_list,
                                         group_list,
                                         is_group_registered,
                                         SchoolNotFoundError,
-                                        get_channel
+                                        get_role
                                         )
-from helpers.helpers import send_message_group_channel
 from utils import messages
 
 
-class ChangeChannel(commands.Cog):
+class SetRole(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name=messages['channel_command'],
-                           description=messages['channel_desc'],
+    @discord.slash_command(name=messages['role_command'],
+                           description=messages['role_command_desc'],
                            dm_permission=False,
                            force_global=True,
                            default_member_permissions=discord.Permissions(permissions=8))
@@ -34,9 +33,9 @@ class ChangeChannel(commands.Cog):
                              group_name: str = discord.SlashOption(name=messages['value_group_name'],
                                                                    description=messages['group_value_desc'],
                                                                    required=True),
-                             channel: discord.TextChannel = discord.SlashOption(
-                                 name=messages['value_channel'],
-                                 description=messages['channel_value_desc'],
+                             role: discord.Role = discord.SlashOption(
+                                 name=messages['role_value'],
+                                 description=messages['role_value_desc'],
                                  required=False)
                              ):
 
@@ -50,34 +49,28 @@ class ChangeChannel(commands.Cog):
                                            school_name=school_name,
                                            class_name=class_name,
                                            group_name=group_name):
-                        if not channel:
-                            channel_id: str = get_channel(guild_id=interaction.guild_id,
-                                                          school_name=school_name,
-                                                          class_name=class_name,
-                                                          group_name=group_name)
-                            msg: str = messages['current_channel'].replace('{school}', school_name).replace(
-                                '{class}', class_name).replace('{group}', group_name).replace('{channel}', f"<#{channel_id}>")
+                        if not role:
+                            role_id: int = get_role(guild_id=interaction.guild_id,
+                                                    school_name=school_name,
+                                                    class_name=class_name,
+                                                    group_name=group_name)
+                            if role_id != 0:
 
+                                msg: str = messages['current_role'].replace('{group}', group_name).replace('{role}',
+                                                                                                           f"<@&{role_id}>")
+                            else:
+                                msg: str = messages['no_role'].replace('{group}', group_name)
                             await interaction.response.send_message(msg, ephemeral=True)
                             return
-                        change_group_channel(guild_id=interaction.guild_id,
-                                             channel_id=channel.id,
-                                             school_name=school_name,
-                                             class_name=class_name,
-                                             group_name=group_name
-                                             )
 
-                        msg: str = messages['channel_registered'].replace('{school}', school_name).replace(
-                            '{class}', class_name).replace('{group}', group_name)
-                        await send_message_group_channel(school_name=school_name,
-                                                         class_name=class_name,
-                                                         group_name=group_name,
-                                                         interaction=interaction,
-                                                         message=msg,
-                                                         pin=True,
-                                                         title=messages['channel_registered_title']
-                                                         )
-                        await interaction.response.send_message(messages['channel_set'], ephemeral=True)
+                        set_role(guild_id=interaction.guild_id,
+                                 school_name=school_name,
+                                 class_name=class_name,
+                                 group_name=group_name,
+                                 role_id=role.id)
+
+                        msg: str = messages['set_role'].replace("{role}", role.mention).replace("{group}", group_name)
+                        await interaction.response.send_message(msg, ephemeral=True)
                         return
                     await interaction.response.send_message(messages['group_not_connected'], ephemeral=True)
                     return
@@ -110,4 +103,4 @@ class ChangeChannel(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(ChangeChannel(client))
+    client.add_cog(SetRole(client))

@@ -29,7 +29,7 @@ class MessagesSender:
                         continue
                     embed = message_embed(message)
                     try:
-                        msg = await self.channel.send(embed=embed)
+                        msg = await self.channel.send(embed=embed, content=f"<@&{self.group.role_id}>" if self.group.role_id != 0 else "")
                     except discord.HTTPException:
                         pass
                     break

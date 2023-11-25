@@ -32,6 +32,7 @@ def connect():
                    "`guild_id` VARCHAR(99) NOT NULL, "
                    "`user_vulcan` VARCHAR(99) NOT NULL, "
                    "`channel_id` VARCHAR(99) NOT NULL, "
+                   "`role_id` INT DEFAULT 0,"
                    "PRIMARY KEY(`ID` AUTOINCREMENT))")
 
         db.execute("CREATE TABLE IF NOT EXISTS `user` ("
@@ -63,4 +64,9 @@ def connect():
                    "`message_id` INTEGER NOT NULL, "
                    " PRIMARY KEY(`ID` AUTOINCREMENT), "
                    "FOREIGN KEY(group_id) REFERENCES 'group'(ID))")
+
+        db.execute("CREATE TABLE IF NOT EXISTS `views` ("
+                   "`ID` INTEGER NOT NULL, "
+                   "`message_id` INT NOT NULL, "
+                   " PRIMARY KEY(`ID` AUTOINCREMENT)) ")
         db.commit()

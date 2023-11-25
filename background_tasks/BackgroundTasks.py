@@ -28,11 +28,11 @@ class BackgroundTasks:
 
         schedule.daily(dt.time(hour=0, minute=10), self.start_new_tasks,
                        args=(self.exams_date_update_between_callbacks,))
-        logs_.log("Checking for exams edits loaded (Every day at 00:10) has been loaded")
+        logs_.log("Checking for exams date updater loaded (Every day at 00:10) has been loaded")
 
         schedule.cyclic(dt.timedelta(minutes=5), self.start_new_tasks, args=(
             self.cyclic_data_between_callbacks,))
-        logs_.log("Background task exam sender (Every 5 minutes) has been loaded")
+        logs_.log("Background cyclic data handler (Every 5 minutes) has been loaded")
 
         schedule.daily(dt.time(hour=7, minute=0), self.start_new_tasks, args=(
             self.lucky_numbers_sender_between_callbacks,))

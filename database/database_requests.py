@@ -525,12 +525,13 @@ class Group:
     account: dict
     guild_id: int
     channel_id: int
+    role_id: int
     id: int
 
 
 def get_all_groups() -> List[Optional[Group]]:
     with sqlite3.connect("database/database.db") as connection:
-        command: str = ("SELECT school_name, class_name, group_name, keystore, account, guild_id, channel_id, ID "
+        command: str = ("SELECT school_name, class_name, group_name, keystore, account, guild_id, channel_id, role_id, ID "
                         "FROM `group` WHERE keystore != 'not_set' AND account != 'not_set'")
         response: List[Any] = connection.execute(command).fetchall()
         groups: List[Group] = []
@@ -544,11 +545,34 @@ def get_all_groups() -> List[Optional[Group]]:
                                  account=account,
                                  guild_id=int(i[5]),
                                  channel_id=int(i[6]),
-                                 id=i[7]
+                                 role_id=i[7],
+                                 id=i[8]
                                  )
             groups.append(group)
         return groups
 
+def get_role(guild_id: int, school_name: str, class_name: str, group_name: str) -> int:
+    """
+    :returns: ID of group's role.
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT role_id FROM `group` WHERE class_name=? AND guild_id=? AND school_name=? " \
+                       "AND group_name=?"
+        values: Tuple[str, ...] = (class_name, str(guild_id), school_name, group_name)
+        data = connection.execute(command, values).fetchall()
+
+        return data[0][0]
+
+def set_role(guild_id: int, school_name: str, class_name: str, group_name: str, role_id: int):
+    """
+    """
+    with sqlite3.connect("database/database.db") as connection:
+
+        command: str = "UPDATE `group` SET role_id=? WHERE class_name=? AND guild_id=? AND school_name=? " \
+                       "AND group_name=?"
+        values: Tuple[str, ...] = (role_id, class_name, str(guild_id), school_name, group_name)
+        connection.execute(command, values)
+        connection.commit()
 
 @dataclass
 class ExamSaved:
@@ -692,3 +716,17 @@ def get_messages_in_group(group_id: int) -> List[Optional[VulcanMessage]]:
         return messages
 
 
+
+def get_all_views():
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT message_id FROM `views`"
+        response = connection.execute(command).fetchall()
+        views = [i[0] for i in response]
+        return views
+
+def save_view(message_id):
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "INSERT INTO `views` (message_id) VALUES (?)"
+        values = (message_id, )
+        response = connection.execute(command, values)
+        connection.commit()

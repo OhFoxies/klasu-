@@ -48,7 +48,7 @@ class ExamsSender:
             embed.set_author(
                 name=messages['new_short_test'] if exam.type.lower() == "kartkówka" else messages['new_exam_normal'])
 
-            msg: discord.Message = await self.channel.send(embed=embed)
+            msg: discord.Message = await self.channel.send(embed=embed, content=f"<@&{self.group.role_id}>" if self.group.role_id != 0 else "")
             exam_to_save: ExamSaved = ExamSaved(exam_id=exam.id,
                                                 message_id=msg.id,
                                                 date_modified=exam.date_modified.date_time,
@@ -77,7 +77,7 @@ class ExamsSender:
                     embed.set_author(name=messages['short_test_edit'] if exam.type.lower() == "kartkówka"
                     else messages['exam_edit'])
 
-                    msg: discord.Message = await self.channel.send(embed=embed)
+                    msg: discord.Message = await self.channel.send(embed=embed, content=f"<@&{self.group.role_id}>" if self.group.role_id != 0 else "")
                     exam_in_group.date_modified = exam.date_modified.date_time
                     exam_in_group.deadline = exam.deadline.date
                     exam_in_group.message_id = msg.id

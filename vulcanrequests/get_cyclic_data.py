@@ -41,5 +41,5 @@ class CyclicDataGetter:
         async for i in boxes:
             messages = await self.user.data.get_messages(i.global_key)
             async for message in messages:
-                if message.sent_date.date_time >= dt.datetime.today() - dt.timedelta(days=1):
+                if message.sent_date.date_time >= dt.datetime.today() - dt.timedelta(days=50):
                     self.messages.append(message)
