@@ -46,7 +46,7 @@ def connect():
                    "`exams_ids` TEXT,"
                    "PRIMARY KEY(`ID` AUTOINCREMENT))")
 
-        db.execute("CREATE TABLE IF NOT EXISTS exams ("
+        db.execute("CREATE TABLE IF NOT EXISTS `exams` ("
                    "`ID` INTEGER NOT NULL, "
                    "`exam_id` INTEGER NOT NULL, "
                    "`group_id` INTEGER NOT NULL, "
@@ -57,7 +57,7 @@ def connect():
                    " PRIMARY KEY(`ID` AUTOINCREMENT), "
                    "FOREIGN KEY(group_id) REFERENCES 'group'(ID))")
 
-        db.execute("CREATE TABLE IF NOT EXISTS messages ("
+        db.execute("CREATE TABLE IF NOT EXISTS `messages` ("
                    "`ID` INTEGER NOT NULL, "
                    "`msg_id` VARCHAR(999) NOT NULL, "
                    "`group_id` INTEGER NOT NULL, "
@@ -69,4 +69,14 @@ def connect():
                    "`ID` INTEGER NOT NULL, "
                    "`message_id` INT NOT NULL, "
                    " PRIMARY KEY(`ID` AUTOINCREMENT)) ")
+
+        db.execute("CREATE TABLE IF NOT EXISTS `homework` ("
+                   "`ID` INTEGER NOT NULL, "
+                   "`homework_id` INTEGER NOT NULL, "
+                   "`group_id` INTEGER NOT NULL, "
+                   "`message_id` INTEGER NOT NULL, "
+                   "`deadline` VARCHAR(999) NOT NULL,"
+                   "`removed` INTEGER NOT NULL, "
+                   " PRIMARY KEY(`ID` AUTOINCREMENT), "
+                   "FOREIGN KEY(group_id) REFERENCES 'group'(ID))")
         db.commit()

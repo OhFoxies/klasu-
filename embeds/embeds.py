@@ -25,7 +25,7 @@ def exam_embed(exam: Exam) -> discord.Embed:
                                          )
 
     embed.set_author(name=messages['new_short_test'] if exam.type.lower() == "kartkówka"
-    else messages['new_exam_normal'])
+                     else messages['new_exam_normal'])
     embed.add_field(name=messages['date'].replace('{type}', type_formatted),
                     value=exam.deadline.date,
                     inline=False
@@ -52,8 +52,7 @@ def lucky_number_embed_daily(lucky_num: int, users: List[discord.Member], group:
     embed: discord.Embed = discord.Embed(type="rich", title=messages['lucky_number_title'],
                                          color=discord.Color.green(),
                                          timestamp=datetime.datetime.now(),
-                                         description=
-                                         messages['lucky_number']
+                                         description=messages['lucky_number']
                                          .replace('{school}', group.school_name)
                                          .replace('{number}', str(lucky_num))
                                          .replace('{user}', ', '.join(mentions)) if mentions else
@@ -79,8 +78,7 @@ def lucky_number_embed(lucky_num: int, user: discord.Member, school_name: str) -
     embed: discord.Embed = discord.Embed(type="rich", title=messages['lucky_number_title'],
                                          color=discord.Color.green(),
                                          timestamp=datetime.datetime.now(),
-                                         description=
-                                         messages['lucky_number']
+                                         description=messages['lucky_number']
                                          .replace('{school}', school_name)
                                          .replace('{number}', str(lucky_num))
                                          .replace('Użytkownik: {user}', '')
@@ -189,20 +187,33 @@ def message_embed(message: vulcan.data.Message) -> discord.Embed:
                           )
     embed.add_field(name=messages['new_message_author'], value=message.sender.name, inline=False)
     embed.add_field(name=messages['new_message_theme'], value=message.subject, inline=False)
-    content = message.content.replace("<p><br></p>", "\n").replace("<p>", "").replace("</p>", "\n").replace("<li>",
-                                                                                                            "- ").replace(
-        "</li>", "\n").replace("<ol>", "").replace("</ol>", "").replace("<br>", "\n").replace("</blockquote>",
-                                                                                              "\n").replace(
-        "<blockquote>", "> ").replace("<ul>", "").replace("</ul>", "").replace("<strong>", "**").replace("</strong>",
-                                                                                                         "**").replace(
-        "<em>", "*").replace("</em>", "*").replace("<u>", "__").replace("</u>", "__")
+    content = (
+        message.content.replace("<p><br></p>", "\n")
+        .replace("<p>", "")
+        .replace("</p>", "\n")
+        .replace("<li>", "- ")
+        .replace("</li>", "\n")
+        .replace("<ol>", "")
+        .replace("</ol>", "")
+        .replace("<br>", "\n")
+        .replace("</blockquote>", "\n")
+        .replace("<blockquote>", "> ")
+        .replace("<ul>", "")
+        .replace("</ul>", "")
+        .replace("<strong>", "**")
+        .replace("</strong>", "**")
+        .replace("<em>", "*")
+        .replace("</em>", "*")
+        .replace("<u>", "__")
+        .replace("</u>", "__")
+    )
 
     embed.add_field(name=messages['new_message_content'], value=content, inline=False)
     if message.attachments:
         attachment_format = ""
         for attachment in message.attachments:
             attachment_format += "[" + attachment.name + "]" + "(" + attachment.link + ")\n"
-        embed.add_field(name=messages['new_message_attachments'], value=attachment_format, inline=False)
+        embed.add_field(name=messages['attachments'], value=attachment_format, inline=False)
 
     embed.add_field(name=messages['new_message_date'], value=message.sent_date, inline=False)
     return embed
@@ -223,4 +234,48 @@ def role_embed() -> discord.Embed:
                           timestamp=datetime.datetime.now(),
                           description=messages["role_embed_desc"]
                           )
+    return embed
+
+
+def homework_embed(homework: vulcan.data.Homework) -> discord.Embed:
+    embed = discord.Embed(type="rich", title=homework.subject.name,
+                          color=discord.Color.orange(),
+                          timestamp=datetime.datetime.now())
+    embed.add_field(name=messages['homework_date'], value=homework.deadline.date, inline=False)
+
+    if homework.deadline.date == datetime.date.today():
+        embed.add_field(name=messages['homework_time_left'],
+                        value=messages['homework_today'],
+                        inline=False)
+    else:
+        embed.add_field(name=messages['homework_time_left'],
+                        value=f"<t:{homework.deadline.date_time.timestamp()}:R>".replace(
+                            ".0", ""), inline=False)
+    embed.add_field(name=messages['teacher'],
+                    value=f"{homework.creator.name} {homework.creator.surname}",
+                    inline=False)
+
+    embed.add_field(name=messages['description'], value=homework.content if homework.content else messages['no_desc'],
+                    inline=False)
+    if homework.attachments:
+        attachment_format = ""
+        for attachment in homework.attachments:
+            attachment_format += "[" + attachment.name + "]" + "(" + attachment.link + ")\n"
+        embed.add_field(name=messages['attachments'], value=attachment_format, inline=False)
+
+    embed.add_field(name=messages['homework_answer'],
+                    value=messages['answer_required'] if homework.is_answer_required else messages[
+                        'answer_no_required'], inline=False)
+    return embed
+
+
+def homework_deletion_embed(subject, date, desc) -> discord.Embed:
+    embed: discord.Embed = discord.Embed(type="rich", title=messages['deleted_homework_title'],
+                                         color=discord.Color.purple(),
+                                         timestamp=datetime.datetime.now(),
+                                         description=messages['deleted_homework']
+                                         .replace('{subject}', subject)
+                                         .replace('{date}', date)
+                                         .replace('{content}', desc))
+
     return embed

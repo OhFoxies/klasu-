@@ -1,7 +1,7 @@
 import nextcord as discord
 from nextcord.ext import commands
 
-from background_tasks.BackgroundTasks import BackgroundTasks
+from background_tasks.background_tasks import BackgroundTasks
 from database.connect_to_database import connect
 from utils import *
 

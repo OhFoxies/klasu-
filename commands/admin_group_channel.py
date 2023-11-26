@@ -55,8 +55,10 @@ class ChangeChannel(commands.Cog):
                                                           school_name=school_name,
                                                           class_name=class_name,
                                                           group_name=group_name)
-                            msg: str = messages['current_channel'].replace('{school}', school_name).replace(
-                                '{class}', class_name).replace('{group}', group_name).replace('{channel}', f"<#{channel_id}>")
+                            msg: str = (messages['current_channel'].replace('{school}', school_name)
+                                        .replace('{class}', class_name)
+                                        .replace('{group}', group_name)
+                                        .replace('{channel}', f"<#{channel_id}>"))
 
                             await interaction.response.send_message(msg, ephemeral=True)
                             return

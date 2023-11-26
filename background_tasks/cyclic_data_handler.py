@@ -4,11 +4,12 @@ import nextcord as discord
 
 import vulcan.data
 from background_tasks.exams import ExamsSender
+from background_tasks.homework import HomeworkSender
 from background_tasks.messages import MessagesSender
 from database.database_requests import Group
 from helpers.group_channel import get_group_channel
-from vulcanrequests.exams import Exams
 from vulcanrequests.get_cyclic_data import CyclicDataGetter
+from vulcanrequests.serializables import Exams, Homeworks
 
 
 class CyclicDataSender:
@@ -42,6 +43,9 @@ class CyclicDataSender:
             if cyclic_data.exams.all_exams:
                 await self.handle_exams_data(exams_list=cyclic_data.exams, group=group, channel=channel)
 
+            if cyclic_data.homeworks.all_homeworks:
+                await self.handle_homework_data(homeworks=cyclic_data.homeworks, group=group, channel=channel)
+
     async def handle_messages_data(self, messages: List[vulcan.data.Message], group: Group,
                                    channel: discord.TextChannel):
         messages_sender: MessagesSender = MessagesSender(channel=channel, thread=self.thread_num, group=group)
@@ -50,3 +54,7 @@ class CyclicDataSender:
     async def handle_exams_data(self, group: Group, channel: discord.TextChannel, exams_list: Exams):
         exam_sender: ExamsSender = ExamsSender(channel=channel, thread=self.thread_num, group=group)
         await exam_sender.start_tasks(exams_list=exams_list)
+
+    async def handle_homework_data(self, group: Group, channel: discord.TextChannel, homeworks: Homeworks):
+        homework_sender: HomeworkSender = HomeworkSender(channel=channel, group=group, thread=self.thread_num)
+        await homework_sender.start_tasks(homework=homeworks)

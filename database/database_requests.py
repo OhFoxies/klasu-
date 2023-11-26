@@ -531,8 +531,9 @@ class Group:
 
 def get_all_groups() -> List[Optional[Group]]:
     with sqlite3.connect("database/database.db") as connection:
-        command: str = ("SELECT school_name, class_name, group_name, keystore, account, guild_id, channel_id, role_id, ID "
-                        "FROM `group` WHERE keystore != 'not_set' AND account != 'not_set'")
+        command: str = (
+            "SELECT school_name, class_name, group_name, keystore, account, guild_id, channel_id, role_id, ID "
+            "FROM `group` WHERE keystore != 'not_set' AND account != 'not_set'")
         response: List[Any] = connection.execute(command).fetchall()
         groups: List[Group] = []
         for i in response:
@@ -551,6 +552,7 @@ def get_all_groups() -> List[Optional[Group]]:
             groups.append(group)
         return groups
 
+
 def get_role(guild_id: int, school_name: str, class_name: str, group_name: str) -> int:
     """
     :returns: ID of group's role.
@@ -568,12 +570,12 @@ def set_role(guild_id: int, school_name: str, class_name: str, group_name: str, 
     """
     """
     with sqlite3.connect("database/database.db") as connection:
-
         command: str = "UPDATE `group` SET role_id=? WHERE class_name=? AND guild_id=? AND school_name=? " \
                        "AND group_name=?"
         values = (role_id, class_name, str(guild_id), school_name, group_name)
         connection.execute(command, values)
         connection.commit()
+
 
 @dataclass
 class ExamSaved:
@@ -691,6 +693,7 @@ def delete_exam(group_id: int, exam_id: int) -> None:
         connection.execute(command, values)
         connection.commit()
 
+
 @dataclass
 class VulcanMessage:
     msg_id: str
@@ -709,13 +712,12 @@ def save_message(message: VulcanMessage):
 def get_messages_in_group(group_id: int) -> List[Optional[VulcanMessage]]:
     with sqlite3.connect("database/database.db") as connection:
         command: str = "SELECT msg_id, message_id, group_id FROM messages WHERE group_id=?"
-        values = (group_id, )
+        values = (group_id,)
         response = connection.execute(command, values).fetchall()
         messages = []
         for i in response:
             messages.append(VulcanMessage(msg_id=i[0], group_id=group_id, messsage_id=i[1]))
         return messages
-
 
 
 def get_all_views():
@@ -725,9 +727,92 @@ def get_all_views():
         views = [i[0] for i in response]
         return views
 
+
 def save_view(message_id):
     with sqlite3.connect("database/database.db") as connection:
         command: str = "INSERT INTO `views` (message_id) VALUES (?)"
-        values = (message_id, )
-        response = connection.execute(command, values)
+        values = (message_id,)
+        connection.execute(command, values)
+        connection.commit()
+
+
+@dataclass
+class HomeworkSaved:
+    homework_id: int
+    message_id: int
+    deadline: datetime.datetime
+
+
+def get_homework_in_group(group_id: int) -> List[Optional[HomeworkSaved]]:
+    """
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT homework_id, message_id, deadline FROM `homework` WHERE group_id=?"
+        values: Tuple[int] = (group_id,)
+        response = connection.execute(command, values).fetchall()
+        homework: List[Optional[HomeworkSaved]] = []
+        for i in response:
+            _homework: HomeworkSaved = HomeworkSaved(homework_id=i[0], message_id=i[1],
+                                                     deadline=datetime.datetime.strptime(i[2], "%Y-%m-%d %H:%M:%S"))
+            homework.append(_homework)
+        return homework
+
+
+def get_today_homework(group_id: int) -> List[Optional[HomeworkSaved]]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT homework_id, message_id, deadline FROM `homework` WHERE group_id=? AND removed=0"
+        values = (group_id,)
+        response = connection.execute(command, values).fetchall()
+        today_homework: Optional[List[HomeworkSaved]] = []
+        for homework in response:
+            if datetime.datetime.strptime(homework[2], "%Y-%m-%d %H:%M:%S").date() == datetime.date.today():
+                today_homework.append(HomeworkSaved(homework_id=homework[0],
+                                                    message_id=homework[1],
+                                                    deadline=datetime.datetime.strptime(homework[2],
+                                                                                        "%Y-%m-%d %H:%M:%S")))
+        return today_homework
+
+
+def get_old_homework(group_id: int) -> List[Optional[HomeworkSaved]]:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "SELECT homework_id, message_id, deadline FROM `homework` WHERE group_id=? AND removed=0"
+        values = (group_id,)
+        response = connection.execute(command, values).fetchall()
+        old_homework: Optional[List[HomeworkSaved]] = []
+        for homework in response:
+            if datetime.datetime.strptime(homework[2], "%Y-%m-%d %H:%M:%S").date() < datetime.date.today():
+                old_homework.append(HomeworkSaved(homework_id=homework[0],
+                                                  message_id=homework[1],
+                                                  deadline=datetime.datetime.strptime(homework[2],
+                                                                                      "%Y-%m-%d %H:%M:%S")))
+        return old_homework
+
+
+def remove_homework(group_id: int, homework_id: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "UPDATE `homework` SET removed=1 WHERE group_id=? AND homework_id=?"
+        values = (group_id, homework_id)
+        connection.execute(command, values)
+        connection.commit()
+
+
+def delete_homework(group_id: int, homework_id: int) -> None:
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = "DELETE FROM `homework` WHERE group_id=? AND homework_id=?"
+        values = (group_id, homework_id)
+        connection.execute(command, values)
+        connection.commit()
+
+
+def save_homeworks_to_group(homeworks: List[HomeworkSaved],
+                            group_id: int) -> None:
+    """
+
+    """
+    with sqlite3.connect("database/database.db") as connection:
+        command: str = ("INSERT INTO homework (homework_id, group_id, message_id, deadline, removed) "
+                        "VALUES (?, ?, ?, ?, ?)")
+        for homework in homeworks:
+            values = (homework.homework_id, group_id, homework.message_id, str(homework.deadline), 0)
+            connection.execute(command, values)
         connection.commit()

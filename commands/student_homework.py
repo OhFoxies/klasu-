@@ -2,19 +2,19 @@ import nextcord as discord
 from nextcord.ext import commands
 
 from database.database_requests import *
-from embeds.embeds import exam_embed, connecting, error_embed, no_exams
-from utils import messages
-from vulcan.data import Exam
-from vulcanrequests.get_exams import get_exams_klasus
+from embeds.embeds import homework_embed, connecting, error_embed, any_embed
 from helpers.helpers import date_from_string
+from utils import messages
+from vulcan.data import Homework
+from vulcanrequests.get_homework import get_homework
 
 
-class ExamsCommand(commands.Cog):
+class HomeWork(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
-    @discord.slash_command(name=messages['exams_command'],
-                           description=messages['exams_command_desc'],
+    @discord.slash_command(name=messages['homework_command'],
+                           description=messages['homework_command_desc'],
                            dm_permission=False,
                            force_global=True)
     async def exams(self, interaction: discord.Interaction,
@@ -41,19 +41,20 @@ class ExamsCommand(commands.Cog):
             if not date:
                 return
 
-        exams: List[Exam | None] = await get_exams_klasus(keystore=vulcan_data.keystore,
-                                                          account=vulcan_data.account,
-                                                          date_to=date if date_to else None)
-        # embeds: List[discord.Embed] = []
-        if not exams:
-            no_exams_embed: discord.Embed = no_exams()
-            await msg.edit(embed=no_exams_embed)
+        homeworks: List[Homework | None] = await get_homework(keystore=vulcan_data.keystore,
+                                                              account=vulcan_data.account,
+                                                              date_to=date if date_to else None)
+
+        if not homeworks:
+            no_homework_embed: discord.Embed = any_embed(title=messages['no_homework_title'],
+                                                         desc=messages['no_homework'])
+            await msg.edit(embed=no_homework_embed)
         await msg.delete()
-        for exam in exams:
-            embed: discord.Embed = exam_embed(exam)
-            embed.set_author(name=exam.type.upper())
+        for homework in homeworks:
+            embed: discord.Embed = homework_embed(homework)
+            embed.set_author(name=messages['homework'])
             await interaction.send(embed=embed, ephemeral=True)
 
 
 def setup(client):
-    client.add_cog(ExamsCommand(client))
+    client.add_cog(HomeWork(client))

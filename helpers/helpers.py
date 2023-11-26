@@ -1,10 +1,13 @@
-from helpers.group_channel import get_group_channel
+import datetime
 from typing import List
 
 import nextcord as discord
 
 from database.database_requests import get_channel
 from embeds.embeds import any_embed, removed_account, removed_accounts
+from embeds.embeds import error_embed
+from helpers.group_channel import get_group_channel
+from utils import messages
 
 
 async def send_message_group_channel(interaction: discord.Interaction,
@@ -48,3 +51,27 @@ async def user_delete_account_info(deleted_users: List[str], interaction: discor
         channel = await interaction.guild.fetch_channel(interaction.channel_id)
     embed: discord.Embed = removed_accounts(mentions)
     await channel.send(embed=embed, content='\n'.join(mentions) if mentions else "")
+
+
+async def date_from_string(string_date: str, msg: discord.PartialInteractionMessage) -> datetime.date | None:
+    date_list: List[str] = string_date.split('.')
+    try:
+        if len(date_list) == 3 and len(date_list[0]) == 2 and len(date_list[1]) == 2 and len(date_list[2]) == 4:
+            for i in date_list:
+                for j in i:
+                    try:
+                        int(j)
+                    except ValueError:
+                        raise TypeError
+            date = datetime.date(day=int(date_list[0]), month=int(date_list[1]), year=int(date_list[2]))
+            if not date >= datetime.date.today():
+                err_embed: discord.Embed = error_embed(error=messages['date_from_today'])
+                await msg.edit(embed=err_embed)
+                return
+            return date
+        else:
+            raise TypeError
+    except TypeError:
+        err_embed: discord.Embed = error_embed(error=messages['date_format_not_correct'])
+        await msg.edit(embed=err_embed)
+        return

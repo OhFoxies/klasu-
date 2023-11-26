@@ -1,7 +1,8 @@
 from typing import List
+
 from database.database_requests import (Group,
                                         save_lucky_number,
-                                        get_lucky_number_in_school,)
+                                        get_lucky_number_in_school, )
 from utils import logs_
 from vulcanrequests.get_lucky_number import get_lucky_number
 

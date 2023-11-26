@@ -13,7 +13,7 @@ from embeds.embeds import exam_embed, exam_deletion_embed
 from utils import logs_
 from utils import messages
 from vulcan.data import Exam
-from vulcanrequests.exams import Exams
+from vulcanrequests.serializables import Exams
 
 
 class ExamsSender:
@@ -48,7 +48,9 @@ class ExamsSender:
             embed.set_author(
                 name=messages['new_short_test'] if exam.type.lower() == "kartkówka" else messages['new_exam_normal'])
 
-            msg: discord.Message = await self.channel.send(embed=embed, content=f"<@&{self.group.role_id}>" if self.group.role_id != 0 else "")
+            msg: discord.Message = await self.channel.send(embed=embed,
+                                                           content=f"<@&{self.group.role_id}>"
+                                                           if self.group.role_id != 0 else "")
             exam_to_save: ExamSaved = ExamSaved(exam_id=exam.id,
                                                 message_id=msg.id,
                                                 date_modified=exam.date_modified.date_time,
@@ -74,10 +76,12 @@ class ExamsSender:
                     except (discord.NotFound, discord.HTTPException, discord.Forbidden):
                         pass
                     embed: discord.Embed = exam_embed(exam)
-                    embed.set_author(name=messages['short_test_edit'] if exam.type.lower() == "kartkówka"
-                    else messages['exam_edit'])
+                    embed.set_author(name=messages['short_test_edit']
+                                     if exam.type.lower() == "kartkówka"else messages['exam_edit'])
 
-                    msg: discord.Message = await self.channel.send(embed=embed, content=f"<@&{self.group.role_id}>" if self.group.role_id != 0 else "")
+                    msg: discord.Message = await self.channel.send(embed=embed,
+                                                                   content=f"<@&{self.group.role_id}>"
+                                                                   if self.group.role_id != 0 else "")
                     exam_in_group.date_modified = exam.date_modified.date_time
                     exam_in_group.deadline = exam.deadline.date
                     exam_in_group.message_id = msg.id

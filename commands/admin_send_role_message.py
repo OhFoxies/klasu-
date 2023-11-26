@@ -13,7 +13,8 @@ class RoleMessage(commands.Cog):
     @discord.slash_command(name=messages['role_message'],
                            description=messages['role_message_desc'],
                            dm_permission=False,
-                           force_global=True)
+                           force_global=True,
+                           default_member_permissions=discord.Permissions(permissions=8))
     async def klasus_command(self, interaction: discord.Interaction,
                              channel: discord.TextChannel = discord.SlashOption(
                                  name=messages['value_channel'],
@@ -32,6 +33,7 @@ class Button(discord.ui.View):
         super().__init__(timeout=None)
         self.value = None
 
+    # noinspection PyUnusedLocal
     @discord.ui.button(label=messages['role_button'], style=discord.ButtonStyle.green, custom_id="button:wzium")
     async def button(self, button: discord.ui.Button, interaction: discord.Interaction):
         user_data: User | None = get_user_data(user_id=interaction.user.id, guild_id=interaction.guild_id)
@@ -53,7 +55,9 @@ class Button(discord.ui.View):
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         await interaction.user.remove_roles(role)
-        embed = any_embed(desc=messages['role_deleted'], title=messages['role_deleted_title'], color=discord.Color.red())
+        embed = any_embed(desc=messages['role_deleted'],
+                          title=messages['role_deleted_title'],
+                          color=discord.Color.red())
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 

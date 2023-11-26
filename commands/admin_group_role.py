@@ -56,8 +56,8 @@ class SetRole(commands.Cog):
                                                     group_name=group_name)
                             if role_id != 0:
 
-                                msg: str = messages['current_role'].replace('{group}', group_name).replace('{role}',
-                                                                                                           f"<@&{role_id}>")
+                                msg: str = (messages['current_role'].replace('{group}', group_name)
+                                            .replace('{role}', f"<@&{role_id}>"))
                             else:
                                 msg: str = messages['no_role'].replace('{group}', group_name)
                             await interaction.response.send_message(msg, ephemeral=True)
