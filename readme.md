@@ -21,7 +21,7 @@ All steps are explained in `/vulcan-pomoc` command.
 # Functions
 - Sending daily lucky number ✔
 - Command to send messages to groups ✔
-- Sending exams info and homework info ✕
+- Sending exams info and homework info ✔
 - Sending lesson plan changes ✕
 - /lekcja command to check your next lesson ✕
 - Weekly ping teacher's slaves (white board wipers) ✕
